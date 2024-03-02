@@ -9,6 +9,11 @@
 (declare-type continue-point basic)
 (declare-type game-save basic)
 
+
+(define traffic-metalheads? #f)
+
+
+
 (defenum pickup-type
   :bitfield #f
   :type int32

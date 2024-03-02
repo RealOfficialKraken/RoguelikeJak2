@@ -17,20 +17,29 @@
     an orb |#
 
 
+
     ;;;;;;;;;;;;;;;;;;;;;;;;;;
     ;; Begin function defintions.
     ;;;;;;;;;;;;;;;;;;;;;;;;;;
 
     (defun runs-every-frame ()
-      ;; (increase-power-cell-by-one) This is a call to increase-power-cell-by-one defined in mod-common-functions.gc
 
-      ;; Sample code to turn jak pink whenever he's doing the jetboard hover glitch
-      ;; (when *target* 
-      ;;   (if (board-hovering?)
-      ;;     (draw-pink *target*)
-      ;;     (draw-normal *target*)
-      ;;     )
-      ;;   )
+
+
+
+
+#|
+
+    (set! traffic-metalheads? #t) ;turns on traffic lwideb'
+    ;^ WHEN THIS IS TRUE ^  v THEN ALL OF THESE PARAMETERS CAN BE SET v
+    (send-event *traffic-manager* 'set-target-level 5.0) ;sets guards and metalheads to fight
+
+    (send-event *traffic-manager* 'set-target-level 100.0) ;sets metalheads to overrun everything
+
+    (send-event *traffic-manager* 'set-target-level 10.0) ;sets guards only
+
+|#
+
 
       (if *show-input-display* 
         (input-display-on)
