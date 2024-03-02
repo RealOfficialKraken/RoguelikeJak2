@@ -281,7 +281,7 @@
 (when (and (= waitdie #t)(= (pause-allowed?) #t))
   (+! waitdi 1)
   (when (= waitdi 1)
-    (+! amountofdeaths 1)
+    (+! (-> *game-info* task-deaths) 1)
     (set! temp-skullgemamount (-> *game-info* gem))
     (+! (-> *game-info* fuel) (-> *game-info* gem))
   )
@@ -329,7 +329,7 @@
 
 
 ;menu params
-(when (and (= in-menu #t)(= amountofdeaths 0)(not (cpad-pressed? 0 x)))
+(when (and (= in-menu #t)(= (-> *game-info* task-deaths) 0)(not (cpad-pressed? 0 x)))
   (clear matt-str)
     (clear *pc-encoded-matt-str*)
     (format matt-str "
@@ -359,7 +359,7 @@
         (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
 )
 
-(when (and (= in-menu #t)(= amountofdeaths 1)(not (cpad-pressed? 0 x)))
+(when (and (= in-menu #t)(= (-> *game-info* task-deaths) 1)(not (cpad-pressed? 0 x)))
   (clear matt-str)
     (clear *pc-encoded-matt-str*)
     (format matt-str "
@@ -390,7 +390,7 @@
         (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
 )
 
-(when (and (= in-menu #t)(>= amountofdeaths 2)(not (cpad-pressed? 0 x)))
+(when (and (= in-menu #t)(>= (-> *game-info* task-deaths) 2)(not (cpad-pressed? 0 x)))
   (clear matt-str)
     (clear *pc-encoded-matt-str*)
     (format matt-str "
