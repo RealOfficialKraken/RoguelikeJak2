@@ -325,7 +325,7 @@
     ~%
     ~%But there is one hope.
     ~%
-    ~%When you hit <COLOR_GREEN>continue<COLOR_WHITE>, you will be transported to the dimensions where Jak
+    ~%When you <COLOR_GREEN>start your run<COLOR_WHITE>, you will be transported to the dimensions where Jak
     ~%no longer exists, and you must take his place by completing the missions, and fulfilling the
     ~%prophecy. Get as powerful as you can! Jak dying means <COLOR_RED>perma-death<COLOR_WHITE>!
     ~%
@@ -381,7 +381,7 @@
     ~%
     ~%
     <COLOR_RED>~%You Died!
-    ~%<COLOR_WHITE>Tokens Collected:
+    ~%<COLOR_WHITE>Skulls Gems turned into Tokens:
     ~%<COLOR_YELLOW>~d
     ~%<COLOR_WHITE>Progress:
     ~%<COLOR_GREEN> Act ~d <COLOR_YELLOW>Stage ~d
