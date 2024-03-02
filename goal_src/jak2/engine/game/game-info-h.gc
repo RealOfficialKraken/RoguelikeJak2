@@ -10,8 +10,6 @@
 (declare-type game-save basic)
 
 
-(define traffic-metalheads? #f)
-
 
 
 (defenum pickup-type

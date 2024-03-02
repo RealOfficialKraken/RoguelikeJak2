@@ -82,7 +82,6 @@
          (set! (-> gp-0 object-type-info-array 19 level) 'lwidea)
          (logior! (-> gp-0 alert-state flags) (traffic-alert-flag target-jak))
          (set! *traffic-alert-level-force* #f)
-        (set-alert-duration gp-0 (seconds 0))
          )
          (when (= traffic-metalheads? #t)
          (set! (-> gp-0 object-type-info-array 0 level) #f) ;ped
@@ -886,7 +885,6 @@
     (when gp-0
       (case (-> arg0 name)
         (('lwidea)
-         (when (= traffic-metalheads? #f)
          (set! (-> gp-0 object-type-info-array 0 level) 'lwidea)
          (set! (-> gp-0 object-type-info-array 1 level) 'lwidea)
          (set! (-> gp-0 object-type-info-array 2 level) 'lwidea)
@@ -909,31 +907,6 @@
          (set! (-> gp-0 object-type-info-array 19 level) 'lwidea)
          (logior! (-> gp-0 alert-state flags) (traffic-alert-flag target-jak))
          (set! *traffic-alert-level-force* #f)
-         )
-         (when (= traffic-metalheads? #t)
-         (set! (-> gp-0 object-type-info-array 0 level) #f) ;ped
-         (set! (-> gp-0 object-type-info-array 1 level) #f)
-         (set! (-> gp-0 object-type-info-array 2 level) #f)
-         (set! (-> gp-0 object-type-info-array 3 level) #f)
-         (set! (-> gp-0 object-type-info-array 4 level) #f)
-         (set! (-> gp-0 object-type-info-array 5 level) #f)
-         (set! (-> gp-0 object-type-info-array 6 level) 'lwidea) ;guard
-         (set! (-> gp-0 object-type-info-array 7 level) #f)
-         (set! (-> gp-0 object-type-info-array 8 level) 'lwidea) ;grunt
-         (set! (-> gp-0 object-type-info-array 9 level) 'lwidea) ;flitter
-         (set! (-> gp-0 object-type-info-array 10 level) 'lwidea) ;predator
-         (set! (-> gp-0 object-type-info-array 11 level) #f) ;car
-         (set! (-> gp-0 object-type-info-array 12 level) #f)
-         (set! (-> gp-0 object-type-info-array 13 level) #f)
-         (set! (-> gp-0 object-type-info-array 14 level) #f) ;bike
-         (set! (-> gp-0 object-type-info-array 15 level) #f)
-         (set! (-> gp-0 object-type-info-array 16 level) #f)
-         (set! (-> gp-0 object-type-info-array 17 level) #f)
-         (set! (-> gp-0 object-type-info-array 18 level) #f) ;hellbike
-         (set! (-> gp-0 object-type-info-array 19 level) #f) ;hellcat
-         (logior! (-> gp-0 alert-state flags) (traffic-alert-flag target-jak))
-         (set! *traffic-alert-level-force* #f)
-         )
          )
         (('lwideb)
          (set! (-> gp-0 object-type-info-array 0 level) 'lwideb)

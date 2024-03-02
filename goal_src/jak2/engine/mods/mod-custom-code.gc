@@ -22,7 +22,398 @@
     ;; Begin function defintions.
     ;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+(define matt-str (new 'global 'string 2048 (the-as string #f)))
+(define *pc-encoded-matt-str* (new 'global 'string 2048 (the-as string #f)))
+
+
+;traffic manipulations
+(define traffic-metalheads? #f)
+
+;randomizer vars
+(define act1-1 #f)
+(define act1-2 #f)
+(define act1-3 #f)
+(define act1-4 #f)
+(define act1-5 #f)
+(define act1-shop #f)
+(define act2-1 #f)
+(define act2-2 #f)
+(define act2-3 #f)
+(define act2-4 #f)
+(define act2-5 #f)
+(define act2-shop #f)
+(define act3-1 #f)
+(define act3-2 #f)
+(define act3-3 #f)
+(define act3-4 #f)
+(define act3-5 #f)
+(define act3-shop #f)
+
+(define act-act 0)
+(define act-stage 0)
+(define current-level "")
+(define level-completed? #f)
+
+
+;menu funct
+(define tutorial-completed? #f)
+(define in-menu #f)
+(define pause-menu-blocked? #f)
+(define camera-locked #f)
+(define wait-start #f)
+(define waits-frame 0)
+(define wait-exit #f)
+(define waite-frame 0)
+(define waitenter #f)
+(define waitenteri 0)
+(define quicksave #f)
+
+(define waitdie #f)
+(define waitdi 0)
+
+(define temp-skullgemamount 0.0)
+(define temp-health 0.0)
+
+(define amountofdeaths 0) ;This is a saved variable inside RLsettings.ini.
+
+
+
+
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
     (defun runs-every-frame ()
+
+;Checks to see if there's a new game, then sets you to look-around camera with the main menu.
+(when ;is new game started?
+(and 
+*target*
+(= tutorial-completed? #f)
+(= (pause-allowed?) #t)
+(= (-> (level-get-target-inside *level*) name) 'prison)
+)
+  (set! wait-start #t)
+  (set! (-> *target* fact health) 8.0)
+  (auto-save-user)
+)
+
+;Teleports the player to a random stage, and then sets their task.
+    (when (= act1-1 #t)
+      (let (
+        (level-pick (rand-vu-int-range 1 4))
+        )
+          (when (= level-pick 1)
+            (send-event *target* 'continue (get-continue-by-name *game-info* "ruins-start"))
+            (play-task (game-task ruins-tower) 'debug #f)
+            (set! current-level "ruins-tower")
+          )
+          (when (= level-pick 2)
+            (send-event *target* 'continue (get-continue-by-name *game-info* "atoll-start"))
+            (play-task (game-task atoll-water) 'debug #f)
+          )
+          (when (= level-pick 3)
+            (send-event *target* 'continue (get-continue-by-name *game-info* "fordumpa-start"))
+            (play-task (game-task fortress-dump) 'debug #f)
+          )
+          (when (= level-pick 4)
+            (send-event *target* 'continue (get-continue-by-name *game-info* "ctysluma-alley-no-hideout"))
+            (play-task (game-task city-krew-delivery) 'debug #f)
+          )
+        )
+        (set! act1-1 #f)
+        (set! waitenter #t)
+        (set! act-act 1)
+    )
+    (when (= act1-2 #t)
+      (let (
+        (level-pick (rand-vu-int-range 1 4))
+        )
+          (when (= level-pick 1)
+            (send-event *target* 'continue (get-continue-by-name *game-info* "atoll-start"))
+            (play-task (game-task atoll-sig) 'debug #f)
+          )
+          (when (= level-pick 2)
+            (send-event *target* 'continue (get-continue-by-name *game-info* "sewer-start"))
+            (play-task (game-task sewer-enemy) 'debug #f)
+          )
+          (when (= level-pick 3)
+            (send-event *target* 'continue (get-continue-by-name *game-info* "strip-start"))
+            (play-task (game-task strip-rescue) 'debug #f)
+          )
+          (when (= level-pick 4)
+            (send-event *target* 'continue (get-continue-by-name *game-info* "atoll-battle"))
+            (play-task (game-task atoll-battle) 'debug #f)
+          )
+        )
+        (set! act1-2 #f)
+        (set! waitenter #t)
+        (set! (-> *game-info* gem) temp-skullgemamount)
+        (set! (-> *target* fact health) temp-health)
+    )
+
+    (when (= act1-3 #t)
+      (let (
+        (level-pick (rand-vu-int-range 1 4))
+        )
+          (when (= level-pick 1)
+            (send-event *target* 'continue (get-continue-by-name *game-info* "drill1-warp"))
+            (play-task (game-task drill-eggs) 'debug #f)
+          )
+          (when (= level-pick 2)
+            (send-event *target* 'continue (get-continue-by-name *game-info* "ctyport-hiphog"))
+            (play-task (game-task city-krew-collection) 'debug #f)
+          )
+          (when (= level-pick 3)
+            (send-event *target* 'continue (get-continue-by-name *game-info* "vinroom-start"))
+            (play-task (game-task city-power) 'debug #f)
+          )
+          (when (= level-pick 4)
+            (send-event *target* 'continue (get-continue-by-name *game-info* "ctyport-hiphog"))
+            (play-task (game-task city-keira-delivery) 'debug #f)
+          )
+        )
+        (set! act1-3 #f)
+        (set! waitenter #t)
+        (set! (-> *game-info* gem) temp-skullgemamount)
+        (set! (-> *target* fact health) temp-health)
+    )    
+
+
+
+;Checks to see if task got completed, then processes the next area.
+
+(when (= level-completed? #t)
+  (+! act-stage 1)
+  (set! temp-skullgemamount (-> *game-info* gem))
+  (set! temp-health (-> *target* fact health))
+  (when (= act-stage 1)
+    (set! act1-1 #t)
+    (set! level-completed? #f)
+  )
+  (when (and (= act-stage 2)(= level-completed? #t))
+    (set! act1-2 #t)
+    (set! level-completed? #f)
+  )
+  (when (and (= act-stage 3)(= level-completed? #t))
+    (set! act1-3 #t)
+    (set! level-completed? #f)
+  )
+  (set! level-completed? #f)
+)
+
+
+
+
+;camera menu
+(when (= camera-locked #t) ;sets camera params
+  (send-event *target* 'draw #f)
+  (set-setting-by-param *setting-control* 'mode-name 'cam-eye 0 0)
+  (persist-with-delay *setting-control* 'gun (seconds 0.5) 'gun #f 0.0 0)
+  (process-grab? *target* #f)
+)
+
+(when (= wait-exit #t)
+  (+! waite-frame 1)
+  (when (= waite-frame 1)
+    (set! camera-locked #f)
+    (remove-setting-by-arg0 *setting-control* 'mode-name)
+    (set! in-menu #f)
+  )
+  (when (= waite-frame 5)
+    (set! pause-menu-blocked? #f)
+    (send-event *target* 'draw #t)
+    (process-release? *target*)
+  )
+  (when (= waite-frame 10)
+    (set! wait-exit #f)
+    (set! waite-frame 0)
+    (set! act-stage 0)
+    (set! level-completed? #t)
+  )
+)
+(when (= wait-start #t)
+  (+! waits-frame 1)
+  (when (= waits-frame 1)
+    (set! tutorial-completed? #t)
+  )
+  (when (> waits-frame 60)
+    (set! in-menu #t)
+    (set! wait-start #f)
+    (set! waits-frame 0)
+    (set! camera-locked #t)
+    (set! pause-menu-blocked? #t)
+  )
+)
+
+(when (= waitenter #t)
+  (+! waitenteri 1)
+  (when (= waitenteri 60)
+    (set! tutorial-completed? #f)
+    (set! waitenteri 0)
+    (set! waitenter #f)
+  )
+)
+
+(when (= pause-menu-blocked? #t)
+  (set-master-mode 'game)
+)
+
+
+
+;Death params
+(when 
+(and
+(= (pause-allowed?) #t)
+(= (-> *target* fact health) 0.0)
+*target*
+)
+  (set! waitdie #t)
+)
+
+
+
+
+(when (and (= waitdie #t)(= (pause-allowed?) #t))
+  (+! waitdi 1)
+  (when (= waitdi 1)
+    (+! amountofdeaths 1)
+    (set! temp-skullgemamount (-> *game-info* gem))
+    (+! (-> *game-info* fuel) (-> *game-info* gem))
+  )
+  (when (= waitdi 30)
+    (send-event *target* 'continue (get-continue-by-name *game-info* "prison-start"))
+    (set! waitdi 0)
+    (set! waitdie #f)
+  )
+)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+;menu params
+(when (and (= in-menu #t)(= amountofdeaths 0)(not (cpad-pressed? 0 x)))
+  (clear matt-str)
+    (clear *pc-encoded-matt-str*)
+    (format matt-str "
+    <COLOR_WHITE>Welcome to<COLOR_RED> Roguelike Jak II<COLOR_WHITE>!
+    ~%<COLOR_BLUE>  Made by Kraken
+    ~%
+    ~%
+    <COLOR_WHITE>~%Continuing from the Easter Egg in HeroMode+:
+    ~%The mysterious villain has dominated the world across vast dimensions, and
+    ~%the Jak time loop is completely wrecked.
+    ~%
+    ~%But there is one hope.
+    ~%
+    ~%When you hit <COLOR_GREEN>continue<COLOR_WHITE>, you will be transported to the dimensions where Jak
+    ~%no longer exists, and you must take his place by completing the missions, and fulfilling the
+    ~%prophecy. Get as powerful as you can! Jak dying means <COLOR_RED>perma-death<COLOR_WHITE>!
+    ~%
+    ~%<COLOR_GREEN>Press <COLOR_BLUE>X<COLOR_GREEN> to start the run!"
+    )
+    (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+    (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+      ;; reset bucket settings prior to drawing - font won't do this for us, and
+      ;; draw-raw-image can sometimes mess them up. (intro sequence)
+      (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+      (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 250 65 0.0 (font-color default) (font-flags middle shadow kerning large))))
+        (set! (-> font-ctx scale) 0.325)
+        (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+)
+
+(when (and (= in-menu #t)(= amountofdeaths 1)(not (cpad-pressed? 0 x)))
+  (clear matt-str)
+    (clear *pc-encoded-matt-str*)
+    (format matt-str "
+    <COLOR_WHITE>Welcome to<COLOR_RED> Roguelike Jak II<COLOR_WHITE>!
+    ~%<COLOR_BLUE>  Made by Kraken
+    ~%
+    ~%
+    <COLOR_WHITE>~%Wow! You died! How punishing...
+    ~%The good thing here is that what you do in your run, is saved in this room.
+    ~%Like the <COLOR_YELLOW>~d Skull Gems<COLOR_WHITE> you acquired.
+    ~%They're all saved in additive to your OTHER currency.
+    ~%Your Run Tokens.
+    ~%
+    ~%You can use these to purchase items to put in your run!
+    ~%These can ALSO be used to purchase mutators (or modifiers) to spice up the gameplay!
+    ~%You can access the shop by pressing R1.
+    ~%
+    ~%<COLOR_GREEN>Press <COLOR_BLUE>X<COLOR_GREEN> to start the run!"
+    (the int temp-skullgemamount)
+    )
+    (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+    (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+      ;; reset bucket settings prior to drawing - font won't do this for us, and
+      ;; draw-raw-image can sometimes mess them up. (intro sequence)
+      (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+      (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 250 65 0.0 (font-color default) (font-flags middle shadow kerning large))))
+        (set! (-> font-ctx scale) 0.325)
+        (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+)
+
+(when (and (= in-menu #t)(>= amountofdeaths 2)(not (cpad-pressed? 0 x)))
+  (clear matt-str)
+    (clear *pc-encoded-matt-str*)
+    (format matt-str "
+    <COLOR_WHITE>Welcome to<COLOR_RED> Roguelike Jak II<COLOR_WHITE>!
+    ~%<COLOR_BLUE>  Made by Kraken
+    ~%
+    ~%
+    <COLOR_RED>~%You Died!
+    ~%<COLOR_WHITE>Tokens Collected:
+    ~%<COLOR_YELLOW>~d
+    ~%<COLOR_WHITE>Progress:
+    ~%<COLOR_GREEN> Act ~d <COLOR_YELLOW>Stage ~d
+    ~%
+    ~%<COLOR_WHITE>Current Tokens:
+    ~%<COLOR_PINK>~d
+    ~%
+    ~%<COLOR_WHITE>Access Shop by pressing R1
+    ~%
+    ~%<COLOR_GREEN>Press <COLOR_BLUE>X<COLOR_GREEN> to start the run!"
+    (the int temp-skullgemamount)
+    act-act
+    act-stage
+    (the int (-> *game-info* fuel))
+    )
+    (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+    (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+      ;; reset bucket settings prior to drawing - font won't do this for us, and
+      ;; draw-raw-image can sometimes mess them up. (intro sequence)
+      (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+      (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 250 65 0.0 (font-color default) (font-flags middle shadow kerning large))))
+        (set! (-> font-ctx scale) 0.325)
+        (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+)
+
+(when (and (= in-menu #t)(cpad-pressed? 0 x))
+  (set! tutorial-completed? #t)
+  (set! wait-exit #t)
+  (set! in-menu #f)
+)
+
+
 
 
 
@@ -38,7 +429,10 @@
 
     (send-event *traffic-manager* 'set-target-level 10.0) ;sets guards only
 
+
 |#
+
+    ;(set! (-> (level-get-target-inside *level*) mood-func)update-mood-nest)
 
 
       (if *show-input-display* 
@@ -57,7 +451,7 @@
 
     (defun runs-on-task-close ()
     
-
+      (set! level-completed? #t)
       (none)
       )
 
@@ -104,7 +498,7 @@
       (case death-event
         (('dying)
           ;; Code here runs immediately every time jak dies, before any death animation or death cutscene
-          
+          (set! waitdie #t)
           )
         (('blackout)
           ;; Code here runs after jak dies (and any death cutscene finishes), during the blackout before he spawns
