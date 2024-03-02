@@ -124,6 +124,7 @@
         (set! act1-1 #f)
         (set! waitenter #t)
         (set! act-act 1)
+        (set! in-game? #t)
     )
     (when (= act1-2 #t)
       (let (
@@ -150,6 +151,7 @@
         (set! waitenter #t)
         (set! (-> *game-info* gem) temp-skullgemamount)
         (set! (-> *target* fact health) temp-health)
+        (set! in-game? #t)
     )
 
     (when (= act1-3 #t)
@@ -177,6 +179,7 @@
         (set! waitenter #t)
         (set! (-> *game-info* gem) temp-skullgemamount)
         (set! (-> *target* fact health) temp-health)
+        (set! in-game? #t)
     )    
 
 
@@ -269,6 +272,7 @@
 *target*
 )
   (set! waitdie #t)
+  (set! in-game? #f)
 )
 
 
@@ -291,9 +295,23 @@
 
 
 
+;Immediate mission completion without going back to mission giver.
 
+(when 
+(and 
+(task-node-closed? (game-task-node sewer-enemy-blow-up-turrets))
+(not (task-node-closed? (game-task-node sewer-enemy-resolution)))
+)
+  (task-node-close! (game-task-node sewer-enemy-resolution))
+)
 
-
+(when 
+(and 
+(task-node-closed? (game-task-node city-krew-collection-collection))
+(not (task-node-closed? (game-task-node city-krew-collection-resolution)))
+)
+  (task-node-close! (game-task-node city-krew-collection-resolution))
+)
 
 
 
