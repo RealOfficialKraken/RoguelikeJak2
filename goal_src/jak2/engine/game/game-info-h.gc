@@ -12,6 +12,11 @@
 (define in-game? #f)
 (define level-completed? #f)
 
+(define avoidc-waitb #f);this is to avoid glitches when completing missions while still in vehicles or turrets
+(define avoidc-wait 0) ;this is to avoid glitches when completing missions while still in vehicles or turrets
+
+(define act-stage 0)
+
 
 (defenum pickup-type
   :bitfield #f

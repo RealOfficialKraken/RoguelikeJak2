@@ -18,6 +18,25 @@
 
 
 
+
+
+
+
+
+
+
+
+#| TODO:
+
+
+- Make a settings file for saved runs
+- Fix crashes at drill platform
+- Make items and in-game item chooser
+- Make Dark Eco mode
+- Make the campaign and Ending to unlock Dark Eco Mode
+- Make a mutators section in the main menu
+
+|#
     ;;;;;;;;;;;;;;;;;;;;;;;;;;
     ;; Begin function defintions.
     ;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -51,14 +70,20 @@
 (define act-before1 0)
 (define act-before2 0)
 (define act-before3 0)
+(define act-before4 0)
+(define act-before5 0)
+(define act-before6 0)
+(define act-before7 0)
+(define act-before8 0)
+(define act-before9 0)
+(define act-before10 0)
+(define act-before11 0)
+(define act-before12 0)
 
-(define act-act 0)
-(define act-stage 0)
-(define current-level "")
+(define wait-for-ingame #f)
+(define waiting 0)
+
 (define give-gunred? #f)
-
-(define avoidc-waitb #f);this is to avoid glitches when completing missions while still in vehicles or turrets
-(define avoidc-wait 0) ;this is to avoid glitches when completing missions while still in vehicles or turrets
 
 ;menu funct
 (define tutorial-completed? #f)
@@ -73,6 +98,11 @@
 (define waitenteri 0)
 (define quicksave #f)
 (define display-run #f)
+(define print-stage 0)
+(define act-act 0)
+(define current-level "")
+(define mod-s "")
+(define purchase-amount 0)
 
 (define waitdie #f)
 (define waitdi 0)
@@ -105,6 +135,15 @@
   (set! act-before1 0)
   (set! act-before2 0)
   (set! act-before3 0)
+  (set! act-before4 0)
+  (set! act-before5 0)
+  (set! act-before6 0)
+  (set! act-before7 0)
+  (set! act-before8 0)
+  (set! act-before9 0)
+  (set! act-before10 0)
+  (set! act-before11 0)
+  (set! act-before12 0)
   (set! display-run #f)
   (auto-save-user)
 )
@@ -112,11 +151,11 @@
 ;Teleports the player to a random stage, and then sets their task.
     (when (= act1-1 #t)
       (let (
-        (level-pick (rand-vu-int-range 1 12))
+        (level-pick (rand-vu-int-range 1 13))
         )
         (format #t "<<<<<<<<<<<<<<<<<<<<<<<<<<Level picked: ~D" level-pick)
         (when (= level-pick act-before1)
-            (set! level-pick (rand-vu-int-range 1 12))
+            (set! level-pick (rand-vu-int-range 1 13))
             (format #t "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<Level picked the same mission! Rerolling to: ~D" level-pick)
           )
           (when (and (= level-pick 1)(!= act-before1 1))
@@ -223,17 +262,17 @@
             (set! waitenter #t)
             
           )
-          (set! in-game? #t)
+          (set! wait-for-ingame #t)
           (set! act-act 1)
         )
     )
     (when (= act1-2 #t)
       (let (
-        (level-pick (rand-vu-int-range 1 12))
+        (level-pick (rand-vu-int-range 1 13))
         )
         (format #t "<<<<<<<<<<<<<<<<<<<<<<<<<<Level picked: ~D" level-pick)
         (when (= level-pick act-before1)
-            (set! level-pick (rand-vu-int-range 1 12))
+            (set! level-pick (rand-vu-int-range 1 13))
             (format #t "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<Level picked the same mission! Rerolling to: ~D" level-pick)
           )
           (when (and (= level-pick 1)(!= act-before1 1))
@@ -340,7 +379,7 @@
             (set! waitenter #t)
             
           )
-          (set! in-game? #t)
+          (set! wait-for-ingame #t)
           (set! (-> *game-info* gem) temp-skullgemamount)
           (set! (-> *target* fact health) temp-health)
         )
@@ -348,11 +387,11 @@
 
     (when (= act1-3 #t)
       (let (
-        (level-pick (rand-vu-int-range 1 12))
+        (level-pick (rand-vu-int-range 1 13))
         )
         (format #t "<<<<<<<<<<<<<<<<<<<<<<<<<<Level picked: ~D" level-pick)
         (when (= level-pick (or act-before1 act-before2))
-            (set! level-pick (rand-vu-int-range 1 12))
+            (set! level-pick (rand-vu-int-range 1 13))
             (format #t "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<Level picked the same mission! Rerolling to: ~D" level-pick)
           )
           (when (and (= level-pick 1)(and (!= act-before1 1)(!= act-before2 1)))
@@ -459,7 +498,7 @@
             (set! waitenter #t)
             
           )
-          (set! in-game? #t)
+          (set! wait-for-ingame #t)
           (set! (-> *game-info* gem) temp-skullgemamount)
           (set! (-> *target* fact health) temp-health)
         )
@@ -478,7 +517,7 @@
         (set! waitenter #t)
         (set! (-> *game-info* gem) temp-skullgemamount)
         (set! (-> *target* fact health) temp-health)
-        (set! in-game? #t)
+        (set! wait-for-ingame #t)
         
     )    
     (when (= act1-5 #t)
@@ -495,7 +534,681 @@
         (set! waitenter #t)
         (set! (-> *game-info* gem) temp-skullgemamount)
         (set! (-> *target* fact health) temp-health)
+        (set! wait-for-ingame #t)
+        (when (and 
+        (not (logtest? gp-0 (game-feature gun-red)))
+        (not (logtest? gp-0 (game-feature gun-yellow)))
+        (not (logtest? gp-0 (game-feature gun-blue)))
+        (not (logtest? gp-0 (game-feature gun-dark)))
+        )
+        (logior! gp-0 (game-feature gun-red))
+        (set! give-gunred? #t)
+        )
+      )
+    )    
+
+
+;-------------------------ACT 2------------------------------
+(when (= act2-1 #t)
+      (let (
+        (level-pick (rand-vu-int-range 1 11))
+        )
+        (format #t "<<<<<<<<<<<<<<<<<<<<<<<<<<Level picked: ~D" level-pick)
+        (when (= level-pick act-before4)
+            (set! level-pick (rand-vu-int-range 1 11))
+            (format #t "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<Level picked the same mission! Rerolling to: ~D" level-pick)
+          )
+          (set! act-act 2)
+          (when (and (= level-pick 1)(!= act-before4 1))
+            (send-event *target* 'continue (get-continue-by-name *game-info* "ruins-start"))
+            (play-task (game-task ruins-enemy) 'debug #f)
+            (set! act-before4 1)
+            (set! act2-1 #f)
+            (set! waitenter #t)
+            
+          )
+          (when (and (= level-pick 2)(!= act-before4 2))
+            (send-event *target* 'continue (get-continue-by-name *game-info* "forest-start"))
+            (play-task (game-task forest-scouts) 'debug #f)
+            (set! act-before4 2)
+            (set! act2-1 #f)
+            (set! waitenter #t)
+            
+          )
+          (when (and (= level-pick 3)(!= act-before4 3))
+            (send-event *target* 'continue (get-continue-by-name *game-info* "dig1-start"))
+            (play-task (game-task dig-knock-down) 'debug #f)
+            (set! act-before4 3)
+            (set! act2-1 #f)
+            (set! waitenter #t)
+            
+          )
+          (when (and (= level-pick 4)(!= act-before4 4))
+            (send-event *target* 'continue (get-continue-by-name *game-info* "strip-start"))
+            (play-task (game-task strip-grenade) 'debug #f)
+            (set! act-before4 4)
+            (set! act2-1 #f)
+            (set! waitenter #t)
+            
+          )
+          (when (and (= level-pick 5)(!= act-before4 5))
+            (send-event *target* 'continue (get-continue-by-name *game-info* "ctyport-start"))
+            (play-task (game-task city-port-run) 'debug #f)
+            (set! act-before4 5)
+            (set! act2-1 #f)
+            (set! waitenter #t)
+            
+          )
+          (when (and (= level-pick 6)(!= act-before4 6))
+            (send-event *target* 'continue (get-continue-by-name *game-info* "ctyport-hiphog"))
+            (play-task (game-task city-meet-brutter) 'debug #f)
+            (task-node-close! (game-task-node city-meet-brutter-introduction))
+            (set! act-before4 6)
+            (set! act2-1 #f)
+            (set! waitenter #t)
+            
+          )
+          (when (and (= level-pick 7)(!= act-before4 7))
+            (send-event *target* 'continue (get-continue-by-name *game-info* "sewer-start"))
+            (play-task (game-task sewer-board) 'debug #f)
+            (set! act-before4 7)
+            (set! act2-1 #f)
+            (set! waitenter #t)
+            
+          )
+          (when (and (= level-pick 8)(!= act-before4 8))
+            (send-event *target* 'continue (get-continue-by-name *game-info* "ctymarkb-tanker"))
+            (play-task (game-task city-intercept-tanker) 'debug #f)
+            (set! act-before4 8)
+            (set! act2-1 #f)
+            (set! waitenter #t)
+            
+          )
+          (when (and (= level-pick 9)(!= act-before4 9))
+            (send-event *target* 'continue (get-continue-by-name *game-info* "ctysluma-alley-no-hideout"))
+            (play-task (game-task city-shuttle) 'debug #f)
+            (set! act-before4 9)
+            (set! act2-1 #f)
+            (set! waitenter #t)
+            
+          )
+          (when (and (= level-pick 10)(!= act-before4 10))
+            (send-event *target* 'continue (get-continue-by-name *game-info* "dig3-start"))
+            (play-task (game-task dig-find-totem) 'debug #f)
+            (set! act-before4 10)
+            (set! act2-1 #f)
+            (set! waitenter #t)
+            
+          )
+          (when (and (= level-pick 11)(!= act-before4 11))
+            (send-event *target* 'continue (get-continue-by-name *game-info* "ctysluma-alley-no-hideout"))
+            (play-task (game-task city-destroy-guard-vehicles) 'debug #f)
+            (set! act-before4 11)
+            (set! act2-1 #f)
+            (set! waitenter #t)
+            
+          )
+          (set! wait-for-ingame #t)
+          (set! (-> *game-info* gem) temp-skullgemamount)
+          (set! (-> *target* fact health) temp-health)
+        )
+    )
+  (when (= act2-2 #t)
+      (let (
+        (level-pick (rand-vu-int-range 1 11))
+        )
+        (format #t "<<<<<<<<<<<<<<<<<<<<<<<<<<Level picked: ~D" level-pick)
+        (when (= level-pick act-before4)
+            (set! level-pick (rand-vu-int-range 1 11))
+            (format #t "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<Level picked the same mission! Rerolling to: ~D" level-pick)
+          )
+          (when (and (= level-pick 1)(and (!= act-before4 1)(!= act-before5 1)))
+            (send-event *target* 'continue (get-continue-by-name *game-info* "ruins-start"))
+            (play-task (game-task ruins-enemy) 'debug #f)
+            (set! act-before5 1)
+            (set! act2-2 #f)
+            (set! waitenter #t)
+            
+          )
+          (when (and (= level-pick 2)(!= act-before4 2))
+            (send-event *target* 'continue (get-continue-by-name *game-info* "forest-start"))
+            (play-task (game-task forest-scouts) 'debug #f)
+            (set! act-before5 2)
+            (set! act2-2 #f)
+            (set! waitenter #t)
+            
+          )
+          (when (and (= level-pick 3)(!= act-before4 3))
+            (send-event *target* 'continue (get-continue-by-name *game-info* "dig1-start"))
+            (play-task (game-task dig-knock-down) 'debug #f)
+            (set! act-before5 3)
+            (set! act2-2 #f)
+            (set! waitenter #t)
+            
+          )
+          (when (and (= level-pick 4)(!= act-before4 4))
+            (send-event *target* 'continue (get-continue-by-name *game-info* "strip-start"))
+            (play-task (game-task strip-grenade) 'debug #f)
+            (set! act-before5 4)
+            (set! act2-2 #f)
+            (set! waitenter #t)
+            
+          )
+          (when (and (= level-pick 5)(!= act-before4 5))
+            (send-event *target* 'continue (get-continue-by-name *game-info* "ctyport-start"))
+            (play-task (game-task city-port-run) 'debug #f)
+            (set! act-before5 5)
+            (set! act2-2 #f)
+            (set! waitenter #t)
+            
+          )
+          (when (and (= level-pick 6)(!= act-before4 6))
+            (send-event *target* 'continue (get-continue-by-name *game-info* "ctyport-hiphog"))
+            (play-task (game-task city-meet-brutter) 'debug #f)
+            (task-node-close! (game-task-node city-meet-brutter-introduction))
+            (set! act-before5 6)
+            (set! act2-2 #f)
+            (set! waitenter #t)
+            
+          )
+          (when (and (= level-pick 7)(!= act-before4 7))
+            (send-event *target* 'continue (get-continue-by-name *game-info* "sewer-start"))
+            (play-task (game-task sewer-board) 'debug #f)
+            (set! act-before5 7)
+            (set! act2-2 #f)
+            (set! waitenter #t)
+            
+          )
+          (when (and (= level-pick 8)(!= act-before4 8))
+            (send-event *target* 'continue (get-continue-by-name *game-info* "ctymarkb-tanker"))
+            (play-task (game-task city-intercept-tanker) 'debug #f)
+            (set! act-before5 8)
+            (set! act2-2 #f)
+            (set! waitenter #t)
+            
+          )
+          (when (and (= level-pick 9)(!= act-before4 9))
+            (send-event *target* 'continue (get-continue-by-name *game-info* "ctysluma-alley-no-hideout"))
+            (play-task (game-task city-shuttle) 'debug #f)
+            (set! act-before5 9)
+            (set! act2-2 #f)
+            (set! waitenter #t)
+            
+          )
+          (when (and (= level-pick 10)(!= act-before4 10))
+            (send-event *target* 'continue (get-continue-by-name *game-info* "dig3-start"))
+            (play-task (game-task dig-find-totem) 'debug #f)
+            (set! act-before5 10)
+            (set! act2-2 #f)
+            (set! waitenter #t)
+            
+          )
+          (when (and (= level-pick 11)(!= act-before4 11))
+            (send-event *target* 'continue (get-continue-by-name *game-info* "ctysluma-alley-no-hideout"))
+            (play-task (game-task city-destroy-guard-vehicles) 'debug #f)
+            (set! act-before5 11)
+            (set! act2-2 #f)
+            (set! waitenter #t)
+            
+          )
+          (set! wait-for-ingame #t)
+          (set! (-> *game-info* gem) temp-skullgemamount)
+          (set! (-> *target* fact health) temp-health)
+        )
+    )
+
+    (when (= act2-3 #t)
+      (let (
+        (level-pick (rand-vu-int-range 1 11))
+        )
+        (format #t "<<<<<<<<<<<<<<<<<<<<<<<<<<Level picked: ~D" level-pick)
+        (when (= level-pick act-before4)
+            (set! level-pick (rand-vu-int-range 1 11))
+            (format #t "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<Level picked the same mission! Rerolling to: ~D" level-pick)
+          )
+          (when (and (= level-pick 1)(and (!= act-before4 1)(!= act-before5 1)))
+            (send-event *target* 'continue (get-continue-by-name *game-info* "ruins-start"))
+            (play-task (game-task ruins-enemy) 'debug #f)
+            (set! act-before6 1)
+            (set! act2-3 #f)
+            (set! waitenter #t)
+            
+          )
+          (when (and (= level-pick 2)(and (!= act-before4 2)(!= act-before5 2)))
+            (send-event *target* 'continue (get-continue-by-name *game-info* "forest-start"))
+            (play-task (game-task forest-scouts) 'debug #f)
+            (set! act-before6 2)
+            (set! act2-3 #f)
+            (set! waitenter #t)
+            
+          )
+          (when (and (= level-pick 3)(and (!= act-before4 3)(!= act-before5 3)))
+            (send-event *target* 'continue (get-continue-by-name *game-info* "dig1-start"))
+            (play-task (game-task dig-knock-down) 'debug #f)
+            (set! act-before6 3)
+            (set! act2-3 #f)
+            (set! waitenter #t)
+            
+          )
+          (when (and (= level-pick 4)(and (!= act-before4 4)(!= act-before5 4)))
+            (send-event *target* 'continue (get-continue-by-name *game-info* "strip-start"))
+            (play-task (game-task strip-grenade) 'debug #f)
+            (set! act-before6 4)
+            (set! act2-3 #f)
+            (set! waitenter #t)
+            
+          )
+          (when (and (= level-pick 5)(and (!= act-before4 5)(!= act-before5 5)))
+            (send-event *target* 'continue (get-continue-by-name *game-info* "ctyport-start"))
+            (play-task (game-task city-port-run) 'debug #f)
+            (set! act-before6 5)
+            (set! act2-3 #f)
+            (set! waitenter #t)
+            
+          )
+          (when (and (= level-pick 6)(and (!= act-before4 6)(!= act-before5 6)))
+            (send-event *target* 'continue (get-continue-by-name *game-info* "ctyport-hiphog"))
+            (play-task (game-task city-meet-brutter) 'debug #f)
+            (task-node-close! (game-task-node city-meet-brutter-introduction))
+            (set! act-before6 6)
+            (set! act2-3 #f)
+            (set! waitenter #t)
+            
+          )
+          (when (and (= level-pick 7)(and (!= act-before4 7)(!= act-before5 7)))
+            (send-event *target* 'continue (get-continue-by-name *game-info* "sewer-start"))
+            (play-task (game-task sewer-board) 'debug #f)
+            (set! act-before6 7)
+            (set! act2-3 #f)
+            (set! waitenter #t)
+            
+          )
+          (when (and (= level-pick 8)(and (!= act-before4 8)(!= act-before5 8)))
+            (send-event *target* 'continue (get-continue-by-name *game-info* "ctymarkb-tanker"))
+            (play-task (game-task city-intercept-tanker) 'debug #f)
+            (set! act-before6 8)
+            (set! act2-3 #f)
+            (set! waitenter #t)
+            
+          )
+          (when (and (= level-pick 9)(and (!= act-before4 9)(!= act-before5 9)))
+            (send-event *target* 'continue (get-continue-by-name *game-info* "ctysluma-alley-no-hideout"))
+            (play-task (game-task city-shuttle) 'debug #f)
+            (set! act-before6 9)
+            (set! act2-3 #f)
+            (set! waitenter #t)
+            
+          )
+          (when (and (= level-pick 10)(and (!= act-before4 10)(!= act-before5 10)))
+            (send-event *target* 'continue (get-continue-by-name *game-info* "dig3-start"))
+            (play-task (game-task dig-find-totem) 'debug #f)
+            (set! act-before6 10)
+            (set! act2-3 #f)
+            (set! waitenter #t)
+            
+          )
+          (when (and (= level-pick 11)(and (!= act-before4 11)(!= act-before5 11)))
+            (send-event *target* 'continue (get-continue-by-name *game-info* "ctysluma-alley-no-hideout"))
+            (play-task (game-task city-escort-kid) 'debug #f)
+            (set! act-before6 11)
+            (set! act2-3 #f)
+            (set! waitenter #t)
+            
+          )
+          (set! wait-for-ingame #t)
+          (set! (-> *game-info* gem) temp-skullgemamount)
+          (set! (-> *target* fact health) temp-health)
+        )
+    )
+
+    (when (= act2-4 #t)
+      (let (
+        (level-pick 1)
+        )
+          (when (= level-pick 1)
+            (send-event *target* 'continue (get-continue-by-name *game-info* "tomb-boulder-pre"))
+            (play-task (game-task tomb-water) 'debug #f)
+            (task-node-close! (game-task-node tomb-poles-poles2))
+          )
+        )
+        (set! act2-4 #f)
+        (set! waitenter #t)
+        (set! (-> *game-info* gem) temp-skullgemamount)
+        (set! (-> *target* fact health) temp-health)
+        (set! wait-for-ingame #t)
+        
+    )    
+    (when (= act2-5 #t)
+      (let (
+        (level-pick 1)
+        (gp-0 (-> *game-info* features))
+        )
+          (when (= level-pick 1)
+            (send-event *target* 'continue (get-continue-by-name *game-info* "tombboss-start"))
+            (play-task (game-task tomb-boss) 'debug #f)
+          )
+        
+        (set! act2-5 #f)
+        (set! waitenter #t)
+        (set! (-> *game-info* gem) temp-skullgemamount)
+        (set! (-> *target* fact health) temp-health)
+        (set! wait-for-ingame #t)
+        (when (and 
+        (not (logtest? gp-0 (game-feature gun-red)))
+        (not (logtest? gp-0 (game-feature gun-yellow)))
+        (not (logtest? gp-0 (game-feature gun-blue)))
+        (not (logtest? gp-0 (game-feature gun-dark)))
+        )
+        (logior! gp-0 (game-feature gun-red))
+        (set! give-gunred? #t)
+        )
+      )
+    )    
+
+;------------------------------------ACT 3----------------------------------------
+(when (= act3-1 #t)
+      (let (
+        (level-pick (rand-vu-int-range 1 9))
+        )
+        (format #t "<<<<<<<<<<<<<<<<<<<<<<<<<<Level picked: ~D" level-pick)
+        (when (= level-pick act-before4)
+            (set! level-pick (rand-vu-int-range 1 9))
+            (format #t "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<Level picked the same mission! Rerolling to: ~D" level-pick)
+          )
+          (set! act-act 3)
+          (when (and (= level-pick 1)(and (!= act-before7 1)(!= act-before7 1)))
+            (send-event *target* 'continue (get-continue-by-name *game-info* "sewesc-start"))
+            (play-task (game-task sewer-escort) 'debug #f)
+            (set! act-before7 1)
+            (set! act3-1 #f)
+            (set! waitenter #t)
+            
+          )
+          (when (and (= level-pick 2)(!= act-before7 2))
+            (send-event *target* 'continue (get-continue-by-name *game-info* "ctysluma-alley-no-hideout"))
+            (play-task (game-task city-stop-bomb-bots) 'debug #f)
+            (set! act-before7 2)
+            (set! act3-1 #f)
+            (set! waitenter #t)
+            
+          )
+          (when (and (= level-pick 3)(!= act-before7 3))
+            (send-event *target* 'continue (get-continue-by-name *game-info* "strip-start"))
+            (play-task (game-task strip-drop) 'debug #f)
+            (set! act-before7 3)
+            (set! act3-1 #f)
+            (set! waitenter #t)
+            
+          )
+          (when (and (= level-pick 4)(!= act-before7 4))
+            (send-event *target* 'continue (get-continue-by-name *game-info* "ctymarka-brutter"))
+            (play-task (game-task city-save-lurkers) 'debug #f)
+            (set! act-before7 4)
+            (set! act3-1 #f)
+            (set! waitenter #t)
+            
+          )
+          (when (and (= level-pick 5)(!= act-before7 5))
+            (send-event *target* 'continue (get-continue-by-name *game-info* "under-start"))
+            (play-task (game-task under-sig) 'debug #f)
+            (set! act-before7 5)
+            (set! act3-1 #f)
+            (set! waitenter #t)
+            
+          )
+          (when (and (= level-pick 6)(!= act-before7 6))
+            (send-event *target* 'continue (get-continue-by-name *game-info* "stadium-blimp-intro"))
+            (play-task (game-task city-defend-stadium) 'debug #f)
+            (task-node-close! (game-task-node city-meet-brutter-introduction))
+            (set! act-before7 6)
+            (set! act3-1 #f)
+            (set! waitenter #t)
+            
+          )
+          (when (and (= level-pick 7)(!= act-before7 7))
+            (send-event *target* 'continue (get-continue-by-name *game-info* "forest-tree"))
+            (play-task (game-task forest-protect) 'debug #f)
+            (set! act-before7 7)
+            (set! act3-1 #f)
+            (set! waitenter #t)
+            
+          )
+          (when (and (= level-pick 8)(!= act-before7 8))
+            (send-event *target* 'continue (get-continue-by-name *game-info* "ruins-start"))
+            (play-task (game-task ruins-mech) 'debug #f)
+            (set! act-before7 8)
+            (set! act3-1 #f)
+            (set! waitenter #t)
+            
+          )
+          (when (and (= level-pick 9)(!= act-before7 9))
+            (send-event *target* 'continue (get-continue-by-name *game-info* "drill-start"))
+            (play-task (game-task drill-mech) 'debug #f)
+            (set! act-before7 9)
+            (set! act3-1 #f)
+            (set! waitenter #t)
+            
+          )
+          (set! wait-for-ingame #t)
+          (set! (-> *game-info* gem) temp-skullgemamount)
+          (set! (-> *target* fact health) temp-health)
+        )
+    )
+
+
+(when (= act3-2 #t)
+      (let (
+        (level-pick (rand-vu-int-range 1 9))
+        )
+        (format #t "<<<<<<<<<<<<<<<<<<<<<<<<<<Level picked: ~D" level-pick)
+        (when (= level-pick act-before4)
+            (set! level-pick (rand-vu-int-range 1 9))
+            (format #t "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<Level picked the same mission! Rerolling to: ~D" level-pick)
+          )
+          (when (and (= level-pick 1)(and (!= act-before7 1)(!= act-before7 1)))
+            (send-event *target* 'continue (get-continue-by-name *game-info* "sewesc-start"))
+            (play-task (game-task sewer-escort) 'debug #f)
+            (set! act-before8 1)
+            (set! act3-2 #f)
+            (set! waitenter #t)
+            
+          )
+          (when (and (= level-pick 2)(!= act-before7 2))
+            (send-event *target* 'continue (get-continue-by-name *game-info* "ctysluma-alley-no-hideout"))
+            (play-task (game-task city-stop-bomb-bots) 'debug #f)
+            (set! act-before8 2)
+            (set! act3-2 #f)
+            (set! waitenter #t)
+            
+          )
+          (when (and (= level-pick 3)(!= act-before7 3))
+            (send-event *target* 'continue (get-continue-by-name *game-info* "strip-start"))
+            (play-task (game-task strip-drop) 'debug #f)
+            (set! act-before8 3)
+            (set! act3-2 #f)
+            (set! waitenter #t)
+            
+          )
+          (when (and (= level-pick 4)(!= act-before7 4))
+            (send-event *target* 'continue (get-continue-by-name *game-info* "ctymarka-brutter"))
+            (play-task (game-task city-save-lurkers) 'debug #f)
+            (set! act-before8 4)
+            (set! act3-2 #f)
+            (set! waitenter #t)
+            
+          )
+          (when (and (= level-pick 5)(!= act-before7 5))
+            (send-event *target* 'continue (get-continue-by-name *game-info* "under-start"))
+            (play-task (game-task under-sig) 'debug #f)
+            (set! act-before8 5)
+            (set! act3-2 #f)
+            (set! waitenter #t)
+            
+          )
+          (when (and (= level-pick 6)(!= act-before7 6))
+            (send-event *target* 'continue (get-continue-by-name *game-info* "stadium-blimp-intro"))
+            (play-task (game-task city-defend-stadium) 'debug #f)
+            (task-node-close! (game-task-node city-meet-brutter-introduction))
+            (set! act-before8 6)
+            (set! act3-2 #f)
+            (set! waitenter #t)
+            
+          )
+          (when (and (= level-pick 7)(!= act-before7 7))
+            (send-event *target* 'continue (get-continue-by-name *game-info* "forest-tree"))
+            (play-task (game-task forest-protect) 'debug #f)
+            (set! act-before8 7)
+            (set! act3-2 #f)
+            (set! waitenter #t)
+            
+          )
+          (when (and (= level-pick 8)(!= act-before7 8))
+            (send-event *target* 'continue (get-continue-by-name *game-info* "ctymarkb-tanker"))
+            (play-task (game-task city-intercept-tanker) 'debug #f)
+            (set! act-before8 8)
+            (set! act3-2 #f)
+            (set! waitenter #t)
+            
+          )
+          (when (and (= level-pick 9)(!= act-before7 9))
+            (send-event *target* 'continue (get-continue-by-name *game-info* "drill-start"))
+            (play-task (game-task drill-mech) 'debug #f)
+            (set! act-before8 9)
+            (set! act3-2 #f)
+            (set! waitenter #t)
+            
+          )
+          (set! wait-for-ingame #t)
+          (set! (-> *game-info* gem) temp-skullgemamount)
+          (set! (-> *target* fact health) temp-health)
+        )
+    )
+
+    (when (= act3-3 #t)
+      (let (
+        (level-pick (rand-vu-int-range 1 9))
+        )
+        (format #t "<<<<<<<<<<<<<<<<<<<<<<<<<<Level picked: ~D" level-pick)
+        (when (= level-pick act-before4)
+            (set! level-pick (rand-vu-int-range 1 9))
+            (format #t "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<Level picked the same mission! Rerolling to: ~D" level-pick)
+          )
+          (when (and (= level-pick 1)(and (!= act-before8 1)(!= act-before7 1)))
+            (send-event *target* 'continue (get-continue-by-name *game-info* "sewesc-start"))
+            (play-task (game-task sewer-escort) 'debug #f)
+            (set! act-before8 1)
+            (set! act3-3 #f)
+            (set! waitenter #t)
+            
+          )
+          (when (and (= level-pick 2)(and (!= act-before8 2)(!= act-before7 2)))
+            (send-event *target* 'continue (get-continue-by-name *game-info* "ctysluma-alley-no-hideout"))
+            (play-task (game-task city-stop-bomb-bots) 'debug #f)
+            (set! act-before8 2)
+            (set! act3-3 #f)
+            (set! waitenter #t)
+            
+          )
+          (when (and (= level-pick 3)(and (!= act-before8 3)(!= act-before7 3)))
+            (send-event *target* 'continue (get-continue-by-name *game-info* "strip-start"))
+            (play-task (game-task strip-drop) 'debug #f)
+            (set! act-before8 3)
+            (set! act3-3 #f)
+            (set! waitenter #t)
+            
+          )
+          (when (and (= level-pick 4)(and (!= act-before8 4)(!= act-before7 4)))
+            (send-event *target* 'continue (get-continue-by-name *game-info* "ctymarka-brutter"))
+            (play-task (game-task city-save-lurkers) 'debug #f)
+            (set! act-before8 4)
+            (set! act3-3 #f)
+            (set! waitenter #t)
+            
+          )
+          (when (and (= level-pick 5)(and (!= act-before8 5)(!= act-before7 5)))
+            (send-event *target* 'continue (get-continue-by-name *game-info* "under-start"))
+            (play-task (game-task under-sig) 'debug #f)
+            (set! act-before8 5)
+            (set! act3-3 #f)
+            (set! waitenter #t)
+            
+          )
+          (when (and (= level-pick 6)(and (!= act-before8 6)(!= act-before7 6)))
+            (send-event *target* 'continue (get-continue-by-name *game-info* "stadium-blimp-intro"))
+            (play-task (game-task city-defend-stadium) 'debug #f)
+            (task-node-close! (game-task-node city-meet-brutter-introduction))
+            (set! act-before8 6)
+            (set! act3-3 #f)
+            (set! waitenter #t)
+            
+          )
+          (when (and (= level-pick 7)(and (!= act-before8 7)(!= act-before7 7)))
+            (send-event *target* 'continue (get-continue-by-name *game-info* "forest-tree"))
+            (play-task (game-task forest-protect) 'debug #f)
+            (set! act-before8 7)
+            (set! act3-3 #f)
+            (set! waitenter #t)
+            
+          )
+          (when (and (= level-pick 8)(and (!= act-before8 8)(!= act-before7 8)))
+            (send-event *target* 'continue (get-continue-by-name *game-info* "ctymarkb-tanker"))
+            (play-task (game-task city-intercept-tanker) 'debug #f)
+            (set! act-before8 8)
+            (set! act3-3 #f)
+            (set! waitenter #t)
+            
+          )
+          (when (and (= level-pick 9)(and (!= act-before8 9)(!= act-before7 9)))
+            (send-event *target* 'continue (get-continue-by-name *game-info* "drill-start"))
+            (play-task (game-task drill-mech) 'debug #f)
+            (set! act-before8 9)
+            (set! act3-3 #f)
+            (set! waitenter #t)
+            
+          )
+          (set! wait-for-ingame #t)
+          (set! (-> *game-info* gem) temp-skullgemamount)
+          (set! (-> *target* fact health) temp-health)
+        )
+    )
+
+
+
+
+
+
+    (when (= act3-4 #t)
+      (let (
+        (level-pick 1)
+        )
+          (when (= level-pick 1)
+            (send-event *target* 'continue (get-continue-by-name *game-info* "castle-start"))
+            (play-task (game-task castle-break-in) 'debug #f)
+            (task-node-close! (game-task-node tomb-poles-poles2))
+          )
+        )
+        (set! act3-4 #f)
+        (set! waitenter #t)
+        (set! (-> *game-info* gem) temp-skullgemamount)
+        (set! (-> *target* fact health) temp-health)
         (set! in-game? #t)
+        
+    )    
+    (when (= act3-5 #t)
+      (let (
+        (level-pick 1)
+        (gp-0 (-> *game-info* features))
+        )
+          (when (= level-pick 1)
+            (send-event *target* 'continue (get-continue-by-name *game-info* "casboss-start"))
+            (play-task (game-task castle-boss) 'debug #f)
+          )
+        
+        (set! act3-5 #f)
+        (set! waitenter #t)
+        (set! (-> *game-info* gem) temp-skullgemamount)
+        (set! (-> *target* fact health) temp-health)
+        (set! wait-for-ingame #t)
         (when (and 
         (not (logtest? gp-0 (game-feature gun-red)))
         (not (logtest? gp-0 (game-feature gun-yellow)))
@@ -514,6 +1227,10 @@
 
 (when (= level-completed? #t)
   (+! act-stage 1)
+  (+! print-stage 1)
+  (when (> print-stage 5)
+    (set! print-stage 1)
+  )
   (set! temp-skullgemamount (-> *game-info* gem))
   (set! temp-health (-> *target* fact health))
     (when (= act-stage 1)
@@ -536,18 +1253,64 @@
       (set! act1-5 #t)
       (set! level-completed? #f)
     )
+    (when (and (= act-stage 6)(= level-completed? #t))
+      (set! act2-1 #t)
+      (set! level-completed? #f)
+    )
+    (when (and (= act-stage 7)(= level-completed? #t))
+      (set! act2-2 #t)
+      (set! level-completed? #f)
+    )
+    (when (and (= act-stage 8)(= level-completed? #t))
+      (set! act2-3 #t)
+      (set! level-completed? #f)
+    )
+    (when (and (= act-stage 9)(= level-completed? #t))
+      (set! act2-4 #t)
+      (set! level-completed? #f)
+    )
+    (when (and (= act-stage 10)(= level-completed? #t))
+      (set! act2-5 #t)
+      (set! level-completed? #f)
+    )
+    (when (and (= act-stage 11)(= level-completed? #t))
+      (set! act3-1 #t)
+      (set! level-completed? #f)
+    )
+    (when (and (= act-stage 12)(= level-completed? #t))
+      (set! act3-2 #t)
+      (set! level-completed? #f)
+    )
+    (when (and (= act-stage 13)(= level-completed? #t))
+      (set! act3-3 #t)
+      (set! level-completed? #f)
+    )
+    (when (and (= act-stage 14)(= level-completed? #t))
+      (set! act3-4 #t)
+      (set! level-completed? #f)
+    )
+    (when (and (= act-stage 15)(= level-completed? #t))
+      (set! act3-5 #t)
+      (set! level-completed? #f)
+    )
   (set! level-completed? #f)
 )
 
-(when (= avoidc-waitb #t)
+(when 
+(and 
+(= avoidc-waitb #t)
+(not *scene-player*)
+)
 (+! avoidc-wait 1)
   (when (= avoidc-wait 1)
     (send-event *target* 'change-mode 'normal)
+    (set! pause-menu-blocked? #t)
   )
   (when (= avoidc-wait 120)
     (set! avoidc-waitb #f)
     (set! avoidc-wait 0)
     (set! level-completed? #t)
+    (set! pause-menu-blocked? #f)
   )
 )
 
@@ -576,6 +1339,7 @@
     (set! wait-exit #f)
     (set! waite-frame 0)
     (set! act-stage 0)
+    (set! print-stage 0)
     (set! level-completed? #t)
     (set! display-run #t)
   )
@@ -603,7 +1367,12 @@
   )
 )
 
-(when (= pause-menu-blocked? #t)
+(when 
+(and
+(= pause-menu-blocked? #t)
+(= (pause-allowed?) #t)
+(not *scene-player*)
+)
   (set-master-mode 'game)
 )
 
@@ -618,6 +1387,8 @@
 )
   (set! waitdie #t)
   (set! in-game? #f)
+  (set! avoidc-waitb #f)
+  (set! avoidc-wait 0)
 )
 
 
@@ -660,17 +1431,18 @@
     (format matt-str "
     <COLOR_WHITE>Welcome to<COLOR_RED> Roguelike Jak II (demo)<COLOR_WHITE>!
     ~%<COLOR_BLUE>  Made by Kraken
-    ~%<COLOR_WHITE>Currently only the first act is finished.
+    ~%<COLOR_WHITE>Project is about 40 percent done, still have lots of crashes. Playable to Krew Boss.
     ~%
     <COLOR_WHITE>~%Continuing from the Easter Egg in HeroMode+:
     ~%The mysterious villain has dominated the world across vast dimensions, and
     ~%the Jak time loop is completely wrecked.
     ~%
-    ~%But there is one hope.
+    ~%But there is still hope.
     ~%
     ~%When you <COLOR_GREEN>start your run<COLOR_WHITE>, you will be transported to the dimensions where Jak
     ~%no longer exists, and you must take his place by completing the missions, and fulfilling the
     ~%prophecy. Get as powerful as you can! Jak dying means <COLOR_RED>perma-death<COLOR_WHITE>!
+    ~%
     ~%
     ~%<COLOR_GREEN>Press <COLOR_BLUE>X<COLOR_GREEN> to start the run!"
     )
@@ -679,7 +1451,7 @@
       ;; reset bucket settings prior to drawing - font won't do this for us, and
       ;; draw-raw-image can sometimes mess them up. (intro sequence)
       (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
-      (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 250 65 0.0 (font-color default) (font-flags middle shadow kerning large))))
+      (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 250 55 0.0 (font-color default) (font-flags middle shadow kerning large))))
         (set! (-> font-ctx scale) 0.325)
         (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
 )
@@ -692,15 +1464,15 @@
     ~%<COLOR_BLUE>  Made by Kraken
     ~%
     ~%
-    <COLOR_WHITE>~%Wow! You died! How punishing---
-    ~%The good thing here is that what you do in your run, is saved in this room.
+    <COLOR_RED>~%Wow! You died! How punishing---
+    ~%<COLOR_WHITE>The good thing here is that what you do in your run, is saved in this room.
     ~%Like the <COLOR_YELLOW>~d Skull Gems<COLOR_WHITE> you acquired.
     ~%They're all saved in additive to your OTHER currency.
-    ~%Your Run Tokens.
+    ~%Your Tokens.
     ~%
     ~%You can use these to purchase items to put in your run!
     ~%These can ALSO be used to purchase mutators (or modifiers) to spice up the gameplay!
-    ~%You can access the shop by pressing R1.
+    ~%You can press <COLOR_RED>R1<COLOR_WHITE> to purchase your next item to add at 200 Tokens.
     ~%
     ~%<COLOR_GREEN>Press <COLOR_BLUE>X<COLOR_GREEN> to start the run!"
     (the int temp-skullgemamount)
@@ -732,13 +1504,15 @@
     ~%<COLOR_WHITE>Current Tokens:
     ~%<COLOR_PINK>~d
     ~%
-    ~%<COLOR_WHITE>Access Shop by pressing R1
+    ~%<COLOR_RED>R1: <COLOR_WHITE>Buy <COLOR_GREEN>~S<COLOR_WHITE> for <COLOR_YELLOW>~d tokens!
     ~%
     ~%<COLOR_GREEN>Press <COLOR_BLUE>X<COLOR_GREEN> to start the run!"
     (the int temp-skullgemamount)
     act-act
-    act-stage
+    print-stage
     (the int (-> *game-info* fuel))
+    mod-s
+    purchase-amount
     )
     (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
     (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
@@ -756,6 +1530,11 @@
   (set! in-menu #f)
 )
 
+#| shop
+(when (and (= in-menu #t)(cpad-hold? 0 r1))
+
+)
+|#
 (when (and (= act-act 1)(= act-stage 1)(= display-run #t))
     (clear matt-str)
     (clear *pc-encoded-matt-str*)
@@ -826,6 +1605,222 @@
         (set! (-> font-ctx scale) 0.325)
         (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
 )
+;----------------------------SECOND ACT-----------------------------
+(when (and (= act-act 2)(= act-stage 6)(= display-run #t))
+    (clear matt-str)
+    (clear *pc-encoded-matt-str*)
+    (format matt-str "<COLOR_BLUE><<COLOR_WHITE>---<---<---<---(BOSS)"
+    )
+    (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+    (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+      ;; reset bucket settings prior to drawing - font won't do this for us, and
+      ;; draw-raw-image can sometimes mess them up. (intro sequence)
+      (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+      (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 250 0 0.0 (font-color default) (font-flags shadow middle kerning large))))
+        (set! (-> font-ctx scale) 0.325)
+        (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+)
+(when (and (= act-act 2)(= act-stage 7)(= display-run #t))
+    (clear matt-str)
+    (clear *pc-encoded-matt-str*)
+    (format matt-str "<COLOR_BLUE><---<<COLOR_WHITE>---<---<---(BOSS)"
+    )
+    (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+    (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+      ;; reset bucket settings prior to drawing - font won't do this for us, and
+      ;; draw-raw-image can sometimes mess them up. (intro sequence)
+      (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+      (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 250 0 0.0 (font-color default) (font-flags shadow middle kerning large))))
+        (set! (-> font-ctx scale) 0.325)
+        (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+)
+(when (and (= act-act 2)(= act-stage 8)(= display-run #t))
+    (clear matt-str)
+    (clear *pc-encoded-matt-str*)
+    (format matt-str "<COLOR_BLUE><---<---<<COLOR_WHITE>---<---(BOSS)"
+    )
+    (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+    (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+      ;; reset bucket settings prior to drawing - font won't do this for us, and
+      ;; draw-raw-image can sometimes mess them up. (intro sequence)
+      (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+      (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 250 0 0.0 (font-color default) (font-flags shadow middle kerning large))))
+        (set! (-> font-ctx scale) 0.325)
+        (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+)
+(when (and (= act-act 2)(= act-stage 9)(= display-run #t))
+    (clear matt-str)
+    (clear *pc-encoded-matt-str*)
+    (format matt-str "<COLOR_BLUE><---<---<---<<COLOR_WHITE>---(BOSS)"
+    )
+    (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+    (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+      ;; reset bucket settings prior to drawing - font won't do this for us, and
+      ;; draw-raw-image can sometimes mess them up. (intro sequence)
+      (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+      (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 250 0 0.0 (font-color default) (font-flags shadow middle kerning large))))
+        (set! (-> font-ctx scale) 0.325)
+        (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+)
+(when (and (= act-act 2)(= act-stage 10)(= display-run #t))
+    (clear matt-str)
+    (clear *pc-encoded-matt-str*)
+    (format matt-str "<COLOR_BLUE><---<---<---<---<COLOR_RED>(BOSS)"
+    )
+    (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+    (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+      ;; reset bucket settings prior to drawing - font won't do this for us, and
+      ;; draw-raw-image can sometimes mess them up. (intro sequence)
+      (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+      (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 250 0 0.0 (font-color default) (font-flags shadow middle kerning large))))
+        (set! (-> font-ctx scale) 0.325)
+        (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+)
+
+;----------------------------THIRD ACT-----------------------------
+(when (and (= act-act 3)(= act-stage 11)(= display-run #t))
+    (clear matt-str)
+    (clear *pc-encoded-matt-str*)
+    (format matt-str "<COLOR_RED><<COLOR_WHITE>---<---<---<---(BOSS)"
+    )
+    (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+    (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+      ;; reset bucket settings prior to drawing - font won't do this for us, and
+      ;; draw-raw-image can sometimes mess them up. (intro sequence)
+      (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+      (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 250 0 0.0 (font-color default) (font-flags shadow middle kerning large))))
+        (set! (-> font-ctx scale) 0.325)
+        (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+)
+(when (and (= act-act 3)(= act-stage 12)(= display-run #t))
+    (clear matt-str)
+    (clear *pc-encoded-matt-str*)
+    (format matt-str "<COLOR_RED><---<<COLOR_WHITE>---<---<---(BOSS)"
+    )
+    (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+    (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+      ;; reset bucket settings prior to drawing - font won't do this for us, and
+      ;; draw-raw-image can sometimes mess them up. (intro sequence)
+      (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+      (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 250 0 0.0 (font-color default) (font-flags shadow middle kerning large))))
+        (set! (-> font-ctx scale) 0.325)
+        (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+)
+(when (and (= act-act 3)(= act-stage 13)(= display-run #t))
+    (clear matt-str)
+    (clear *pc-encoded-matt-str*)
+    (format matt-str "<COLOR_RED><---<---<<COLOR_WHITE>---<---(BOSS)"
+    )
+    (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+    (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+      ;; reset bucket settings prior to drawing - font won't do this for us, and
+      ;; draw-raw-image can sometimes mess them up. (intro sequence)
+      (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+      (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 250 0 0.0 (font-color default) (font-flags shadow middle kerning large))))
+        (set! (-> font-ctx scale) 0.325)
+        (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+)
+(when (and (= act-act 3)(= act-stage 14)(= display-run #t))
+    (clear matt-str)
+    (clear *pc-encoded-matt-str*)
+    (format matt-str "<COLOR_RED><---<---<---<<COLOR_WHITE>---(BOSS)"
+    )
+    (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+    (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+      ;; reset bucket settings prior to drawing - font won't do this for us, and
+      ;; draw-raw-image can sometimes mess them up. (intro sequence)
+      (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+      (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 250 0 0.0 (font-color default) (font-flags shadow middle kerning large))))
+        (set! (-> font-ctx scale) 0.325)
+        (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+)
+(when (and (= act-act 3)(= act-stage 15)(= display-run #t))
+    (clear matt-str)
+    (clear *pc-encoded-matt-str*)
+    (format matt-str "<COLOR_RED><---<---<---<---<COLOR_RED>(BOSS)"
+    )
+    (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+    (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+      ;; reset bucket settings prior to drawing - font won't do this for us, and
+      ;; draw-raw-image can sometimes mess them up. (intro sequence)
+      (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+      (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 250 0 0.0 (font-color default) (font-flags shadow middle kerning large))))
+        (set! (-> font-ctx scale) 0.325)
+        (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+)
+
+;----------------------------DARK ACT-----------------------------
+(when (and (= act-act 4)(= act-stage 16)(= display-run #t))
+    (clear matt-str)
+    (clear *pc-encoded-matt-str*)
+    (format matt-str "<COLOR_PINK><<COLOR_WHITE>---<---<---<---(BOSS)"
+    )
+    (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+    (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+      ;; reset bucket settings prior to drawing - font won't do this for us, and
+      ;; draw-raw-image can sometimes mess them up. (intro sequence)
+      (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+      (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 250 0 0.0 (font-color default) (font-flags shadow middle kerning large))))
+        (set! (-> font-ctx scale) 0.325)
+        (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+)
+(when (and (= act-act 4)(= act-stage 17)(= display-run #t))
+    (clear matt-str)
+    (clear *pc-encoded-matt-str*)
+    (format matt-str "<COLOR_PINK><---<<COLOR_WHITE>---<---<---(BOSS)"
+    )
+    (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+    (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+      ;; reset bucket settings prior to drawing - font won't do this for us, and
+      ;; draw-raw-image can sometimes mess them up. (intro sequence)
+      (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+      (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 250 0 0.0 (font-color default) (font-flags shadow middle kerning large))))
+        (set! (-> font-ctx scale) 0.325)
+        (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+)
+(when (and (= act-act 4)(= act-stage 18)(= display-run #t))
+    (clear matt-str)
+    (clear *pc-encoded-matt-str*)
+    (format matt-str "<COLOR_PINK><---<---<<COLOR_WHITE>---<---(BOSS)"
+    )
+    (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+    (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+      ;; reset bucket settings prior to drawing - font won't do this for us, and
+      ;; draw-raw-image can sometimes mess them up. (intro sequence)
+      (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+      (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 250 0 0.0 (font-color default) (font-flags shadow middle kerning large))))
+        (set! (-> font-ctx scale) 0.325)
+        (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+)
+(when (and (= act-act 4)(= act-stage 19)(= display-run #t))
+    (clear matt-str)
+    (clear *pc-encoded-matt-str*)
+    (format matt-str "<COLOR_PINK><---<---<---<<COLOR_WHITE>---(BOSS)"
+    )
+    (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+    (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+      ;; reset bucket settings prior to drawing - font won't do this for us, and
+      ;; draw-raw-image can sometimes mess them up. (intro sequence)
+      (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+      (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 250 0 0.0 (font-color default) (font-flags shadow middle kerning large))))
+        (set! (-> font-ctx scale) 0.325)
+        (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+)
+(when (and (= act-act 4)(= act-stage 20)(= display-run #t))
+    (clear matt-str)
+    (clear *pc-encoded-matt-str*)
+    (format matt-str "<COLOR_PINK><---<---<---<---<COLOR_PINK>(BOSS)"
+    )
+    (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+    (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+      ;; reset bucket settings prior to drawing - font won't do this for us, and
+      ;; draw-raw-image can sometimes mess them up. (intro sequence)
+      (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+      (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 250 0 0.0 (font-color default) (font-flags shadow middle kerning large))))
+        (set! (-> font-ctx scale) 0.325)
+        (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+)
+
 
 
 
@@ -852,8 +1847,16 @@
 )
 
 
+;wait for the in-game to not get the infinite complete mission glitch
 
-
+(when (and (= in-game? #f)(= wait-for-ingame #t))
+  (+! waiting 1)
+  (when (= waiting 120)
+    (set! in-game? #t)
+    (set! waiting 0)
+    (set! wait-for-ingame #f)
+  )
+)
 
 
 #|
