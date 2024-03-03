@@ -2468,7 +2468,7 @@
             :borrow '()
             :open? #f
             :on-close #f
-            :add (game-task-node-command add-gun-yellow)
+            :add (game-task-node-command none)
             :description (text-id progress-missions-city-get-yellow-gun)
             )
           (new 'static 'game-task-node-info
@@ -4306,7 +4306,7 @@
             :borrow '((hideout 0 ltrnysam special))
             :open? #f
             :on-close #f
-            :add (game-task-node-command add-gun-blue)
+            :add (game-task-node-command none)
             :description (text-id progress-missions-talk-to-torn)
             )
           (new 'static 'game-task-node-info
@@ -7040,7 +7040,7 @@
             :borrow '((hiphog 0 lguard special))
             :open? #f
             :on-close #f
-            :add (game-task-node-command add-gun-dark)
+            :add (game-task-node-command none)
             :description (text-id progress-missions-city-get-dark-gun)
             )
           (new 'static 'game-task-node-info

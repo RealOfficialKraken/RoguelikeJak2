@@ -626,7 +626,7 @@
          (when (not (or (task-complete? this (the-as game-task task)) (>= (the-as uint 1) (the-as uint task))))
            ;(set! (-> this task-deaths) 0)
            (when (= in-game? #t)
-            (set! level-completed? #t)
+            (set! avoidc-waitb #t)
             (set! in-game? #f)
            )
            (set! (-> this task-pickup-time) (-> *display* game-clock frame-counter))
@@ -683,7 +683,7 @@
          (set! (-> a1-13 num-params) 0)
          (set! (-> a1-13 message) 'complete)
          (let ((t9-12 send-event-function)
-               (v1-71 (-> *game-info* sub-task-list (game-task-node sewer-enemy-resolution)))
+               (v1-71 (-> *game-info* sub-task-list (game-task-node nest-boss-resolution)))
                )
            (t9-12
              (handle->process (if (-> v1-71 info)
@@ -706,7 +706,7 @@
          (set! (-> a1-14 num-params) 0)
          (set! (-> a1-14 message) 'complete)
          (let ((t9-13 send-event-function)
-               (v1-85 (-> *game-info* sub-task-list (game-task-node sewer-escort-get-gun)))
+               (v1-85 (-> *game-info* sub-task-list (game-task-node nest-boss-resolution)))
                )
            (t9-13
              (handle->process (if (-> v1-85 info)

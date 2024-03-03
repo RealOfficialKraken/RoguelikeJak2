@@ -55,8 +55,10 @@
 (define act-act 0)
 (define act-stage 0)
 (define current-level "")
-(define level-completed? #f)
+(define give-gunred? #f)
 
+(define avoidc-waitb #f);this is to avoid glitches when completing missions while still in vehicles or turrets
+(define avoidc-wait 0) ;this is to avoid glitches when completing missions while still in vehicles or turrets
 
 ;menu funct
 (define tutorial-completed? #f)
@@ -112,10 +114,10 @@
       (let (
         (level-pick (rand-vu-int-range 1 12))
         )
-        (format #t "||||||||||||||||||||||||||Level picked: ~D" level-pick)
+        (format #t "<<<<<<<<<<<<<<<<<<<<<<<<<<Level picked: ~D" level-pick)
         (when (= level-pick act-before1)
             (set! level-pick (rand-vu-int-range 1 12))
-            (format #t "|||||||||||||||||||||||||||||||Level picked the same mission! Rerolling to: ~D" level-pick)
+            (format #t "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<Level picked the same mission! Rerolling to: ~D" level-pick)
           )
           (when (and (= level-pick 1)(!= act-before1 1))
             (send-event *target* 'continue (get-continue-by-name *game-info* "ruins-start"))
@@ -229,10 +231,10 @@
       (let (
         (level-pick (rand-vu-int-range 1 12))
         )
-        (format #t "||||||||||||||||||||||||||Level picked: ~D" level-pick)
+        (format #t "<<<<<<<<<<<<<<<<<<<<<<<<<<Level picked: ~D" level-pick)
         (when (= level-pick act-before1)
             (set! level-pick (rand-vu-int-range 1 12))
-            (format #t "|||||||||||||||||||||||||||||||Level picked the same mission! Rerolling to: ~D" level-pick)
+            (format #t "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<Level picked the same mission! Rerolling to: ~D" level-pick)
           )
           (when (and (= level-pick 1)(!= act-before1 1))
             (send-event *target* 'continue (get-continue-by-name *game-info* "ruins-start"))
@@ -348,10 +350,10 @@
       (let (
         (level-pick (rand-vu-int-range 1 12))
         )
-        (format #t "||||||||||||||||||||||||||Level picked: ~D" level-pick)
+        (format #t "<<<<<<<<<<<<<<<<<<<<<<<<<<Level picked: ~D" level-pick)
         (when (= level-pick (or act-before1 act-before2))
             (set! level-pick (rand-vu-int-range 1 12))
-            (format #t "|||||||||||||||||||||||||||||||Level picked the same mission! Rerolling to: ~D" level-pick)
+            (format #t "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<Level picked the same mission! Rerolling to: ~D" level-pick)
           )
           (when (and (= level-pick 1)(and (!= act-before1 1)(!= act-before2 1)))
             (send-event *target* 'continue (get-continue-by-name *game-info* "ruins-start"))
@@ -482,52 +484,72 @@
     (when (= act1-5 #t)
       (let (
         (level-pick 1)
+        (gp-0 (-> *game-info* features))
         )
           (when (= level-pick 1)
             (send-event *target* 'continue (get-continue-by-name *game-info* "palroof-boss"))
             (play-task (game-task palace-boss) 'debug #f)
           )
-        )
+        
         (set! act1-5 #f)
         (set! waitenter #t)
         (set! (-> *game-info* gem) temp-skullgemamount)
         (set! (-> *target* fact health) temp-health)
         (set! in-game? #t)
-        
+        (when (and 
+        (not (logtest? gp-0 (game-feature gun-red)))
+        (not (logtest? gp-0 (game-feature gun-yellow)))
+        (not (logtest? gp-0 (game-feature gun-blue)))
+        (not (logtest? gp-0 (game-feature gun-dark)))
+        )
+        (logior! gp-0 (game-feature gun-red))
+        (set! give-gunred? #t)
+        )
+      )
     )    
 
 
-
+;(logior! (-> *game-info* secrets) (game-secrets invulnerable))
 ;Checks to see if task got completed, then processes the next area.
 
 (when (= level-completed? #t)
   (+! act-stage 1)
   (set! temp-skullgemamount (-> *game-info* gem))
   (set! temp-health (-> *target* fact health))
-  (when (= act-stage 1)
-    (set! act1-1 #t)
-    (set! level-completed? #f)
-  )
-  (when (and (= act-stage 2)(= level-completed? #t))
-    (set! act1-2 #t)
-    (set! level-completed? #f)
-  )
-  (when (and (= act-stage 3)(= level-completed? #t))
-    (set! act1-3 #t)
-    (set! level-completed? #f)
-  )
-  (when (and (= act-stage 4)(= level-completed? #t))
-    (set! act1-4 #t)
-    (set! level-completed? #f)
-  )
-  (when (and (= act-stage 5)(= level-completed? #t))
-    (set! act1-5 #t)
-    (set! level-completed? #f)
-  )
+    (when (= act-stage 1)
+      (set! act1-1 #t)
+      (set! level-completed? #f)
+    )
+    (when (and (= act-stage 2)(= level-completed? #t))
+      (set! act1-2 #t)
+      (set! level-completed? #f)
+    )
+    (when (and (= act-stage 3)(= level-completed? #t))
+      (set! act1-3 #t)
+      (set! level-completed? #f)
+    )
+    (when (and (= act-stage 4)(= level-completed? #t))
+      (set! act1-4 #t)
+      (set! level-completed? #f)
+    )
+    (when (and (= act-stage 5)(= level-completed? #t))
+      (set! act1-5 #t)
+      (set! level-completed? #f)
+    )
   (set! level-completed? #f)
 )
 
-
+(when (= avoidc-waitb #t)
+(+! avoidc-wait 1)
+  (when (= avoidc-wait 1)
+    (send-event *target* 'change-mode 'normal)
+  )
+  (when (= avoidc-wait 120)
+    (set! avoidc-waitb #f)
+    (set! avoidc-wait 0)
+    (set! level-completed? #t)
+  )
+)
 
 
 ;camera menu
@@ -618,26 +640,6 @@
 
 
 
-;Immediate mission completion without going back to mission giver.
-
-(when 
-(and 
-(task-node-closed? (game-task-node sewer-enemy-blow-up-turrets))
-(not (task-node-closed? (game-task-node sewer-enemy-resolution)))
-)
-  (task-node-close! (game-task-node sewer-enemy-resolution))
-)
-
-(when 
-(and 
-(task-node-closed? (game-task-node city-krew-collection-collection))
-(not (task-node-closed? (game-task-node city-krew-collection-resolution)))
-)
-  (task-node-close! (game-task-node city-krew-collection-resolution))
-)
-
-
-
 
 
 
@@ -690,7 +692,7 @@
     ~%<COLOR_BLUE>  Made by Kraken
     ~%
     ~%
-    <COLOR_WHITE>~%Wow! You died! How punishing...
+    <COLOR_WHITE>~%Wow! You died! How punishing---
     ~%The good thing here is that what you do in your run, is saved in this room.
     ~%Like the <COLOR_YELLOW>~d Skull Gems<COLOR_WHITE> you acquired.
     ~%They're all saved in additive to your OTHER currency.
@@ -757,7 +759,7 @@
 (when (and (= act-act 1)(= act-stage 1)(= display-run #t))
     (clear matt-str)
     (clear *pc-encoded-matt-str*)
-    (format matt-str "<COLOR_GREEN>|<COLOR_WHITE>...|...|...|...(BOSS)"
+    (format matt-str "<COLOR_GREEN><<COLOR_WHITE>---<---<---<---(BOSS)"
     )
     (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
     (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
@@ -771,7 +773,7 @@
 (when (and (= act-act 1)(= act-stage 2)(= display-run #t))
     (clear matt-str)
     (clear *pc-encoded-matt-str*)
-    (format matt-str "<COLOR_GREEN>|...|<COLOR_WHITE>...|...|...(BOSS)"
+    (format matt-str "<COLOR_GREEN><---<<COLOR_WHITE>---<---<---(BOSS)"
     )
     (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
     (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
@@ -785,7 +787,7 @@
 (when (and (= act-act 1)(= act-stage 3)(= display-run #t))
     (clear matt-str)
     (clear *pc-encoded-matt-str*)
-    (format matt-str "<COLOR_GREEN>|...|...|<COLOR_WHITE>...|...(BOSS)"
+    (format matt-str "<COLOR_GREEN><---<---<<COLOR_WHITE>---<---(BOSS)"
     )
     (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
     (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
@@ -799,7 +801,7 @@
 (when (and (= act-act 1)(= act-stage 4)(= display-run #t))
     (clear matt-str)
     (clear *pc-encoded-matt-str*)
-    (format matt-str "<COLOR_GREEN>|...|...|...|<COLOR_WHITE>...(BOSS)"
+    (format matt-str "<COLOR_GREEN><---<---<---<<COLOR_WHITE>---(BOSS)"
     )
     (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
     (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
@@ -813,7 +815,7 @@
 (when (and (= act-act 1)(= act-stage 5)(= display-run #t))
     (clear matt-str)
     (clear *pc-encoded-matt-str*)
-    (format matt-str "<COLOR_GREEN>|...|...|...|...<COLOR_RED>(BOSS)"
+    (format matt-str "<COLOR_GREEN><---<---<---<---<COLOR_RED>(BOSS)"
     )
     (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
     (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
@@ -824,6 +826,31 @@
         (set! (-> font-ctx scale) 0.325)
         (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
 )
+
+
+
+
+;<<<<<<<<<<<<<<<<<<<<<<<<<<<<This area is meant for fixes with specific missions<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+;(send-event proc 'target-turret-get-off 90)
+
+;Immediate mission completion without going back to mission giver.
+
+(when 
+(and 
+(task-node-closed? (game-task-node sewer-enemy-blow-up-turrets))
+(not (task-node-closed? (game-task-node sewer-enemy-resolution)))
+)
+  (task-node-close! (game-task-node sewer-enemy-resolution))
+)
+
+(when 
+(and 
+(task-node-closed? (game-task-node city-krew-collection-collection))
+(not (task-node-closed? (game-task-node city-krew-collection-resolution)))
+)
+  (task-node-close! (game-task-node city-krew-collection-resolution))
+)
+
 
 
 
