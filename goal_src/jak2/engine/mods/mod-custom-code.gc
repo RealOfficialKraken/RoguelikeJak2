@@ -1441,6 +1441,16 @@
   )
 )
 
+;buy shop GUNS
+;(logior! (-> *game-info* features) (game-feature gun-red))
+;(logior! (-> *game-info* features) (game-feature gun-yellow))
+;(logior! (-> *game-info* features) (game-feature gun-blue))
+;(logior! (-> *game-info* features) (game-feature gun-dark))
+;Take away shop GUNS
+;(logclear! (-> *game-info* features) (game-feature gun-red))
+;(logclear! (-> *game-info* features) (game-feature gun-yellow))
+;(logclear! (-> *game-info* features) (game-feature gun-blue))
+;(logclear! (-> *game-info* features) (game-feature gun-dark))
 
 (when (= roll-shopitems #t)
   (let (

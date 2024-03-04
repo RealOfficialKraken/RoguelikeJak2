@@ -9873,7 +9873,7 @@
               )
             :flags (game-task-node-flag save-on-try)
             :parent-node (new 'static 'array game-task-node 4
-              (game-task-node atoll-water-resolution)
+              (game-task-node none)
               (game-task-node none)
               (game-task-node none)
               (game-task-node none)
