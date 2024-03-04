@@ -1166,8 +1166,8 @@
             
           )
           (when (and (= level-pick 8)(and (!= act-before8 8)(!= act-before7 8)))
-            (send-event *target* 'continue (get-continue-by-name *game-info* "ctymarkb-tanker"))
-            (play-task (game-task city-intercept-tanker) 'debug #f)
+            (send-event *target* 'continue (get-continue-by-name *game-info* "ruins-start"))
+            (play-task (game-task ruins-mech) 'debug #f)
             (set! act-before8 8)
             (set! act3-3 #f)
             (set! waitenter #t)
