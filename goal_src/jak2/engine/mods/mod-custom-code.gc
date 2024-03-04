@@ -109,6 +109,7 @@
 
 (define temp-skullgemamount 0.0)
 (define temp-health 0.0)
+(define temp-orbs 0.0)
 
 (define amountofdeaths 0) ;This is a saved variable inside RLsettings.ini.
 
@@ -154,6 +155,7 @@
         (level-pick (rand-vu-int-range 1 13))
         )
         (format #t "<<<<<<<<<<<<<<<<<<<<<<<<<<Level picked: ~D" level-pick)
+        (set! roll-shopitems #t)
         (when (= level-pick act-before1)
             (set! level-pick (rand-vu-int-range 1 13))
             (format #t "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<Level picked the same mission! Rerolling to: ~D" level-pick)
@@ -382,6 +384,7 @@
           (set! wait-for-ingame #t)
           (set! (-> *game-info* gem) temp-skullgemamount)
           (set! (-> *target* fact health) temp-health)
+          (set! (-> *game-info* skill) temp-orbs)
         )
     )
 
@@ -501,6 +504,7 @@
           (set! wait-for-ingame #t)
           (set! (-> *game-info* gem) temp-skullgemamount)
           (set! (-> *target* fact health) temp-health)
+          (set! (-> *game-info* skill) temp-orbs)
         )
     )
 
@@ -517,6 +521,7 @@
         (set! waitenter #t)
         (set! (-> *game-info* gem) temp-skullgemamount)
         (set! (-> *target* fact health) temp-health)
+        (set! (-> *game-info* skill) temp-orbs)
         (set! wait-for-ingame #t)
         
     )    
@@ -534,6 +539,7 @@
         (set! waitenter #t)
         (set! (-> *game-info* gem) temp-skullgemamount)
         (set! (-> *target* fact health) temp-health)
+        (set! (-> *game-info* skill) temp-orbs)
         (set! wait-for-ingame #t)
         (when (and 
         (not (logtest? gp-0 (game-feature gun-red)))
@@ -554,6 +560,7 @@
         (level-pick (rand-vu-int-range 1 11))
         )
         (format #t "<<<<<<<<<<<<<<<<<<<<<<<<<<Level picked: ~D" level-pick)
+        (set! roll-shopitems #t)
         (when (= level-pick act-before4)
             (set! level-pick (rand-vu-int-range 1 11))
             (format #t "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<Level picked the same mission! Rerolling to: ~D" level-pick)
@@ -651,6 +658,7 @@
           (set! wait-for-ingame #t)
           (set! (-> *game-info* gem) temp-skullgemamount)
           (set! (-> *target* fact health) temp-health)
+          (set! (-> *game-info* skill) temp-orbs)
         )
     )
   (when (= act2-2 #t)
@@ -754,6 +762,7 @@
           (set! wait-for-ingame #t)
           (set! (-> *game-info* gem) temp-skullgemamount)
           (set! (-> *target* fact health) temp-health)
+          (set! (-> *game-info* skill) temp-orbs)
         )
     )
 
@@ -858,6 +867,7 @@
           (set! wait-for-ingame #t)
           (set! (-> *game-info* gem) temp-skullgemamount)
           (set! (-> *target* fact health) temp-health)
+          (set! (-> *game-info* skill) temp-orbs)
         )
     )
 
@@ -875,6 +885,7 @@
         (set! waitenter #t)
         (set! (-> *game-info* gem) temp-skullgemamount)
         (set! (-> *target* fact health) temp-health)
+        (set! (-> *game-info* skill) temp-orbs)
         (set! wait-for-ingame #t)
         
     )    
@@ -892,6 +903,7 @@
         (set! waitenter #t)
         (set! (-> *game-info* gem) temp-skullgemamount)
         (set! (-> *target* fact health) temp-health)
+        (set! (-> *game-info* skill) temp-orbs)
         (set! wait-for-ingame #t)
         (when (and 
         (not (logtest? gp-0 (game-feature gun-red)))
@@ -911,6 +923,7 @@
         (level-pick (rand-vu-int-range 1 9))
         )
         (format #t "<<<<<<<<<<<<<<<<<<<<<<<<<<Level picked: ~D" level-pick)
+        (set! roll-shopitems #t)
         (when (= level-pick act-before4)
             (set! level-pick (rand-vu-int-range 1 9))
             (format #t "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<Level picked the same mission! Rerolling to: ~D" level-pick)
@@ -992,6 +1005,7 @@
           (set! wait-for-ingame #t)
           (set! (-> *game-info* gem) temp-skullgemamount)
           (set! (-> *target* fact health) temp-health)
+          (set! (-> *game-info* skill) temp-orbs)
         )
     )
 
@@ -1081,6 +1095,7 @@
           (set! wait-for-ingame #t)
           (set! (-> *game-info* gem) temp-skullgemamount)
           (set! (-> *target* fact health) temp-health)
+          (set! (-> *game-info* skill) temp-orbs)
         )
     )
 
@@ -1169,6 +1184,7 @@
           (set! wait-for-ingame #t)
           (set! (-> *game-info* gem) temp-skullgemamount)
           (set! (-> *target* fact health) temp-health)
+          (set! (-> *game-info* skill) temp-orbs)
         )
     )
 
@@ -1191,7 +1207,7 @@
         (set! waitenter #t)
         (set! (-> *game-info* gem) temp-skullgemamount)
         (set! (-> *target* fact health) temp-health)
-        (set! in-game? #t)
+        (set! (-> *game-info* skill) temp-orbs)
         
     )    
     (when (= act3-5 #t)
@@ -1208,6 +1224,7 @@
         (set! waitenter #t)
         (set! (-> *game-info* gem) temp-skullgemamount)
         (set! (-> *target* fact health) temp-health)
+        (set! (-> *game-info* skill) temp-orbs)
         (set! wait-for-ingame #t)
         (when (and 
         (not (logtest? gp-0 (game-feature gun-red)))
@@ -1234,6 +1251,7 @@
   )
   (set! temp-skullgemamount (-> *game-info* gem))
   (set! temp-health (-> *target* fact health))
+  (set! temp-orbs (-> *game-info* skill))
     (when (= (-> *game-info* buzzer-total) 1.0)
       (set! act1-1 #t)
       (set! level-completed? #f)
@@ -1298,10 +1316,17 @@
   (set! print-stage (the int (-> *game-info* buzzer-total)))
 )
 
+;wait for the in-game to not get the infinite complete mission glitch
 
-(when (= (-> *game-info* buzzer-total) 1.0)
-
+(when (and (= in-game? #f)(= wait-for-ingame #t))
+  (+! waiting 1)
+  (when (= waiting 120)
+    (set! in-game? #t)
+    (set! waiting 0)
+    (set! wait-for-ingame #f)
+  )
 )
+
 
 (when 
 (and 
@@ -1417,9 +1442,229 @@
 )
 
 
+(when (= roll-shopitems #t)
+  (let (
+    (shoproll1 (rand-vu-int-range 1 (-> *game-info* total-trys)))
+    (shoproll2 (rand-vu-int-range 1 (-> *game-info* total-trys)))
+    (shoproll3 (rand-vu-int-range 1 (-> *game-info* total-trys)))
+  )
+  (when (or (= shoproll1 shoproll2)(= shoproll1 shoproll3)(= shoproll2 shoproll3)) ;if the pick is the same on two options, reroll
+    (set! shoproll1 (rand-vu-int-range 1 (-> *game-info* total-trys)))
+    (set! shoproll2 (rand-vu-int-range 1 (-> *game-info* total-trys)))
+    (set! shoproll3 (rand-vu-int-range 1 (-> *game-info* total-trys)))
+  )
+
+  (when (= shoproll1 1)
+    (set! shopitem1 "Yellow Gun (25 orbs)")
+  )
+  (when (= shoproll2 1)
+    (set! shopitem2 "Yellow Gun (25 orbs)")
+  )
+  (when (= shoproll3 1)
+    (set! shopitem3 "Yellow Gun (25 orbs)")
+  )
+  (when (= shoproll1 2)
+    (set! shopitem1 "Blue Gun (32 orbs)")
+  )
+  (when (= shoproll2 2)
+    (set! shopitem2 "Blue Gun (32 orbs)")
+  )
+  (when (= shoproll3 2)
+    (set! shopitem3 "Blue Gun (32 orbs)")
+  )
+  (when (= shoproll1 3)
+    (set! shopitem1 "Peacemaker (40 orbs)")
+  )
+  (when (= shoproll2 3)
+    (set! shopitem2 "Peacemaker (40 orbs)")
+  )
+  (when (= shoproll3 3)
+    (set! shopitem3 "Peacemaker (40 orbs)")
+  )
+
+  (when (and (!= shoproll1 shoproll2)(!= shoproll1 shoproll3)(!= shoproll2 shoproll3)) ;if the pick is NOT the same on two options, stop rolling.
+    (set! roll-shopitems #f)
+  )
+)
+)
+(when (and (cpad-pressed? 0 r3)(= in-menu2 #f)(= (-> (level-get-target-inside *level*) name) 'hiphog))
+  (set! in-menu2wait #t)
+)
+
+(when (and (cpad-pressed? 0 r3)(= in-menu2 #t)(= (-> (level-get-target-inside *level*) name) 'hiphog))
+  (set! in-menu2wait2 #t)
+)
+
+(when (and (= in-menu2 #f)(= (-> (level-get-target-inside *level*) name) 'hiphog))
+  (set! popup-shop #t)
+)
+
+(when (!= (-> (level-get-target-inside *level*) name) 'hiphog)
+  (set! popup-shop #f)
+)
+
+(when (= in-menu2wait #t)
+  (+! in-menu2waiti 1)
+  (when (= in-menu2waiti 1)
+    (send-event *target* 'draw #f)
+    (set-vector! (-> *target* control trans) (meters -99.0494) (meters 30.853) (meters 1287.0468) 1.0) ;teleports jak behind bar
+  )
+  (when (= in-menu2waiti 20)
+    (set! in-menu2 #t)
+    (set! (-> *target* cam-user-mode) 'fixed)
+    (set-setting-by-param *setting-control* 'mode-name 'cam-really-fixed 0 0)
+    (send-event *camera* 'teleport-to-vector-start-string (new 'static 'vector :x (meters -90.0494) :y (meters 13.853) :z (meters 1303.0468)))
+  )
+  (when (= in-menu2waiti 65)
+    (set! in-menu2waiti 0)
+    (set! in-menu2wait #f)
+    (set-vector! (-> *target* control trans) (meters -77.5494) (meters 15.853) (meters 1309.0468) 1.0) ;teleports jak away from talking to npcs
+  )
+)
+
+;(meters -90.0494) (meters 25.853) (meters 1303.0468) ;cam pos for shop
+
+(when (= in-menu2wait2 #t)
+  (+! in-menu2wait2i 1)
+  (when (= in-menu2wait2i 1)
+    (remove-setting-by-arg0 *setting-control* 'mode-name)
+    (send-event *target* 'draw #t)
+    (process-release? *target*)
+    (set-vector! (-> *target* control trans) (meters -96.0494) (meters 10.853) (meters 1293.0468) 1.0) ;teleports jak in front of bar
+    (set! in-menu2 #f)
+  )
+  (when (= in-menu2wait2i 60)
+    (set! in-menu2wait2i 0)
+    (set! in-menu2wait2 #f)
+  )
+)
+
+(when (and (= in-menu2 #t)(cpad-pressed? 0 right))
+  (+! menu-slot 1)
+  (when (>= menu-slot 3)
+    (set! menu-slot 0)
+  )
+)
+
+(when (and (= in-menu2 #t)(cpad-pressed? 0 left))
+  (-! menu-slot 1)
+  (when (< menu-slot 0)
+    (set! menu-slot 2)
+  )
+)
 
 
+(when (and (= popup-shop #t)(= (paused?) #f)(= in-menu2 #f)(not *scene-player*))
+  (clear matt-str)
+    (clear *pc-encoded-matt-str*)
+    (format matt-str "<COLOR_RED>R3<COLOR_WHITE>:<COLOR_GREEN> Access Shop"
+    )
+    (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+    (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+      ;; reset bucket settings prior to drawing - font won't do this for us, and
+      ;; draw-raw-image can sometimes mess them up. (intro sequence)
+      (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+      (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 0 245 0.0 (font-color default) (font-flags shadow kerning large))))
+        (set! (-> font-ctx scale) 0.325)
+        (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+)
 
+(when (and (= menu-slot 0)(= in-menu2 #t))
+  (clear matt-str)
+    (clear *pc-encoded-matt-str*)
+    (format matt-str "
+                                                                     <COLOR_GREEN>~S                                                      <COLOR_WHITE>~S
+    ~%
+    ~%                                                                            <COLOR_WHITE>~S
+    ~%
+    ~%
+    ~%
+    ~%
+    ~%
+    ~%
+    ~%
+    ~%
+    ~%
+    ~%
+    ~%
+    ~%"
+    shopitem1
+    shopitem2
+    shopitem3
+    )
+    (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+    (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+      ;; reset bucket settings prior to drawing - font won't do this for us, and
+      ;; draw-raw-image can sometimes mess them up. (intro sequence)
+      (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+      (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 125 55 0.0 (font-color default) (font-flags middle shadow kerning large))))
+        (set! (-> font-ctx scale) 0.325)
+        (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+)
+(when (and (= menu-slot 1)(= in-menu2 #t))
+  (clear matt-str)
+    (clear *pc-encoded-matt-str*)
+    (format matt-str "
+                                                                     <COLOR_WHITE>~S                                                      <COLOR_WHITE>~S
+    ~%
+    ~%                                                                            <COLOR_GREEN>~S
+    ~%
+    ~%
+    ~%
+    ~%
+    ~%
+    ~%
+    ~%
+    ~%
+    ~%
+    ~%
+    ~%
+    ~%"
+    shopitem1
+    shopitem2
+    shopitem3
+    )
+    (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+    (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+      ;; reset bucket settings prior to drawing - font won't do this for us, and
+      ;; draw-raw-image can sometimes mess them up. (intro sequence)
+      (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+      (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 125 55 0.0 (font-color default) (font-flags middle shadow kerning large))))
+        (set! (-> font-ctx scale) 0.325)
+        (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+)
+(when (and (= menu-slot 2)(= in-menu2 #t))
+  (clear matt-str)
+    (clear *pc-encoded-matt-str*)
+    (format matt-str "
+                                                                     <COLOR_WHITE>~S                                                      <COLOR_GREEN>~S
+    ~%
+    ~%                                                                            <COLOR_WHITE>~S
+    ~%
+    ~%
+    ~%
+    ~%
+    ~%
+    ~%
+    ~%
+    ~%
+    ~%
+    ~%
+    ~%
+    ~%"
+    shopitem1
+    shopitem2
+    shopitem3
+    )
+    (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+    (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+      ;; reset bucket settings prior to drawing - font won't do this for us, and
+      ;; draw-raw-image can sometimes mess them up. (intro sequence)
+      (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+      (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 125 55 0.0 (font-color default) (font-flags middle shadow kerning large))))
+        (set! (-> font-ctx scale) 0.325)
+        (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+)
 
 ;menu params
 (when (and (= in-menu #t)(= (paused?) #f)(= (-> *game-info* task-deaths) 0)(not (cpad-pressed? 0 x)))

@@ -18,6 +18,25 @@
 (define act-stage 0)
 (define act-task 0)
 
+(define unlock-gunred #f)
+(define unlock-gunyellow #f)
+(define unlock-gunblue #f)
+(define unlock-gundark #f)
+
+
+(define roll-shopitems #f)
+(define max-equipment 3)
+(define menu-slot 0)
+(define shopitem1 "0")
+(define shopitem2 "0")
+(define shopitem3 "0")
+(define in-menu2wait2i 0)
+(define in-menu2wait2 #f)
+(define in-menu2 #f)
+(define popup-shop #f)
+(define in-menu2wait #f)
+(define in-menu2waiti 0)
+
 
 (defenum pickup-type
   :bitfield #f

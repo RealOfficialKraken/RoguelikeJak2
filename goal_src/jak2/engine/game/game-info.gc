@@ -318,7 +318,7 @@
        )
      )
     (('try)
-     (+! (-> this total-trys) 1)
+     (+! (-> this total-trys) 0)
      )
     )
   (case arg0
@@ -414,7 +414,7 @@
      (set! (-> this wanted-flash) #f)
      (set! (-> this distance) 0.0)
      (set! (-> this attack-id) (the-as uint 2))
-     (set! (-> this total-trys) 0)
+     (set! (-> this total-trys) 3)
      (set! (-> this total-deaths) 0)
      (set! (-> this continue-deaths) 0)
      ;(set! (-> this task-deaths) 0)
