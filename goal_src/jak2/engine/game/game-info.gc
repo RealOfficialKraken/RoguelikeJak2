@@ -382,7 +382,7 @@
      (set! (-> *setting-control* user-default auto-save) #f)
      (set! (-> this money) 0.0)
      (set! (-> this money-total) 0.0)
-     (set! (-> this buzzer-total) 0.0)
+     ;(set! (-> this buzzer-total) 0.0)
      (set! (-> this eco-pill-dark) 0.0)
      (set! (-> this eco-pill-dark-total) 0.0)
      (set! (-> this gem) 0.0)

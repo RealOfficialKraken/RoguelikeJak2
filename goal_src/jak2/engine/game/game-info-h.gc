@@ -16,6 +16,7 @@
 (define avoidc-wait 0) ;this is to avoid glitches when completing missions while still in vehicles or turrets
 
 (define act-stage 0)
+(define act-task 0)
 
 
 (defenum pickup-type

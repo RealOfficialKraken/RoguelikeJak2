@@ -1228,72 +1228,79 @@
 (when (= level-completed? #t)
   (+! act-stage 1)
   (+! print-stage 1)
+  (+! (-> *game-info* buzzer-total) 1.0)
   (when (> print-stage 5)
     (set! print-stage 1)
   )
   (set! temp-skullgemamount (-> *game-info* gem))
   (set! temp-health (-> *target* fact health))
-    (when (= act-stage 1)
+    (when (= (-> *game-info* buzzer-total) 1.0)
       (set! act1-1 #t)
       (set! level-completed? #f)
     )
-    (when (and (= act-stage 2)(= level-completed? #t))
+    (when (and (= (-> *game-info* buzzer-total) 2.0)(= level-completed? #t))
       (set! act1-2 #t)
       (set! level-completed? #f)
     )
-    (when (and (= act-stage 3)(= level-completed? #t))
+    (when (and (= (-> *game-info* buzzer-total) 3.0)(= level-completed? #t))
       (set! act1-3 #t)
       (set! level-completed? #f)
     )
-    (when (and (= act-stage 4)(= level-completed? #t))
+    (when (and (= (-> *game-info* buzzer-total) 4.0)(= level-completed? #t))
       (set! act1-4 #t)
       (set! level-completed? #f)
     )
-    (when (and (= act-stage 5)(= level-completed? #t))
+    (when (and (= (-> *game-info* buzzer-total) 5.0)(= level-completed? #t))
       (set! act1-5 #t)
       (set! level-completed? #f)
     )
-    (when (and (= act-stage 6)(= level-completed? #t))
+    (when (and (= (-> *game-info* buzzer-total) 6.0)(= level-completed? #t))
       (set! act2-1 #t)
       (set! level-completed? #f)
     )
-    (when (and (= act-stage 7)(= level-completed? #t))
+    (when (and (= (-> *game-info* buzzer-total) 7.0)(= level-completed? #t))
       (set! act2-2 #t)
       (set! level-completed? #f)
     )
-    (when (and (= act-stage 8)(= level-completed? #t))
+    (when (and (= (-> *game-info* buzzer-total) 8.0)(= level-completed? #t))
       (set! act2-3 #t)
       (set! level-completed? #f)
     )
-    (when (and (= act-stage 9)(= level-completed? #t))
+    (when (and (= (-> *game-info* buzzer-total) 9.0)(= level-completed? #t))
       (set! act2-4 #t)
       (set! level-completed? #f)
     )
-    (when (and (= act-stage 10)(= level-completed? #t))
+    (when (and (= (-> *game-info* buzzer-total) 10.0)(= level-completed? #t))
       (set! act2-5 #t)
       (set! level-completed? #f)
     )
-    (when (and (= act-stage 11)(= level-completed? #t))
+    (when (and (= (-> *game-info* buzzer-total) 11.0)(= level-completed? #t))
       (set! act3-1 #t)
       (set! level-completed? #f)
     )
-    (when (and (= act-stage 12)(= level-completed? #t))
+    (when (and (= (-> *game-info* buzzer-total) 12.0)(= level-completed? #t))
       (set! act3-2 #t)
       (set! level-completed? #f)
     )
-    (when (and (= act-stage 13)(= level-completed? #t))
+    (when (and (= (-> *game-info* buzzer-total) 13.0)(= level-completed? #t))
       (set! act3-3 #t)
       (set! level-completed? #f)
     )
-    (when (and (= act-stage 14)(= level-completed? #t))
+    (when (and (= (-> *game-info* buzzer-total) 14.0)(= level-completed? #t))
       (set! act3-4 #t)
       (set! level-completed? #f)
     )
-    (when (and (= act-stage 15)(= level-completed? #t))
+    (when (and (= (-> *game-info* buzzer-total) 15.0)(= level-completed? #t))
       (set! act3-5 #t)
       (set! level-completed? #f)
     )
   (set! level-completed? #f)
+  (set! print-stage (the int (-> *game-info* buzzer-total)))
+)
+
+
+(when (= (-> *game-info* buzzer-total) 1.0)
+
 )
 
 (when 
@@ -1339,6 +1346,7 @@
     (set! wait-exit #f)
     (set! waite-frame 0)
     (set! act-stage 0)
+    (set! (-> *game-info* buzzer-total) 0.0)
     (set! print-stage 0)
     (set! level-completed? #t)
     (set! display-run #t)
@@ -1412,16 +1420,351 @@
 
 
 
+(deftype randomizer-settings (basic)
+    (
+      (version uint64) ;; version of this settings
+      (checkpoint-randomizer? symbol) ;; enable Zed's checkpoint randomizer
+      (use-random-seed? symbol) ;; boolean (#t = random seed / #f = set seed)
+      (current-seed uint) ;; seed used to generate random checkpoint.
+      (backup-next-idx int) ;; backup in case of game crash
+      (warp-on-cell? symbol) ;; warp on cell
+      (warp-on-orb? symbol) ;; warp on orb
+      (warp-on-buzzer? symbol) ;; Warp on scoutfly
+      (warp-on-green-eco? symbol) ;; Warp on green eco
+      (warp-on-blue-eco? symbol) ;; Warp on blue eco
+      (warp-on-red-eco? symbol) ;; Warp on red eco
+      (warp-on-yellow-eco? symbol) ;; Warp on yellow eco
+      (warp-on-eco-vents? symbol) ;; Controls whether eco vents count towards above eco warps
+      (warp-on-death? symbol) ;; Warp on death
+      (collectables-needed-to-warp float);; number of cells/orbs/flies needed to trigger a random checkpoint warp
+      (show-warp-counter? symbol) ;; boolean controlling if warp collectable count displayed
+      (rng-lib symbol) ;; the RNG library to use in main game (randomizer itself always uses knuth)
+      (checkpoint-logic symbol) ;; the logic used when generating checkpoint lists
+    )
+
+    (:methods
+      (new (symbol type) _type_)
+      (reset (_type_) none)
+      (read-from-file (_type_ string) symbol)
+      (commit-to-file (_type_) none)
+      (write-to-file (_type_ string) symbol)
+      (load-settings (_type_) int)
+      )
+    )
+
+(defmethod reset randomizer-settings ((obj randomizer-settings))
+  "Set the default settings for non-vanilla randomizer settings"
+
+  (format 0 "resetting randomizer settings~%")
+
+  (set! (-> obj version) RANDO_SETTINGS_VERSION)
+  (set! (-> obj checkpoint-randomizer?) #f)
+  (set! (-> obj collectables-needed-to-warp) 1.0)
+  (set! (-> obj show-warp-counter?) #f)
+  (set! (-> obj use-random-seed?) #t)
+  (set! (-> obj current-seed) 42069)
+  (set! (-> obj backup-next-idx) 0)
+  (set! (-> obj warp-on-cell?) #t)
+  (set! (-> obj warp-on-orb?) #f)
+  (set! (-> obj warp-on-buzzer?) #f)
+  (set! (-> obj warp-on-green-eco?) #f)
+  (set! (-> obj warp-on-blue-eco?) #f)
+  (set! (-> obj warp-on-red-eco?) #f)
+  (set! (-> obj warp-on-yellow-eco?) #f)
+  (set! (-> obj warp-on-eco-vents?) #f)
+  (set! (-> obj warp-on-death?) #f)
+  (set! (-> obj rng-lib) 'rand-vu)
+  (set! (-> obj checkpoint-logic) 'logic-random-checkpoint)
+
+  (none))
+
+ (deftype challenges-settings (basic)
+    ((version uint64) ;; version of this settings
+    (challenges-hardcore? symbol)
+    (challenges-orbless? symbol)
+    (challenges-damageless? symbol)
+    (challenges-pacifist? symbol)
+    (challenges-bonkless? symbol)
+    (challenges-casual? symbol)
+    (challenges-mirrormode? symbol)
+    (challenges-smalljak? symbol)
+    (challenges-bigjak? symbol)
+    (challenges-flatjak? symbol)
+    (challenges-paperjak? symbol)
+    )
+
+    (:methods
+    (new (symbol type) _type_)
+    (reset (_type_) none)
+    (read-from-file (_type_ string) symbol)
+    (commit-to-file (_type_) none)
+    (write-to-file (_type_ string) symbol)
+    (load-settings (_type_) int)
+    )
+  )
+ 
+
+(defmethod write-to-file randomizer-settings ((obj randomizer-settings) (filename string))
+  "write settings to a file"
+
+  (if (not filename)
+    (return #f))
+
+    (let ((file (new 'stack 'file-stream filename 'write)))
+    (if (not (file-stream-valid? file))
+      (return #f))
+
+    (format file "(settings #x~X~%" (-> obj version))
+    ;; left as "cells-needed-to-warp" in settings for backwards compatibility
+    (format file "  (cells-needed-to-warp ~F)~%" (the-as float(-> obj collectables-needed-to-warp)))
+    (format file "  (show-warp-counter? ~A)~%" (-> obj show-warp-counter?))
+    (format file "  (Randomizer? ~A)~%" (-> obj checkpoint-randomizer?))
+    (format file "  (use-random-seed? ~A)~%" (-> obj use-random-seed?))
+    (format file "  (Seed ~D)~%" (-> obj current-seed))
+    (format file "  (backup-next-idx ~D)~%" (-> obj backup-next-idx))
+    (format file "  (WarpOnCell? ~A)~%" (-> obj warp-on-cell?))
+    (format file "  (WarpOnOrb? ~A)~%" (-> obj warp-on-orb?))
+    (format file "  (WarpOnBuzzer? ~A)~%" (-> obj warp-on-buzzer?))
+    (format file "  (WarpOnGreenEco? ~A)~%" (-> obj warp-on-green-eco?))
+    (format file "  (WarpOnBlueEco? ~A)~%" (-> obj warp-on-blue-eco?))
+    (format file "  (WarpOnRedEco? ~A)~%" (-> obj warp-on-red-eco?))
+    (format file "  (WarpOnYellowEco? ~A)~%" (-> obj warp-on-yellow-eco?))
+    (format file "  (WarpOnEcoVents? ~A)~%" (-> obj warp-on-eco-vents?))
+    (format file "  (WarpOnDeath? ~A)~%" (-> obj warp-on-death?))
+    (format file "  (rng-lib ~A)~%" (-> obj rng-lib))
+    (format file "  (checkpoint-logic ~A)~%" (-> obj checkpoint-logic))
+
+    (format file "  )~%")
+    (file-stream-close file)
+    )
+
+  (format 0 "randomizer settings file write: ~A~%" filename)
+
+  #t
+  )
 
 
 
+;wait for the in-game to not get the infinite complete mission glitch
+
+(when (and (= in-game? #f)(= wait-for-ingame #t))
+  (+! waiting 1)
+  (when (= waiting 120)
+    (set! in-game? #t)
+    (auto-save-user)
+    (set! waiting 0)
+    (set! wait-for-ingame #f)
+  )
+)
 
 
+(defmethod commit-to-file randomizer-settings ((obj randomizer-settings))
+  "commits the current settings to the file"
+  ;; auto load settings if available
+  (format (clear *pc-temp-string-1*) "~S/Mods/randomizer-settings.gc" *pc-settings-folder*)
+  (pc-mkdir-file-path *pc-temp-string-1*)
+  (write-to-file obj *pc-temp-string-1*)
+  (none)) 
+
+(defmethod read-from-file randomizer-settings ((obj randomizer-settings) (filename string))
+  "read settings from a file"
+
+  (if (not filename)
+    (return #f))
+
+  (let ((file (new 'stack 'file-stream filename 'read)))
+    (when (not (file-stream-valid? file))
+      (return #f))
+
+    ;;Check version
+    (let ((version RANDO_SETTINGS_VERSION))
+      (with-settings-scope (file)
+        (case-str (file-stream-read-word file)
+          (("settings")
+            (set! version (file-stream-read-int file))
+            (cond
+              ((= (logand version #xffffffff00000000) (logand RANDO_SETTINGS_VERSION #xffffffff00000000))
+                ;; minor difference
+                )
+              (else
+                ;; major difference
+                (format 0 "Randomizer settings version mismatch! Got ~D.~D vs ~D.~D~%" RANDO_SETTINGS_VERSION_MAJOR RANDO_SETTINGS_VERSION_MINOR (bit-field int version 32 16) (bit-field int version 48 16))
+                (file-stream-close file)
+                (return #f)
+                )
+              )
+            ;;read through the file and set fields
+            (dosettings (file)
+              (case-str *pc-temp-string*
+                (("Randomizer?") (set! (-> obj checkpoint-randomizer?) (file-stream-read-symbol file)))
+                ;; left as "cells-needed-to-warp" in settings for backwards compatibility
+                (("cells-needed-to-warp") (set! (-> obj collectables-needed-to-warp) (file-stream-read-float file)))
+                (("show-warp-counter?") (set! (-> obj show-warp-counter?) (file-stream-read-symbol file)))
+                (("use-random-seed?") (set! (-> obj use-random-seed?) (file-stream-read-symbol file)))
+                (("Seed") (set! (-> obj current-seed) (file-stream-read-uint file)))
+                (("backup-next-idx") (set! (-> obj backup-next-idx) (file-stream-read-int file)))
+                (("WarpOnCell?") (set! (-> obj warp-on-cell?) (file-stream-read-symbol file)))
+                (("WarpOnOrb?") (set! (-> obj warp-on-orb?) (file-stream-read-symbol file)))
+                (("WarpOnBuzzer?") (set! (-> obj warp-on-buzzer?) (file-stream-read-symbol file)))
+                (("WarpOnGreenEco?") (set! (-> obj warp-on-green-eco?) (file-stream-read-symbol file)))
+                (("WarpOnBlueEco?") (set! (-> obj warp-on-blue-eco?) (file-stream-read-symbol file)))
+                (("WarpOnRedEco?") (set! (-> obj warp-on-red-eco?) (file-stream-read-symbol file)))
+                (("WarpOnYellowEco?") (set! (-> obj warp-on-yellow-eco?) (file-stream-read-symbol file)))
+                (("WarpOnEcoVents?") (set! (-> obj warp-on-eco-vents?) (file-stream-read-symbol file)))
+                (("WarpOnDeath?") (set! (-> obj warp-on-death?) (file-stream-read-symbol file)))
+                (("rng-lib") (set! (-> obj rng-lib) (file-stream-read-symbol file)))
+                (("checkpoint-logic") (set! (-> obj checkpoint-logic) (file-stream-read-symbol file)))
+
+                )
+              )
+            )
+          )
+        )
+
+      )
+      (inspect file)
+    (file-stream-close file)
+    )
+
+  (format 0 "pc settings file read: ~A~%" filename)
+
+  #t
+  )
 
 
+(defmethod write-to-file randomizer-settings ((obj randomizer-settings) (filename string))
+  "write settings to a file"
 
+  (if (not filename)
+    (return #f))
 
+    (let ((file (new 'stack 'file-stream filename 'write)))
+    (if (not (file-stream-valid? file))
+      (return #f))
 
+    (format file "(settings #x~X~%" (-> obj version))
+    ;; left as "cells-needed-to-warp" in settings for backwards compatibility
+    (format file "  (cells-needed-to-warp ~F)~%" (the-as float(-> obj collectables-needed-to-warp)))
+    (format file "  (show-warp-counter? ~A)~%" (-> obj show-warp-counter?))
+    (format file "  (Randomizer? ~A)~%" (-> obj checkpoint-randomizer?))
+    (format file "  (use-random-seed? ~A)~%" (-> obj use-random-seed?))
+    (format file "  (Seed ~D)~%" (-> obj current-seed))
+    (format file "  (backup-next-idx ~D)~%" (-> obj backup-next-idx))
+    (format file "  (WarpOnCell? ~A)~%" (-> obj warp-on-cell?))
+    (format file "  (WarpOnOrb? ~A)~%" (-> obj warp-on-orb?))
+    (format file "  (WarpOnBuzzer? ~A)~%" (-> obj warp-on-buzzer?))
+    (format file "  (WarpOnGreenEco? ~A)~%" (-> obj warp-on-green-eco?))
+    (format file "  (WarpOnBlueEco? ~A)~%" (-> obj warp-on-blue-eco?))
+    (format file "  (WarpOnRedEco? ~A)~%" (-> obj warp-on-red-eco?))
+    (format file "  (WarpOnYellowEco? ~A)~%" (-> obj warp-on-yellow-eco?))
+    (format file "  (WarpOnEcoVents? ~A)~%" (-> obj warp-on-eco-vents?))
+    (format file "  (WarpOnDeath? ~A)~%" (-> obj warp-on-death?))
+    (format file "  (rng-lib ~A)~%" (-> obj rng-lib))
+    (format file "  (checkpoint-logic ~A)~%" (-> obj checkpoint-logic))
+
+    (format file "  )~%")
+    (file-stream-close file)
+    )
+
+  (format 0 "randomizer settings file write: ~A~%" filename)
+
+  #t
+  )
+
+(defmethod commit-to-file randomizer-settings ((obj randomizer-settings))
+  "commits the current settings to the file"
+  ;; auto load settings if available
+  (format (clear *pc-temp-string-1*) "~S/Mods/randomizer-settings.gc" *pc-settings-folder*)
+  (pc-mkdir-file-path *pc-temp-string-1*)
+  (write-to-file obj *pc-temp-string-1*)
+  (none)) 
+
+(defmethod read-from-file randomizer-settings ((obj randomizer-settings) (filename string))
+  "read settings from a file"
+
+  (if (not filename)
+    (return #f))
+
+  (let ((file (new 'stack 'file-stream filename 'read)))
+    (when (not (file-stream-valid? file))
+      (return #f))
+
+    ;;Check version
+    (let ((version RANDO_SETTINGS_VERSION))
+      (with-settings-scope (file)
+        (case-str (file-stream-read-word file)
+          (("settings")
+            (set! version (file-stream-read-int file))
+            (cond
+              ((= (logand version #xffffffff00000000) (logand RANDO_SETTINGS_VERSION #xffffffff00000000))
+                ;; minor difference
+                )
+              (else
+                ;; major difference
+                (format 0 "Randomizer settings version mismatch! Got ~D.~D vs ~D.~D~%" RANDO_SETTINGS_VERSION_MAJOR RANDO_SETTINGS_VERSION_MINOR (bit-field int version 32 16) (bit-field int version 48 16))
+                (file-stream-close file)
+                (return #f)
+                )
+              )
+            ;;read through the file and set fields
+            (dosettings (file)
+              (case-str *pc-temp-string*
+                (("Randomizer?") (set! (-> obj checkpoint-randomizer?) (file-stream-read-symbol file)))
+                ;; left as "cells-needed-to-warp" in settings for backwards compatibility
+                (("cells-needed-to-warp") (set! (-> obj collectables-needed-to-warp) (file-stream-read-float file)))
+                (("show-warp-counter?") (set! (-> obj show-warp-counter?) (file-stream-read-symbol file)))
+                (("use-random-seed?") (set! (-> obj use-random-seed?) (file-stream-read-symbol file)))
+                (("Seed") (set! (-> obj current-seed) (file-stream-read-uint file)))
+                (("backup-next-idx") (set! (-> obj backup-next-idx) (file-stream-read-int file)))
+                (("WarpOnCell?") (set! (-> obj warp-on-cell?) (file-stream-read-symbol file)))
+                (("WarpOnOrb?") (set! (-> obj warp-on-orb?) (file-stream-read-symbol file)))
+                (("WarpOnBuzzer?") (set! (-> obj warp-on-buzzer?) (file-stream-read-symbol file)))
+                (("WarpOnGreenEco?") (set! (-> obj warp-on-green-eco?) (file-stream-read-symbol file)))
+                (("WarpOnBlueEco?") (set! (-> obj warp-on-blue-eco?) (file-stream-read-symbol file)))
+                (("WarpOnRedEco?") (set! (-> obj warp-on-red-eco?) (file-stream-read-symbol file)))
+                (("WarpOnYellowEco?") (set! (-> obj warp-on-yellow-eco?) (file-stream-read-symbol file)))
+                (("WarpOnEcoVents?") (set! (-> obj warp-on-eco-vents?) (file-stream-read-symbol file)))
+                (("WarpOnDeath?") (set! (-> obj warp-on-death?) (file-stream-read-symbol file)))
+                (("rng-lib") (set! (-> obj rng-lib) (file-stream-read-symbol file)))
+                (("checkpoint-logic") (set! (-> obj checkpoint-logic) (file-stream-read-symbol file)))
+
+                )
+              )
+            )
+          )
+        )
+
+      )
+      (inspect file)
+    (file-stream-close file)
+    )
+
+  (format 0 "pc settings file read: ~A~%" filename)
+
+  #t
+  )
+
+(defmethod load-settings randomizer-settings ((obj randomizer-settings))
+  "load"
+
+  (format (clear *pc-temp-string-1*) "~S/Mods/randomizer-settings.gc" *pc-settings-folder*)
+  (if (pc-filepath-exists? *pc-temp-string-1*)
+    (begin
+      (format 0 "[Randomizer] Randomizer Settings found at '~S'...loading!~%" *pc-temp-string-1*)
+      (unless (read-from-file obj *pc-temp-string-1*)
+        (format 0 "[Randomizer] Randomizer Settings found at '~S' but could not be loaded, using defaults!~%" *pc-temp-string-1*)
+        (reset obj)))
+    (format 0 "[Randomizer] Randomizer Settings not found at '~S'...initializing with defaults!~%" *pc-temp-string-1*))
+  0)
+  
+(defmethod new randomizer-settings ((allocation symbol) (type-to-make type))
+  "make a new randomizer-settings"
+  (let ((obj (object-new allocation type-to-make (the-as int (-> type-to-make size)))))
+    (reset obj)
+    ;; auto load settings if available
+    ;; if saved settings are corrupted or not found, use defaults
+    (load-settings obj)
+    obj))
 
 
 ;menu params
@@ -1535,7 +1878,7 @@
 
 )
 |#
-(when (and (= act-act 1)(= act-stage 1)(= display-run #t))
+(when (and (= act-act 1)(= (-> *game-info* buzzer-total) 1.0)(= display-run #t))
     (clear matt-str)
     (clear *pc-encoded-matt-str*)
     (format matt-str "<COLOR_GREEN><<COLOR_WHITE>---<---<---<---(BOSS)"
@@ -1549,7 +1892,7 @@
         (set! (-> font-ctx scale) 0.325)
         (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
 )
-(when (and (= act-act 1)(= act-stage 2)(= display-run #t))
+(when (and (= act-act 1)(= (-> *game-info* buzzer-total) 2.0)(= display-run #t))
     (clear matt-str)
     (clear *pc-encoded-matt-str*)
     (format matt-str "<COLOR_GREEN><---<<COLOR_WHITE>---<---<---(BOSS)"
@@ -1563,7 +1906,7 @@
         (set! (-> font-ctx scale) 0.325)
         (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
 )
-(when (and (= act-act 1)(= act-stage 3)(= display-run #t))
+(when (and (= act-act 1)(= (-> *game-info* buzzer-total) 3.0)(= display-run #t))
     (clear matt-str)
     (clear *pc-encoded-matt-str*)
     (format matt-str "<COLOR_GREEN><---<---<<COLOR_WHITE>---<---(BOSS)"
@@ -1577,7 +1920,7 @@
         (set! (-> font-ctx scale) 0.325)
         (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
 )
-(when (and (= act-act 1)(= act-stage 4)(= display-run #t))
+(when (and (= act-act 1)(= (-> *game-info* buzzer-total) 4.0)(= display-run #t))
     (clear matt-str)
     (clear *pc-encoded-matt-str*)
     (format matt-str "<COLOR_GREEN><---<---<---<<COLOR_WHITE>---(BOSS)"
@@ -1591,7 +1934,7 @@
         (set! (-> font-ctx scale) 0.325)
         (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
 )
-(when (and (= act-act 1)(= act-stage 5)(= display-run #t))
+(when (and (= act-act 1)(= (-> *game-info* buzzer-total) 5.0)(= display-run #t))
     (clear matt-str)
     (clear *pc-encoded-matt-str*)
     (format matt-str "<COLOR_GREEN><---<---<---<---<COLOR_RED>(BOSS)"
@@ -1606,7 +1949,7 @@
         (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
 )
 ;----------------------------SECOND ACT-----------------------------
-(when (and (= act-act 2)(= act-stage 6)(= display-run #t))
+(when (and (= act-act 2)(= (-> *game-info* buzzer-total) 6.0)(= display-run #t))
     (clear matt-str)
     (clear *pc-encoded-matt-str*)
     (format matt-str "<COLOR_BLUE><<COLOR_WHITE>---<---<---<---(BOSS)"
@@ -1620,7 +1963,7 @@
         (set! (-> font-ctx scale) 0.325)
         (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
 )
-(when (and (= act-act 2)(= act-stage 7)(= display-run #t))
+(when (and (= act-act 2)(= (-> *game-info* buzzer-total) 7.0)(= display-run #t))
     (clear matt-str)
     (clear *pc-encoded-matt-str*)
     (format matt-str "<COLOR_BLUE><---<<COLOR_WHITE>---<---<---(BOSS)"
@@ -1634,7 +1977,7 @@
         (set! (-> font-ctx scale) 0.325)
         (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
 )
-(when (and (= act-act 2)(= act-stage 8)(= display-run #t))
+(when (and (= act-act 2)(= (-> *game-info* buzzer-total) 8.0)(= display-run #t))
     (clear matt-str)
     (clear *pc-encoded-matt-str*)
     (format matt-str "<COLOR_BLUE><---<---<<COLOR_WHITE>---<---(BOSS)"
@@ -1648,7 +1991,7 @@
         (set! (-> font-ctx scale) 0.325)
         (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
 )
-(when (and (= act-act 2)(= act-stage 9)(= display-run #t))
+(when (and (= act-act 2)(= (-> *game-info* buzzer-total) 9.0)(= display-run #t))
     (clear matt-str)
     (clear *pc-encoded-matt-str*)
     (format matt-str "<COLOR_BLUE><---<---<---<<COLOR_WHITE>---(BOSS)"
@@ -1662,7 +2005,7 @@
         (set! (-> font-ctx scale) 0.325)
         (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
 )
-(when (and (= act-act 2)(= act-stage 10)(= display-run #t))
+(when (and (= act-act 2)(= (-> *game-info* buzzer-total) 10.0)(= display-run #t))
     (clear matt-str)
     (clear *pc-encoded-matt-str*)
     (format matt-str "<COLOR_BLUE><---<---<---<---<COLOR_RED>(BOSS)"
@@ -1678,7 +2021,7 @@
 )
 
 ;----------------------------THIRD ACT-----------------------------
-(when (and (= act-act 3)(= act-stage 11)(= display-run #t))
+(when (and (= act-act 3)(= (-> *game-info* buzzer-total) 11.0)(= display-run #t))
     (clear matt-str)
     (clear *pc-encoded-matt-str*)
     (format matt-str "<COLOR_RED><<COLOR_WHITE>---<---<---<---(BOSS)"
@@ -1692,7 +2035,7 @@
         (set! (-> font-ctx scale) 0.325)
         (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
 )
-(when (and (= act-act 3)(= act-stage 12)(= display-run #t))
+(when (and (= act-act 3)(= (-> *game-info* buzzer-total) 12.0)(= display-run #t))
     (clear matt-str)
     (clear *pc-encoded-matt-str*)
     (format matt-str "<COLOR_RED><---<<COLOR_WHITE>---<---<---(BOSS)"
@@ -1706,7 +2049,7 @@
         (set! (-> font-ctx scale) 0.325)
         (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
 )
-(when (and (= act-act 3)(= act-stage 13)(= display-run #t))
+(when (and (= act-act 3)(= (-> *game-info* buzzer-total) 13.0)(= display-run #t))
     (clear matt-str)
     (clear *pc-encoded-matt-str*)
     (format matt-str "<COLOR_RED><---<---<<COLOR_WHITE>---<---(BOSS)"
@@ -1720,7 +2063,7 @@
         (set! (-> font-ctx scale) 0.325)
         (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
 )
-(when (and (= act-act 3)(= act-stage 14)(= display-run #t))
+(when (and (= act-act 3)(= (-> *game-info* buzzer-total) 14.0)(= display-run #t))
     (clear matt-str)
     (clear *pc-encoded-matt-str*)
     (format matt-str "<COLOR_RED><---<---<---<<COLOR_WHITE>---(BOSS)"
@@ -1734,7 +2077,7 @@
         (set! (-> font-ctx scale) 0.325)
         (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
 )
-(when (and (= act-act 3)(= act-stage 15)(= display-run #t))
+(when (and (= act-act 3)(= (-> *game-info* buzzer-total) 15.0)(= display-run #t))
     (clear matt-str)
     (clear *pc-encoded-matt-str*)
     (format matt-str "<COLOR_RED><---<---<---<---<COLOR_RED>(BOSS)"
@@ -1750,7 +2093,7 @@
 )
 
 ;----------------------------DARK ACT-----------------------------
-(when (and (= act-act 4)(= act-stage 16)(= display-run #t))
+(when (and (= act-act 4)(= (-> *game-info* buzzer-total) 16.0)(= display-run #t))
     (clear matt-str)
     (clear *pc-encoded-matt-str*)
     (format matt-str "<COLOR_PINK><<COLOR_WHITE>---<---<---<---(BOSS)"
@@ -1764,7 +2107,7 @@
         (set! (-> font-ctx scale) 0.325)
         (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
 )
-(when (and (= act-act 4)(= act-stage 17)(= display-run #t))
+(when (and (= act-act 4)(= (-> *game-info* buzzer-total) 17.0)(= display-run #t))
     (clear matt-str)
     (clear *pc-encoded-matt-str*)
     (format matt-str "<COLOR_PINK><---<<COLOR_WHITE>---<---<---(BOSS)"
@@ -1778,7 +2121,7 @@
         (set! (-> font-ctx scale) 0.325)
         (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
 )
-(when (and (= act-act 4)(= act-stage 18)(= display-run #t))
+(when (and (= act-act 4)(= (-> *game-info* buzzer-total) 18.0)(= display-run #t))
     (clear matt-str)
     (clear *pc-encoded-matt-str*)
     (format matt-str "<COLOR_PINK><---<---<<COLOR_WHITE>---<---(BOSS)"
@@ -1792,7 +2135,7 @@
         (set! (-> font-ctx scale) 0.325)
         (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
 )
-(when (and (= act-act 4)(= act-stage 19)(= display-run #t))
+(when (and (= act-act 4)(= (-> *game-info* buzzer-total) 19.0)(= display-run #t))
     (clear matt-str)
     (clear *pc-encoded-matt-str*)
     (format matt-str "<COLOR_PINK><---<---<---<<COLOR_WHITE>---(BOSS)"
@@ -1806,7 +2149,7 @@
         (set! (-> font-ctx scale) 0.325)
         (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
 )
-(when (and (= act-act 4)(= act-stage 20)(= display-run #t))
+(when (and (= act-act 4)(= (-> *game-info* buzzer-total) 20.0)(= display-run #t))
     (clear matt-str)
     (clear *pc-encoded-matt-str*)
     (format matt-str "<COLOR_PINK><---<---<---<---<COLOR_PINK>(BOSS)"
@@ -1847,16 +2190,6 @@
 )
 
 
-;wait for the in-game to not get the infinite complete mission glitch
-
-(when (and (= in-game? #f)(= wait-for-ingame #t))
-  (+! waiting 1)
-  (when (= waiting 120)
-    (set! in-game? #t)
-    (set! waiting 0)
-    (set! wait-for-ingame #f)
-  )
-)
 
 
 #|
