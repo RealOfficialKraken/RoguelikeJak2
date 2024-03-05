@@ -80,6 +80,7 @@
 (define act-before11 0)
 (define act-before12 0)
 
+(define reward-orbs #f)
 (define wait-for-ingame #f)
 (define waiting 0)
 
@@ -1485,9 +1486,39 @@
     (set! in-game? #t)
     (set! waiting 0)
     (set! wait-for-ingame #f)
+    (when (> act-stage 1)
+      (set! reward-orbs #t)
+    )
   )
 )
 
+(when (= reward-orbs #t)
+  (when (= (-> *target* fact health) 8.0)
+      (+! (-> *game-info* skill) (rand-vu-float-range 7.0 15.0))
+    )
+    (when (= (-> *target* fact health) 7.0)
+      (+! (-> *game-info* skill) (rand-vu-float-range 5.0 10.0))
+    )
+    (when (= (-> *target* fact health) 6.0)
+      (+! (-> *game-info* skill) (rand-vu-float-range 3.0 7.0))
+    )
+    (when (= (-> *target* fact health) 5.0)
+      (+! (-> *game-info* skill) (rand-vu-float-range 3.0 7.0))
+    )
+    (when (= (-> *target* fact health) 4.0)
+      (+! (-> *game-info* skill) (rand-vu-float-range 1.0 7.0))
+    )
+    (when (= (-> *target* fact health) 3.0)
+      (+! (-> *game-info* skill) (rand-vu-float-range 1.0 3.0))
+    )
+    (when (= (-> *target* fact health) 2.0)
+      (+! (-> *game-info* skill) (rand-vu-float-range 1.0 2.0))
+    )
+    (when (= (-> *target* fact health) 1.0)
+      (+! (-> *game-info* skill) (rand-vu-float-range 1.0 4.0))
+    )
+    (set! reward-orbs #f)
+)
 
 (when 
 (and 
@@ -2030,7 +2061,7 @@ Here are the shop IDs
     ~%
     ~%When you <COLOR_GREEN>start your run<COLOR_WHITE>, you will be transported to the dimensions where Jak
     ~%no longer exists, and you must take his place by completing the missions, and fulfilling the prophecy.
-    ~%Grab orbs, Skull Gems, and get as powerful as you can!
+    ~%Grab orbs, Skull Gems, and get as powerful as you can! Every level gives you orbs based on how well you do!
     ~%Jak dying means <COLOR_RED>perma-death<COLOR_WHITE>!
     ~%
     ~%<COLOR_GREEN>Press <COLOR_BLUE>X<COLOR_GREEN> to start the run!"
