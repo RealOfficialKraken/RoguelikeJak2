@@ -2303,7 +2303,7 @@
   )
 
 
-
+#|
 (defmethod draw-option ((obj menu-icon-info-option) (arg0 progress) (arg1 font-context) (arg2 int) (arg3 symbol))
   (set! (-> arg1 alpha) (- 1.0 (-> arg0 menu-transition)))
   (set-color! arg1 (font-color progress))
@@ -2366,7 +2366,7 @@
   (none)
   )
 
-
+|#
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;  CUSTOM MENU OPTIONS
