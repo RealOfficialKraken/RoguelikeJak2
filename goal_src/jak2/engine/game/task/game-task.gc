@@ -3601,7 +3601,7 @@
             :borrow '((ctywide 0 lsack display) (hiphog 0 lguard special))
             :open? #f
             :on-close #f
-            :add (game-task-node-command add-gun-up-1)
+            :add (game-task-node-command none)
             :description (text-id progress-missions-city-krew-collection)
             )
           (new 'static 'game-task-node-info
@@ -5197,7 +5197,7 @@
             :borrow '((hiphog 0 lguard special))
             :open? #f
             :on-close #f
-            :add (game-task-node-command add-gun-up-2)
+            :add (game-task-node-command none)
             :description (text-id progress-missions-talk-to-krew)
             )
           (new 'static 'game-task-node-info
@@ -8642,7 +8642,7 @@
             :borrow '()
             :open? #f
             :on-close #f
-            :add (game-task-node-command add-gun-up-3)
+            :add (game-task-node-command none)
             )
           (new 'static 'game-task-node-info
             :level 'castle

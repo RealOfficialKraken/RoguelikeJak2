@@ -103,6 +103,9 @@
 (define current-level "")
 (define mod-s "")
 (define purchase-amount 0)
+(define shopid1 0)
+(define shopid2 0)
+(define shopid3 0)
 
 (define waitdie #f)
 (define waitdi 0)
@@ -113,6 +116,13 @@
 
 (define amountofdeaths 0) ;This is a saved variable inside RLsettings.ini.
 
+;give jak his items if he has bought them but doesn't actually have them
+(define p-yellow-gun #f)
+(define p-blue-gun #f)
+(define p-dark-gun #f)
+(define p-upgrade-ammo #f)
+(define p-upgrade-red #f)
+(define p-upgrade-damage #f)
 
 
 
@@ -146,6 +156,12 @@
   (set! act-before11 0)
   (set! act-before12 0)
   (set! display-run #f)
+  (set! p-yellow-gun #f)
+  (set! p-blue-gun #f)
+  (set! p-dark-gun #f)
+  (set! p-upgrade-red #f)
+  (set! p-upgrade-ammo #f)
+  (set! p-upgrade-damage #f)
   (auto-save-user)
 )
 
@@ -1597,6 +1613,41 @@
 ;(logclear! (-> *game-info* features) (game-feature gun-blue))
 ;(logclear! (-> *game-info* features) (game-feature gun-dark))
 
+
+;When jak doesnt have his purchased items, give him the items!
+
+(when (and (= p-yellow-gun #t)(not (logtest? (-> *game-info* features) (game-feature gun-yellow))))
+  (logior! (-> *game-info* features) (game-feature gun-yellow))
+)
+(when (and (= p-blue-gun #t)(not (logtest? (-> *game-info* features) (game-feature gun-blue))))
+  (logior! (-> *game-info* features) (game-feature gun-blue))
+)
+(when (and (= p-dark-gun #t)(not (logtest? (-> *game-info* features) (game-feature gun-dark))))
+  (logior! (-> *game-info* features) (game-feature gun-dark))
+)
+(when (and (= p-upgrade-ammo #t)(not (logtest? (-> *game-info* features) (game-feature gun-upgrade-ammo))))
+  (logior! (-> *game-info* features) (game-feature gun-upgrade-ammo))
+)
+(when (and (= p-upgrade-red #t)(not (logtest? (-> *game-info* features) (game-feature gun-upgrade-speed))))
+  (logior! (-> *game-info* features) (game-feature gun-upgrade-speed))
+)
+(when (and (= p-upgrade-damage #t)(not (logtest? (-> *game-info* features) (game-feature gun-upgrade-damage))))
+  (logior! (-> *game-info* features) (game-feature gun-upgrade-damage))
+)
+
+
+#| All of these are set to IDs
+
+Here are the shop IDs
+1 Yellow Gun
+2 Blue Gun
+3 Peacemaker
+4 Upgrade Red speed
+5 Upgrade Ammo
+6 Upgrade Damage
+
+|#
+
 (when (= roll-shopitems #t)
   (let (
     (shoproll1 (rand-vu-int-range 1 (-> *game-info* total-trys)))
@@ -1611,36 +1662,82 @@
 
   (when (= shoproll1 1)
     (set! shopitem1 "Yellow Gun (25 orbs)")
+    (set! shopid1 1)
   )
   (when (= shoproll2 1)
     (set! shopitem2 "Yellow Gun (25 orbs)")
+    (set! shopid2 1)
   )
   (when (= shoproll3 1)
     (set! shopitem3 "Yellow Gun (25 orbs)")
+    (set! shopid3 1)
   )
   (when (= shoproll1 2)
     (set! shopitem1 "Blue Gun (32 orbs)")
+    (set! shopid1 2)
   )
   (when (= shoproll2 2)
     (set! shopitem2 "Blue Gun (32 orbs)")
+    (set! shopid2 2)
   )
   (when (= shoproll3 2)
     (set! shopitem3 "Blue Gun (32 orbs)")
+    (set! shopid3 2)
   )
   (when (= shoproll1 3)
     (set! shopitem1 "Peacemaker (40 orbs)")
+    (set! shopid1 3)
   )
   (when (= shoproll2 3)
     (set! shopitem2 "Peacemaker (40 orbs)")
+    (set! shopid2 3)
   )
   (when (= shoproll3 3)
     (set! shopitem3 "Peacemaker (40 orbs)")
+    (set! shopid3 3)
   )
-
+  (when (= shoproll1 4)
+    (set! shopitem1 "Scattergun Rate of Fire (10 orbs)")
+    (set! shopid1 4)
+  )
+  (when (= shoproll2 4)
+    (set! shopitem2 "Scattergun Rate of Fire (10 orbs)")
+    (set! shopid2 4)
+  )
+  (when (= shoproll3 4)
+    (set! shopitem3 "Scattergun Rate of Fire (10 orbs)")
+    (set! shopid3 4)
+  )
+  (when (= shoproll1 5)
+    (set! shopitem1 "Upgrade Ammo (15 orbs)")
+    (set! shopid1 5)
+  )
+  (when (= shoproll2 5)
+    (set! shopitem2 "Upgrade Ammo (15 orbs)")
+    (set! shopid2 5)
+  )
+  (when (= shoproll3 5)
+    (set! shopitem3 "Upgrade Ammo (15 orbs)")
+    (set! shopid3 5)
+  )
+  (when (= shoproll1 6)
+    (set! shopitem1 "Upgrade Damage x2 (20 orbs)")
+    (set! shopid1 6)
+  )
+  (when (= shoproll2 6)
+    (set! shopitem2 "Upgrade Damage x2 (20 orbs)")
+    (set! shopid2 6)
+  )
+  (when (= shoproll3 6)
+    (set! shopitem3 "Upgrade Damage x2 (20 orbs)")
+    (set! shopid3 6)
+  )
   (when (and (!= shoproll1 shoproll2)(!= shoproll1 shoproll3)(!= shoproll2 shoproll3)) ;if the pick is NOT the same on two options, stop rolling.
     (set! roll-shopitems #f)
   )
 )
+
+
 )
 (when (and (cpad-pressed? 0 r3)(= in-menu2 #f)(= (-> (level-get-target-inside *level*) name) 'hiphog))
   (set! in-menu2wait #t)
@@ -1694,6 +1791,8 @@
   )
 )
 
+;controls for in-menu2
+
 (when (and (= in-menu2 #t)(cpad-pressed? 0 right))
   (+! menu-slot 1)
   (when (>= menu-slot 3)
@@ -1708,7 +1807,100 @@
   )
 )
 
+(when (and (= in-menu2 #t)(cpad-pressed? 0 x))
+    (when (and (= menu-slot 0)(not (logtest? (-> *game-info* features) (game-feature gun-yellow)))(>= (-> *game-info* skill) 25.0)(= shopid1 1))
+      (set! p-yellow-gun #t)
+      (-! (-> *game-info* skill) 25.0)
+      (set! shopitem1 "(Out of Stock)")
+    )
+    (when (and (= menu-slot 1)(not (logtest? (-> *game-info* features) (game-feature gun-yellow)))(>= (-> *game-info* skill) 25.0)(= shopid3 1))
+      (set! p-yellow-gun #t)
+      (-! (-> *game-info* skill) 25.0)
+      (set! shopitem3 "(Out of Stock)")
+    )
+    (when (and (= menu-slot 2)(not (logtest? (-> *game-info* features) (game-feature gun-yellow)))(>= (-> *game-info* skill) 25.0)(= shopid2 1))
+      (set! p-yellow-gun #t)
+      (-! (-> *game-info* skill) 25.0)
+      (set! shopitem2 "(Out of Stock)")
+    )
+    (when (and (= menu-slot 0)(not (logtest? (-> *game-info* features) (game-feature gun-blue)))(>= (-> *game-info* skill) 32.0)(= shopid1 2))
+      (set! p-blue-gun #t)
+      (-! (-> *game-info* skill) 32.0)
+      (set! shopitem1 "(Out of Stock)")
+    )
+    (when (and (= menu-slot 1)(not (logtest? (-> *game-info* features) (game-feature gun-blue)))(>= (-> *game-info* skill) 32.0)(= shopid3 2))
+      (set! p-blue-gun #t)
+      (-! (-> *game-info* skill) 32.0)
+      (set! shopitem3 "(Out of Stock)")
+    )
+    (when (and (= menu-slot 2)(not (logtest? (-> *game-info* features) (game-feature gun-blue)))(>= (-> *game-info* skill) 32.0)(= shopid2 2))
+      (set! p-blue-gun #t)
+      (-! (-> *game-info* skill) 32.0)
+      (set! shopitem2 "(Out of Stock)")
+    )
+    (when (and (= menu-slot 0)(not (logtest? (-> *game-info* features) (game-feature gun-dark)))(>= (-> *game-info* skill) 40.0)(= shopid1 3))
+      (set! p-dark-gun #t)
+      (-! (-> *game-info* skill) 40.0)
+      (set! shopitem1 "(Out of Stock)")
+    )
+    (when (and (= menu-slot 1)(not (logtest? (-> *game-info* features) (game-feature gun-dark)))(>= (-> *game-info* skill) 40.0)(= shopid3 3))
+      (set! p-dark-gun #t)
+      (-! (-> *game-info* skill) 40.0)
+      (set! shopitem3 "(Out of Stock)")
+    )
+    (when (and (= menu-slot 2)(not (logtest? (-> *game-info* features) (game-feature gun-dark)))(>= (-> *game-info* skill) 40.0)(= shopid2 3))
+      (set! p-dark-gun #t)
+      (-! (-> *game-info* skill) 40.0)
+      (set! shopitem2 "(Out of Stock)")
+    )
+    (when (and (= menu-slot 0)(not (logtest? (-> *game-info* features) (game-feature gun-upgrade-speed)))(>= (-> *game-info* skill) 10.0)(= shopid1 4))
+      (set! p-upgrade-red #t)
+      (-! (-> *game-info* skill) 10.0)
+      (set! shopitem1 "(Out of Stock)")
+    )
+    (when (and (= menu-slot 1)(not (logtest? (-> *game-info* features) (game-feature gun-upgrade-speed)))(>= (-> *game-info* skill) 10.0)(= shopid3 4))
+      (set! p-upgrade-red #t)
+      (-! (-> *game-info* skill) 10.0)
+      (set! shopitem3 "(Out of Stock)")
+    )
+    (when (and (= menu-slot 2)(not (logtest? (-> *game-info* features) (game-feature gun-upgrade-speed)))(>= (-> *game-info* skill) 10.0)(= shopid2 4))
+      (set! p-upgrade-red #t)
+      (-! (-> *game-info* skill) 10.0)
+      (set! shopitem2 "(Out of Stock)")
+    )
+    (when (and (= menu-slot 0)(not (logtest? (-> *game-info* features) (game-feature gun-upgrade-ammo)))(>= (-> *game-info* skill) 15.0)(= shopid1 5))
+      (set! p-upgrade-ammo #t)
+      (-! (-> *game-info* skill) 15.0)
+      (set! shopitem1 "(Out of Stock)")
+    )
+    (when (and (= menu-slot 1)(not (logtest? (-> *game-info* features) (game-feature gun-upgrade-ammo)))(>= (-> *game-info* skill) 15.0)(= shopid3 5))
+      (set! p-upgrade-ammo #t)
+      (-! (-> *game-info* skill) 15.0)
+      (set! shopitem3 "(Out of Stock)")
+    )
+    (when (and (= menu-slot 2)(not (logtest? (-> *game-info* features) (game-feature gun-upgrade-ammo)))(>= (-> *game-info* skill) 15.0)(= shopid2 5))
+      (set! p-upgrade-ammo #t)
+      (-! (-> *game-info* skill) 15.0)
+      (set! shopitem2 "(Out of Stock)")
+    )
+    (when (and (= menu-slot 0)(not (logtest? (-> *game-info* features) (game-feature gun-upgrade-damage)))(>= (-> *game-info* skill) 20.0)(= shopid1 6))
+      (set! p-upgrade-damage #t)
+      (-! (-> *game-info* skill) 20.0)
+      (set! shopitem1 "(Out of Stock)")
+    )
+    (when (and (= menu-slot 1)(not (logtest? (-> *game-info* features) (game-feature gun-upgrade-damage)))(>= (-> *game-info* skill) 20.0)(= shopid3 6))
+      (set! p-upgrade-damage #t)
+      (-! (-> *game-info* skill) 20.0)
+      (set! shopitem3 "(Out of Stock)")
+    )
+    (when (and (= menu-slot 2)(not (logtest? (-> *game-info* features) (game-feature gun-upgrade-damage)))(>= (-> *game-info* skill) 20.0)(= shopid2 6))
+      (set! p-upgrade-damage #t)
+      (-! (-> *game-info* skill) 20.0)
+      (set! shopitem2 "(Out of Stock)")
+    )
+  )
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (when (and (= popup-shop #t)(= (paused?) #f)(= in-menu2 #f)(not *scene-player*))
   (clear matt-str)
     (clear *pc-encoded-matt-str*)
@@ -1837,9 +2029,9 @@
     ~%But there is still hope.
     ~%
     ~%When you <COLOR_GREEN>start your run<COLOR_WHITE>, you will be transported to the dimensions where Jak
-    ~%no longer exists, and you must take his place by completing the missions, and fulfilling the
-    ~%prophecy. Get as powerful as you can! Jak dying means <COLOR_RED>perma-death<COLOR_WHITE>!
-    ~%
+    ~%no longer exists, and you must take his place by completing the missions, and fulfilling the prophecy.
+    ~%Grab orbs, Skull Gems, and get as powerful as you can!
+    ~%Jak dying means <COLOR_RED>perma-death<COLOR_WHITE>!
     ~%
     ~%<COLOR_GREEN>Press <COLOR_BLUE>X<COLOR_GREEN> to start the run!"
     )
@@ -1868,7 +2060,7 @@
     ~%Your Tokens.
     ~%
     ~%You can use these to purchase items to put in the <COLOR_GREEN>shop at the <COLOR_PINK>HipHog!
-    ~%The shop has 3 random items that refresh after every boss, or every new run.
+    ~%<COLOR_WHITE>The shop has <COLOR_GREEN>3 random items<COLOR_WHITE> that refresh after every boss, or every new run.
     ~%You can press <COLOR_RED>R1<COLOR_WHITE> to purchase your next item to add to the shop for 200 Tokens.
     ~%
     ~%<COLOR_GREEN>Press <COLOR_BLUE>X<COLOR_GREEN> to start the run!"
