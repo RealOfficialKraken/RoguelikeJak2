@@ -1462,7 +1462,7 @@
 )
 
 ;wait for the in-game to not get the infinite complete mission glitch
-#|
+
 (when (and (= in-game? #f)(= wait-for-ingame #t))
   (+! waiting 1)
   (when (= waiting 120)
@@ -1471,7 +1471,7 @@
     (set! wait-for-ingame #f)
   )
 )
-|#
+
 
 (when 
 (and 
@@ -1867,9 +1867,9 @@
     ~%They're all saved in additive to your OTHER currency.
     ~%Your Tokens.
     ~%
-    ~%You can use these to purchase items to put in your run!
-    ~%These can ALSO be used to purchase mutators (or modifiers) to spice up the gameplay!
-    ~%You can press <COLOR_RED>R1<COLOR_WHITE> to purchase your next item to add at 200 Tokens.
+    ~%You can use these to purchase items to put in the <COLOR_GREEN>shop at the <COLOR_PINK>HipHog!
+    ~%The shop has 3 random items that refresh after every boss, or every new run.
+    ~%You can press <COLOR_RED>R1<COLOR_WHITE> to purchase your next item to add to the shop for 200 Tokens.
     ~%
     ~%<COLOR_GREEN>Press <COLOR_BLUE>X<COLOR_GREEN> to start the run!"
     (the int temp-skullgemamount)
