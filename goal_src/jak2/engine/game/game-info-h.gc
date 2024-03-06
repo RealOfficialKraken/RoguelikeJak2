@@ -37,6 +37,24 @@
 (define in-menu2wait #f)
 (define in-menu2waiti 0)
 
+;give jak his items if he has bought them but doesn't actually have them
+(define p-yellow-gun #f)
+(define p-blue-gun #f)
+(define p-dark-gun #f)
+(define p-upgrade-ammo #f)
+(define p-upgrade-red #f)
+(define p-upgrade-damage #f)
+(define p-upgrade-vehicles #f)
+(define p-double-shot #f)
+
+(define dshotwait-r #f)
+(define dshotcount-r 0)
+(define dshotwait-b #f)
+(define dshotcount-b 0)
+(define dshotwait-y #f)
+(define dshotcount-y 0)
+(define dshotwait-d #f)
+(define dshotcount-d 0)
 
 (defenum pickup-type
   :bitfield #f

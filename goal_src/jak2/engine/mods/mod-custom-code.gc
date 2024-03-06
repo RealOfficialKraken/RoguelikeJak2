@@ -116,14 +116,7 @@
 (define temp-orbs 0.0)
 
 (define amountofdeaths 0) ;This is a saved variable inside RLsettings.ini.
-
-;give jak his items if he has bought them but doesn't actually have them
-(define p-yellow-gun #f)
-(define p-blue-gun #f)
-(define p-dark-gun #f)
-(define p-upgrade-ammo #f)
-(define p-upgrade-red #f)
-(define p-upgrade-damage #f)
+(define menu-value 0.0)
 
 
 
@@ -163,10 +156,54 @@
   (set! p-upgrade-red #f)
   (set! p-upgrade-ammo #f)
   (set! p-upgrade-damage #f)
+  (when (= (-> *game-info* total-trys) 0)
+    (set! (-> *game-info* total-trys) 7)
+  )
   (auto-save-user)
+
+  (when (= (-> *game-info* total-trys) 7) ;Buffed Vehicles
+    (set! menu-value 200.0)
+    (set! mod-s "Buffed Vehicles and Speed")
+  )
+  (when (= (-> *game-info* total-trys) 8) ;Double shot
+    (set! menu-value 210.0)
+    (set! mod-s "Double Shot")
+  )
+  (when (= (-> *game-info* total-trys) 9)
+    (set! menu-value 220.0)
+  )
+  (when (= (-> *game-info* total-trys) 10)
+    (set! menu-value 230.0)
+  )
+  (when (= (-> *game-info* total-trys) 11)
+    (set! menu-value 240.0)
+  )
+  (when (= (-> *game-info* total-trys) 12)
+    (set! menu-value 250.0)
+  )
 )
 
-;Teleports the player to a random stage, and then sets their task.
+
+(when (and (>= (-> *game-info* fuel) menu-value)(= in-menu #t)(cpad-pressed? 0 r1))
+  (-! (-> *game-info* fuel) menu-value)
+  (when (= (-> *game-info* total-trys) 9)
+    (set! (-> *game-info* total-trys) 10)
+    (auto-save-user)
+  )
+  (when (= (-> *game-info* total-trys) 8)
+    (set! (-> *game-info* total-trys) 9)
+    (auto-save-user)
+  )
+  (when (= (-> *game-info* total-trys) 7)
+    (set! (-> *game-info* total-trys) 8)
+    (set! menu-value 210.0)
+    (set! mod-s "Double Shot")
+    (auto-save-user)
+  )
+)
+
+
+;This is the randomizer. It teleports the player to a random stage in a certain act, and then sets their task.
     (when (= act1-1 #t)
       (let (
         (level-pick (rand-vu-int-range 1 13))
@@ -177,6 +214,7 @@
             (set! level-pick (rand-vu-int-range 1 13))
             (format #t "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<Level picked the same mission! Rerolling to: ~D" level-pick)
           )
+          (set! print-stage 1)
           (when (and (= level-pick 1)(!= act-before1 1))
             (send-event *target* 'continue (get-continue-by-name *game-info* "ruins-start"))
             (play-task (game-task ruins-tower) 'debug #f)
@@ -663,6 +701,7 @@
         )
         (format #t "<<<<<<<<<<<<<<<<<<<<<<<<<<Level picked: ~D" level-pick)
         (set! roll-shopitems #t)
+        (set! print-stage 1)
         (when (= level-pick act-before4)
             (set! level-pick (rand-vu-int-range 1 11))
             (format #t "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<Level picked the same mission! Rerolling to: ~D" level-pick)
@@ -1085,6 +1124,7 @@
         (level-pick (rand-vu-int-range 1 9))
         )
         (format #t "<<<<<<<<<<<<<<<<<<<<<<<<<<Level picked: ~D" level-pick)
+        (set! print-stage 1)
         (set! roll-shopitems #t)
         (when (= level-pick act-before4)
             (set! level-pick (rand-vu-int-range 1 9))
@@ -1494,13 +1534,13 @@
 
 (when (= reward-orbs #t)
   (when (= (-> *target* fact health) 8.0)
-      (+! (-> *game-info* skill) (rand-vu-float-range 7.0 15.0))
+      (+! (-> *game-info* skill) (rand-vu-float-range 10.0 15.0))
     )
     (when (= (-> *target* fact health) 7.0)
-      (+! (-> *game-info* skill) (rand-vu-float-range 5.0 10.0))
+      (+! (-> *game-info* skill) (rand-vu-float-range 7.0 15.0))
     )
     (when (= (-> *target* fact health) 6.0)
-      (+! (-> *game-info* skill) (rand-vu-float-range 3.0 7.0))
+      (+! (-> *game-info* skill) (rand-vu-float-range 6.0 10.0))
     )
     (when (= (-> *target* fact health) 5.0)
       (+! (-> *game-info* skill) (rand-vu-float-range 3.0 7.0))
@@ -1549,9 +1589,9 @@
 
 (when (= wait-exit #t)
   (+! waite-frame 1)
+  (remove-setting-by-arg0 *setting-control* 'mode-name)
   (when (= waite-frame 1)
     (set! camera-locked #f)
-    (remove-setting-by-arg0 *setting-control* 'mode-name)
     (set! in-menu #f)
   )
   (when (= waite-frame 5)
@@ -1670,12 +1710,14 @@
 #| All of these are set to IDs
 
 Here are the shop IDs
-1 Yellow Gun
-2 Blue Gun
-3 Peacemaker
-4 Upgrade Red speed
-5 Upgrade Ammo
-6 Upgrade Damage
+1 Yellow Gun (25 orbs)
+2 Blue Gun (32 orbs)
+3 Peacemaker (40 orbs)
+4 Upgrade Red speed (10 orbs)
+5 Upgrade Ammo (15 orbs)
+6 Upgrade Damage (20 orbs)
+7 Full HP (7 orbs)
+8 Buffed Vehicles
 
 |#
 
@@ -1762,6 +1804,42 @@ Here are the shop IDs
   (when (= shoproll3 6)
     (set! shopitem3 "Upgrade Damage x2 (20 orbs)")
     (set! shopid3 6)
+  )
+  (when (= shoproll1 7)
+    (set! shopitem1 "Full HP (8 orbs)")
+    (set! shopid1 7)
+  )
+  (when (= shoproll2 7)
+    (set! shopitem2 "Full HP (8 orbs)")
+    (set! shopid2 7)
+  )
+  (when (= shoproll3 7)
+    (set! shopitem3 "Full HP (8 orbs)")
+    (set! shopid3 7)
+  )
+  (when (= shoproll1 8)
+    (set! shopitem1 "Buffed Vehicles (32 orbs) (Applies in next level)")
+    (set! shopid1 8)
+  )
+  (when (= shoproll2 8)
+    (set! shopitem2 "Buffed Vehicles (32 orbs) (Applies in next level)")
+    (set! shopid2 8)
+  )
+  (when (= shoproll3 8)
+    (set! shopitem3 "Buffed Vehicles (32 orbs) (Applies in next level)")
+    (set! shopid3 8)
+  )
+  (when (= shoproll1 9)
+    (set! shopitem1 "Double Shot (25 orbs)")
+    (set! shopid1 9)
+  )
+  (when (= shoproll2 9)
+    (set! shopitem2 "Double Shot (25 orbs)")
+    (set! shopid2 9)
+  )
+  (when (= shoproll3 9)
+    (set! shopitem3 "Double Shot (25 orbs)")
+    (set! shopid3 9)
   )
   (when (and (!= shoproll1 shoproll2)(!= shoproll1 shoproll3)(!= shoproll2 shoproll3)) ;if the pick is NOT the same on two options, stop rolling.
     (set! roll-shopitems #f)
@@ -1928,6 +2006,48 @@ Here are the shop IDs
       (set! p-upgrade-damage #t)
       (-! (-> *game-info* skill) 20.0)
       (set! shopitem2 "(Out of Stock)")
+    )
+    (when (and (= menu-slot 0)(!= (-> *target* fact health) 8.0)(>= (-> *game-info* skill) 8.0)(= shopid1 7))
+      (-! (-> *game-info* skill) 8.0)
+      (set! (-> *target* fact health) 8.0)
+    )
+    (when (and (= menu-slot 1)(!= (-> *target* fact health) 8.0)(>= (-> *game-info* skill) 8.0)(= shopid3 7))
+      (-! (-> *game-info* skill) 8.0)
+      (set! (-> *target* fact health) 8.0)
+    )
+    (when (and (= menu-slot 2)(!= (-> *target* fact health) 8.0)(>= (-> *game-info* skill) 8.0)(= shopid2 7))
+      (-! (-> *game-info* skill) 8.0)
+      (set! (-> *target* fact health) 8.0)
+    )
+    (when (and (= menu-slot 0)(= p-upgrade-vehicles #f)(>= (-> *game-info* skill) 32.0)(= shopid1 8))
+      (-! (-> *game-info* skill) 32.0)
+      (set! shopitem1 "(Out of Stock)")
+      (set! p-upgrade-vehicles #t)
+    )
+    (when (and (= menu-slot 1)(= p-upgrade-vehicles #f)(>= (-> *game-info* skill) 32.0)(= shopid3 8))
+      (-! (-> *game-info* skill) 32.0)
+      (set! shopitem3 "(Out of Stock)")
+      (set! p-upgrade-vehicles #t)
+    )
+    (when (and (= menu-slot 2)(= p-upgrade-vehicles #f)(>= (-> *game-info* skill) 32.0)(= shopid2 8))
+      (-! (-> *game-info* skill) 32.0)
+      (set! shopitem2 "(Out of Stock)")
+      (set! p-upgrade-vehicles #t)
+    )
+    (when (and (= menu-slot 0)(= p-double-shot #f)(>= (-> *game-info* skill) 25.0)(= shopid1 9))
+      (-! (-> *game-info* skill) 25.0)
+      (set! shopitem1 "(Out of Stock)")
+      (set! p-double-shot #t)
+    )
+    (when (and (= menu-slot 1)(= p-double-shot #f)(>= (-> *game-info* skill) 25.0)(= shopid3 9))
+      (-! (-> *game-info* skill) 25.0)
+      (set! shopitem3 "(Out of Stock)")
+      (set! p-double-shot #t)
+    )
+    (when (and (= menu-slot 2)(= p-double-shot #f)(>= (-> *game-info* skill) 25.0)(= shopid2 9))
+      (-! (-> *game-info* skill) 25.0)
+      (set! shopitem2 "(Out of Stock)")
+      (set! p-double-shot #t)
     )
   )
 
@@ -2132,7 +2252,7 @@ Here are the shop IDs
     print-stage
     (the int (-> *game-info* fuel))
     mod-s
-    purchase-amount
+    (the int menu-value)
     )
     (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
     (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
@@ -2466,6 +2586,45 @@ Here are the shop IDs
   (task-node-close! (game-task-node city-krew-collection-resolution))
 )
 
+
+
+
+
+
+;MODS
+
+(when (= dshotwait-r #t)
+  (+! dshotcount-r 1)
+  (when (= dshotcount-r 3)
+    (someone-fire-red *target* (-> *target* gun fire-point) (-> *target* gun fire-dir-out))
+    (set! dshotcount-r 0)
+    (set! dshotwait-r #f)
+  )
+)
+(when (= dshotwait-y #t)
+  (+! dshotcount-y 1)
+  (when (= dshotcount-y 6)
+    (someone-fire-yellow *target* (-> *target* gun fire-point) (-> *target* gun fire-dir-out))
+    (set! dshotcount-y 0)
+    (set! dshotwait-y #f)
+  )
+)
+(when (= dshotwait-b #t)
+  (+! dshotcount-b 1)
+  (when (= dshotcount-b 2)
+    (someone-fire-blue *target* (-> *target* gun fire-point) (-> *target* gun fire-dir-out))
+    (set! dshotcount-b 0)
+    (set! dshotwait-b #f)
+  )
+)
+(when (= dshotwait-d #t)
+  (+! dshotcount-d 1)
+  (when (= dshotcount-d 6)
+    (someone-fire-dark *target* (-> *target* gun fire-point) (-> *target* gun fire-dir-out))
+    (set! dshotcount-d 0)
+    (set! dshotwait-d #f)
+  )
+)
 
 
 
