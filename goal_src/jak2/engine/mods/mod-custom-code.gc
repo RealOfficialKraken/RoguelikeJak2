@@ -107,6 +107,8 @@
 (define shopid1 0)
 (define shopid2 0)
 (define shopid3 0)
+(define teleport-hiphog #f)
+(define already-teleported? #f)
 
 (define waitdie #f)
 (define waitdi 0)
@@ -171,6 +173,7 @@
   )
   (when (= (-> *game-info* total-trys) 9)
     (set! menu-value 220.0)
+    (set! mod-s "")
   )
   (when (= (-> *game-info* total-trys) 10)
     (set! menu-value 230.0)
@@ -206,12 +209,12 @@
 ;This is the randomizer. It teleports the player to a random stage in a certain act, and then sets their task.
     (when (= act1-1 #t)
       (let (
-        (level-pick (rand-vu-int-range 1 13))
+        (level-pick (rand-vu-int-range 1 8))
         )
         (format #t "<<<<<<<<<<<<<<<<<<<<<<<<<<Level picked: ~D" level-pick)
         (set! roll-shopitems #t)
         (when (= level-pick act-before1)
-            (set! level-pick (rand-vu-int-range 1 13))
+            (set! level-pick (rand-vu-int-range 1 8))
             (format #t "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<Level picked the same mission! Rerolling to: ~D" level-pick)
           )
           (set! print-stage 1)
@@ -232,14 +235,6 @@
             
           )
           (when (and (= level-pick 3)(!= act-before1 3))
-            (send-event *target* 'continue (get-continue-by-name *game-info* "fordumpa-start"))
-            (play-task (game-task fortress-dump) 'debug #f)
-            (set! act-before1 3)
-            (set! act1-1 #f)
-            (set! waitenter #t)
-            
-          )
-          (when (and (= level-pick 4)(!= act-before1 4))
             (send-event *target* 'continue (get-continue-by-name *game-info* "ctysluma-alley-no-hideout"))
             (play-task (game-task city-krew-delivery) 'debug #f)
             (set! act-before1 4)
@@ -247,7 +242,7 @@
             (set! waitenter #t)
             
           )
-          (when (and (= level-pick 5)(!= act-before1 5))
+          (when (and (= level-pick 4)(!= act-before1 4))
             (send-event *target* 'continue (get-continue-by-name *game-info* "atoll-start"))
             (play-task (game-task atoll-sig) 'debug #f)
             (set! act-before1 5)
@@ -255,15 +250,7 @@
             (set! waitenter #t)
             
           )
-          (when (and (= level-pick 6)(!= act-before1 6))
-            (send-event *target* 'continue (get-continue-by-name *game-info* "sewer-start"))
-            (play-task (game-task sewer-enemy) 'debug #f)
-            (set! act-before1 6)
-            (set! act1-1 #f)
-            (set! waitenter #t)
-            
-          )
-          (when (and (= level-pick 7)(!= act-before1 7))
+          (when (and (= level-pick 5)(!= act-before1 5))
             (send-event *target* 'continue (get-continue-by-name *game-info* "strip-start"))
             (play-task (game-task strip-rescue) 'debug #f)
             (task-node-close! (game-task-node city-yellow-gun-training-resolution))
@@ -274,7 +261,7 @@
             (set! waitenter #t)
             
           )
-          (when (and (= level-pick 8)(!= act-before1 8))
+          (when (and (= level-pick 6)(!= act-before1 6))
             (send-event *target* 'continue (get-continue-by-name *game-info* "atoll-battle"))
             (play-task (game-task atoll-battle) 'debug #f)
             (task-node-close! (game-task-node drill-eggs-resolution))
@@ -286,20 +273,7 @@
             (set! waitenter #t)
             
           )
-          (when (and (= level-pick 9)(!= act-before1 9))
-            (send-event *target* 'continue (get-continue-by-name *game-info* "drill1-warp"))
-            (play-task (game-task drill-eggs) 'debug #f)
-            (task-node-close! (game-task-node city-yellow-gun-training-resolution))
-            (task-node-close! (game-task-node city-krew-collection-resolution))
-            (task-node-close! (game-task-node stadium-board1-resolution))
-            (task-node-close! (game-task-node atoll-battle-resolution))
-            (task-node-close! (game-task-node mountain-collection-resolution))
-            (set! act-before1 9)
-            (set! act1-1 #f)
-            (set! waitenter #t)
-            
-          )
-          (when (and (= level-pick 10)(!= act-before1 10))
+          (when (and (= level-pick 7)(!= act-before1 7))
             (send-event *target* 'continue (get-continue-by-name *game-info* "ctyport-hiphog"))
             (play-task (game-task city-krew-collection) 'debug #f)
             (task-node-close! (game-task-node mountain-collection-resolution))
@@ -312,18 +286,7 @@
             (set! waitenter #t)
             
           )
-          (when (and (= level-pick 11)(!= act-before1 11))
-            (send-event *target* 'continue (get-continue-by-name *game-info* "vinroom-start"))
-            (play-task (game-task city-power) 'debug #f)
-            (task-node-close! (game-task-node drill-eggs-resolution))
-            (task-node-close! (game-task-node mountain-collection-resolution))
-            (task-node-close! (game-task-node city-krew-collection-resolution))
-            (set! act-before1 11)
-            (set! act1-1 #f)
-            (set! waitenter #t)
-            
-          )
-          (when (and (= level-pick 12)(!= act-before1 12))
+          (when (and (= level-pick 8)(!= act-before1 8))
             (send-event *target* 'continue (get-continue-by-name *game-info* "ctyport-hiphog"))
             (play-task (game-task city-keira-delivery) 'debug #f)
             (task-node-close! (game-task-node mountain-collection-resolution))
@@ -1733,6 +1696,8 @@ Here are the shop IDs
     (set! shoproll3 (rand-vu-int-range 1 (-> *game-info* total-trys)))
   )
 
+  (set! already-teleported? #f)
+
   (when (= shoproll1 1)
     (set! shopitem1 "Yellow Gun (25 orbs)")
     (set! shopid1 1)
@@ -1848,6 +1813,8 @@ Here are the shop IDs
 
 
 )
+
+
 (when (and (cpad-pressed? 0 r3)(= in-menu2 #f)(= (-> (level-get-target-inside *level*) name) 'hiphog))
   (set! in-menu2wait #t)
 )
@@ -2056,6 +2023,30 @@ Here are the shop IDs
   (clear matt-str)
     (clear *pc-encoded-matt-str*)
     (format matt-str "<COLOR_RED>R3<COLOR_WHITE>:<COLOR_GREEN> Access Shop"
+    )
+    (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+    (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+      ;; reset bucket settings prior to drawing - font won't do this for us, and
+      ;; draw-raw-image can sometimes mess them up. (intro sequence)
+      (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+      (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 0 245 0.0 (font-color default) (font-flags shadow kerning large))))
+        (set! (-> font-ctx scale) 0.325)
+        (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+)
+
+(when (and (= already-teleported? #f)(!= (-> (level-get-target-inside *level*) name) 'hiphog)(= act-stage 4))
+  (set! teleport-hiphog #t)
+)
+
+(when (and (= teleport-hiphog #t)(= already-teleported? #f)(cpad-pressed? 0 r3))
+  (send-event *target* 'continue (get-continue-by-name *game-info* "ctyport-hiphog"))
+  (set! already-teleported? #t)
+)
+
+(when (and (= teleport-hiphog #t)(= already-teleported? #f))
+  (clear matt-str)
+    (clear *pc-encoded-matt-str*)
+    (format matt-str "<COLOR_RED>R3<COLOR_WHITE>:<COLOR_GREEN> Teleport to <COLOR_PINK>Hip Hog Shop!"
     )
     (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
     (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
