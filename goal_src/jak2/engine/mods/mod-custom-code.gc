@@ -32,8 +32,9 @@
 - Make a settings file for saved runs
 - Fix crashes at drill platform
 - Make modifiers at the end of boss levels to select from
+- Make tutorial with (= (-> *game-info* task-deaths) 0)
 - Make Dark Eco act
-- Make the campaign and Ending to unlock Dark Eco Mode
+- Make the campaign and Ending to unlock Dark Eco act, and fun modifiers after ending
 - Make purchaseable items to put in runs in the main menu
 
 |#
@@ -87,6 +88,8 @@
 (define give-gunred? #f)
 
 ;menu funct
+(define wait-tutorial #f)
+(define tutoriali 0)
 (define tutorial-completed? #f)
 (define in-menu #f)
 (define pause-menu-blocked? #f)
@@ -109,6 +112,8 @@
 (define shopid3 0)
 (define teleport-hiphog #f)
 (define already-teleported? #f)
+(define gt-i 0.0)
+(define gf-i 0.0)
 
 (define waitdie #f)
 (define waitdi 0)
@@ -119,6 +124,15 @@
 
 (define amountofdeaths 0) ;This is a saved variable inside RLsettings.ini.
 (define menu-value 0.0)
+
+(define in-dialogue? #f)
+(define log-sec 0)
+(define log-id 0)
+
+(define ohshit #f)
+(define ohshiti 0)
+(define waitdie-tutorial #f)
+(define waitdiei 0)
 
 
 
@@ -134,11 +148,27 @@
 *target*
 (= tutorial-completed? #f)
 (= (pause-allowed?) #t)
+(= (-> *game-info* total-trys) 0)
+(<= (-> *game-info* task-deaths) 1)
 (= (-> (level-get-target-inside *level*) name) 'prison)
 )
-  (set! wait-start #t)
+  (set! wait-tutorial #t)
+  (set! (-> *game-info* total-trys) 7)
+  (auto-save-user)
+)
+
+;Checks to see if there's a new game, then sets you to look-around camera with the main menu.
+(when ;is new game started?
+(and 
+*target*
+(= tutorial-completed? #f)
+(= (pause-allowed?) #t)
+(>= (-> *game-info* task-deaths) 1)
+(= (-> (level-get-target-inside *level*) name) 'prison)
+)
   (set! (-> *target* fact health) 8.0)
   (play-task (game-task fortress-escape) 'debug #f)
+  (set! wait-start #t)
   (set! act-before1 0)
   (set! act-before2 0)
   (set! act-before3 0)
@@ -158,9 +188,10 @@
   (set! p-upgrade-red #f)
   (set! p-upgrade-ammo #f)
   (set! p-upgrade-damage #f)
-  (when (= (-> *game-info* total-trys) 0)
-    (set! (-> *game-info* total-trys) 7)
-  )
+  (set! p-double-shot #f)
+  (set! p-upgrade-vehicles #f)
+  (set! wait-tutorial #f)
+  (set! tutoriali 0)
   (auto-save-user)
 
   (when (= (-> *game-info* total-trys) 7) ;Buffed Vehicles
@@ -186,6 +217,96 @@
   )
 )
 
+(when ;tutorial for tp jak out of fortress
+(and 
+(= wait-tutorial #t)
+(= (pause-allowed?) #t)
+(= (paused?) #f)
+)
+  (+! tutoriali 1)
+  (when (= tutoriali 1600)
+    (send-event *target* 'continue (get-continue-by-name *game-info* "ctyport-hiphog"))
+    (set! ohshit #t)
+    (set! (-> *game-info* gem) 99999.0)
+    (set! tutoriali 0)
+    (set! wait-tutorial #f)
+  )
+)
+
+(when ;when the easter egg happens from HM+
+(and 
+(= ohshit #t)
+(= (pause-allowed?) #t)
+(= (paused?) #f)
+)
+  (+! ohshiti 1)
+  (when (= ohshiti 240)
+    (play-sound-file "goal_src/jak2/pc/snd/ohshit.mp3" 100)
+  )
+  (when (= ohshiti 241)
+    (set! (-> *mood-control* overide-weather-flag) #t)
+  )
+  (when (and (>= ohshiti 242)(< gt-i 0.9))
+      (+! gt-i 0.01)
+      (set! (-> *mood-control* overide cloud) gt-i)
+    )
+    (when (and (>= ohshiti 421)(< gf-i 0.9))
+      (set! gf-i 0.01)
+      (set! (-> *mood-control* overide fog) gf-i)
+    )
+  (when (> (-> *game-info* gem) 121.0)
+  (-! (-> *game-info* gem) 121.0)
+  )
+  (when (= ohshiti 1200)
+    (play-sound-file "goal_src/jak2/pc/snd/endofworld.mp3" 100)
+    (set! (-> *game-info* gem) 0.0)
+    (set! (-> *overide-mood-color-table* data (logand (-> *time-of-day-context* mode) (time-of-day-palette-id unk0 unk1 unk2)) amb-color x) 1.9921)
+      (set! (-> *overide-mood-color-table* data (logand (-> *time-of-day-context* mode) (time-of-day-palette-id unk0 unk1 unk2)) amb-color y) 1.9921)
+      (set! (-> *overide-mood-color-table* data (logand (-> *time-of-day-context* mode) (time-of-day-palette-id unk0 unk1 unk2)) amb-color z) 1.9921)
+      (set! (-> *overide-mood-color-table* data (logand (-> *time-of-day-context* mode) (time-of-day-palette-id unk0 unk1 unk2)) amb-color w) 2.0)
+      (set! traffic-metalheads? #t)
+      (send-event *traffic-manager* 'set-guard-target-level 100)
+      (set! gt-i 0.0)
+      (set! gf-i 0.0)
+  )
+  (when (>= ohshiti 1204)
+    (send-event (ppointer->process *time-of-day*) 'change 'ratio 240.0) 
+  (set! (-> *time-of-day-context* overide-enable) #f)
+  (set! (-> *mood-control* overide-weather-flag) #t)
+  (set! (-> *mood-control* overide fog) 1.0)
+  (set! (-> *mood-control* overide cloud) 1.0)
+  (set! (-> (level-get-target-inside *level*) mood-func)update-mood-nest)
+  )
+  ;Death params for tutorial
+(when 
+(or 
+(and
+(= (pause-allowed?) #t)
+(= (-> *target* fact health) 0.0)
+*target*
+)
+(= ohshiti 3290)
+)
+  (set! waitdie-tutorial #t)
+  (set! traffic-metalheads? #f)
+  (set! ohshit #f)
+  (set! ohshiti 0)
+  (send-event (ppointer->process *time-of-day*) 'change 'ratio 1.0) 
+)
+)
+
+(when (= waitdie-tutorial #t)
+  (+! waitdiei 1)
+  (when (= waitdiei 1)
+    (send-event *target* 'continue (get-continue-by-name *game-info* "consite-runway"))
+  )
+  (when (= waitdiei 200)
+    (set! waitdiei 0)
+    (set! waitdie-tutorial #f)
+  )
+)
+
+
 
 (when (and (>= (-> *game-info* fuel) menu-value)(= in-menu #t)(cpad-pressed? 0 r1))
   (-! (-> *game-info* fuel) menu-value)
@@ -204,6 +325,7 @@
     (auto-save-user)
   )
 )
+
 
 
 ;This is the randomizer. It teleports the player to a random stage in a certain act, and then sets their task.
@@ -242,15 +364,7 @@
             (set! waitenter #t)
             
           )
-          (when (and (= level-pick 4)(!= act-before1 4))
-            (send-event *target* 'continue (get-continue-by-name *game-info* "atoll-start"))
-            (play-task (game-task atoll-sig) 'debug #f)
-            (set! act-before1 5)
-            (set! act1-1 #f)
-            (set! waitenter #t)
-            
-          )
-          (when (and (= level-pick 5)(!= act-before1 5))
+          (when (and (= level-pick 4)(!= act-before1 5))
             (send-event *target* 'continue (get-continue-by-name *game-info* "strip-start"))
             (play-task (game-task strip-rescue) 'debug #f)
             (task-node-close! (game-task-node city-yellow-gun-training-resolution))
@@ -261,7 +375,7 @@
             (set! waitenter #t)
             
           )
-          (when (and (= level-pick 6)(!= act-before1 6))
+          (when (and (= level-pick 5)(!= act-before1 6))
             (send-event *target* 'continue (get-continue-by-name *game-info* "atoll-battle"))
             (play-task (game-task atoll-battle) 'debug #f)
             (task-node-close! (game-task-node drill-eggs-resolution))
@@ -273,7 +387,7 @@
             (set! waitenter #t)
             
           )
-          (when (and (= level-pick 7)(!= act-before1 7))
+          (when (and (= level-pick 6)(!= act-before1 7))
             (send-event *target* 'continue (get-continue-by-name *game-info* "ctyport-hiphog"))
             (play-task (game-task city-krew-collection) 'debug #f)
             (task-node-close! (game-task-node mountain-collection-resolution))
@@ -286,24 +400,12 @@
             (set! waitenter #t)
             
           )
-          (when (and (= level-pick 8)(!= act-before1 8))
+          (when (and (= level-pick 7)(!= act-before1 8))
             (send-event *target* 'continue (get-continue-by-name *game-info* "ctyport-hiphog"))
             (play-task (game-task city-keira-delivery) 'debug #f)
             (task-node-close! (game-task-node mountain-collection-resolution))
             (task-node-close! (game-task-node city-yellow-gun-training-resolution))
             (task-node-close! (game-task-node drill-eggs-resolution))
-            (set! act-before1 12)
-            (set! act1-1 #f)
-            (set! waitenter #t)
-            
-          )
-          (when (and (= level-pick 13)(!= act-before1 13))
-            (send-event *target* 'continue (get-continue-by-name *game-info* "mountain-start"))
-            (play-task (game-task mountain-lens) 'debug #f)
-            (task-node-close! (game-task-node city-yellow-gun-training-resolution))
-            (task-node-close! (game-task-node city-krew-collection-resolution))
-            (task-node-close! (game-task-node stadium-board1-resolution))
-            (task-node-close! (game-task-node palace-boss-resolution))
             (set! act-before1 12)
             (set! act1-1 #f)
             (set! waitenter #t)
@@ -1611,6 +1713,7 @@
 (and
 (= (pause-allowed?) #t)
 (= (-> *target* fact health) 0.0)
+(>= (-> *game-info* task-deaths) 1)
 *target*
 )
   (set! waitdie #t)
@@ -1622,7 +1725,7 @@
 
 
 
-(when (and (= waitdie #t)(= (pause-allowed?) #t))
+(when (and (= waitdie #t)(>= (-> *game-info* task-deaths) 1)(= (pause-allowed?) #t))
   (+! waitdi 1)
   (when (= waitdi 1)
     (+! (-> *game-info* task-deaths) 1)
@@ -1681,6 +1784,7 @@ Here are the shop IDs
 6 Upgrade Damage (20 orbs)
 7 Full HP (7 orbs)
 8 Buffed Vehicles
+9 Double Shot
 
 |#
 
@@ -2034,13 +2138,14 @@ Here are the shop IDs
         (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
 )
 
-(when (and (= already-teleported? #f)(!= (-> (level-get-target-inside *level*) name) 'hiphog)(= act-stage 4))
+(when (and (= already-teleported? #f)(!= (-> (level-get-target-inside *level*) name) 'hiphog)(= print-stage 4))
   (set! teleport-hiphog #t)
 )
 
 (when (and (= teleport-hiphog #t)(= already-teleported? #f)(cpad-pressed? 0 r3))
   (send-event *target* 'continue (get-continue-by-name *game-info* "ctyport-hiphog"))
   (set! already-teleported? #t)
+  (set! teleport-hiphog #f)
 )
 
 (when (and (= teleport-hiphog #t)(= already-teleported? #f))
