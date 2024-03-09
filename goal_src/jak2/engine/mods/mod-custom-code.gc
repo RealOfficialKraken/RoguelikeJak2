@@ -94,6 +94,7 @@
 (define in-menu #f)
 (define pause-menu-blocked? #f)
 (define camera-locked #f)
+(define camera-unlocked #f)
 (define wait-start #f)
 (define waits-frame 0)
 (define wait-exit #f)
@@ -126,6 +127,10 @@
 (define menu-value 0.0)
 
 (define in-dialogue? #f)
+(define di-s "")
+(define di-s2 "")
+(define di-s3 "")
+(define di-s4 "")
 (define log-sec 0)
 (define log-id 0)
 
@@ -133,6 +138,9 @@
 (define ohshiti 0)
 (define waitdie-tutorial #f)
 (define waitdiei 0)
+
+(define intro-wait #f)
+(define intro-waiti 0)
 
 
 
@@ -221,6 +229,7 @@
 (and 
 (= wait-tutorial #t)
 (= (pause-allowed?) #t)
+(= (-> (level-get-target-inside *level*) name) 'prison)
 (= (paused?) #f)
 )
   (+! tutoriali 1)
@@ -298,7 +307,21 @@
 (when (= waitdie-tutorial #t)
   (+! waitdiei 1)
   (when (= waitdiei 1)
-    (send-event *target* 'continue (get-continue-by-name *game-info* "consite-runway"))
+    (send-event *target* 'continue (get-continue-by-name *game-info* "consite-airlock"))
+  )
+  (when (= waitdiei 120)
+    (play-task (game-task drill-eggs) 'debug #f)
+    (script-eval '(want-load 'vinroom 'consiteb))
+    (script-eval '(want-display 'vinroom))
+    (script-eval '(want-display 'consiteb))
+    (set! in-dialogue? #t)
+    (set! log-sec 0)
+    (set! log-id 1)
+    (set! camera-locked #t)
+    (set! di-s "Oh god... I was wrong, I was so so very wrong!")
+    (set! di-s2 "") 
+    (set! di-s3 "")
+    (set! di-s4 "")
   )
   (when (= waitdiei 200)
     (set! waitdiei 0)
@@ -306,6 +329,98 @@
   )
 )
 
+
+;(script-eval '(want-load 'vinroom 'consiteb))
+;(script-eval '(want-display 'vinroom))
+;(script-eval '(want-display 'consiteb))
+;(set-vector! vin-npc 744.2 11.0 871.5 1.0)
+
+
+(when 
+(and 
+(= in-dialogue? #t)
+(not (cpad-hold? 0 x))
+)
+    (clear matt-str)
+    (clear *pc-encoded-matt-str*)
+    (format matt-str "<COLOR_WHITE>~S~%~S~%~S~%~S~%~%<COLOR_GREEN>Ok"
+    di-s
+    di-s2
+    di-s3
+    di-s4
+    )
+    (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+    (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+      ;; reset bucket settings prior to drawing - font won't do this for us, and
+      ;; draw-raw-image can sometimes mess them up. (intro sequence)
+      (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+      (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 250 300 0.0 (font-color default) (font-flags middle shadow kerning large))))
+        (set! (-> font-ctx scale) 0.325)
+        (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+)
+
+(when 
+(and 
+(= in-dialogue? #t)
+(cpad-hold? 0 x)
+)
+    (clear matt-str)
+    (clear *pc-encoded-matt-str*)
+    (format matt-str "<COLOR_WHITE>~S~%~S~%~S~%~S~%~%<COLOR_YELLOW>Ok"
+    di-s
+    di-s2
+    di-s3
+    di-s4
+    )
+    (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+    (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+      ;; reset bucket settings prior to drawing - font won't do this for us, and
+      ;; draw-raw-image can sometimes mess them up. (intro sequence)
+      (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+      (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 250 300 0.0 (font-color default) (font-flags middle shadow kerning large))))
+        (set! (-> font-ctx scale) 0.325)
+        (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+)
+
+(when 
+(and 
+(= in-dialogue? #t)
+(not (cpad-hold? 0 x))
+)
+    (clear matt-str)
+    (clear *pc-encoded-matt-str*)
+    (format matt-str "<COLOR_GREEN>-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------~%~%~%~%~%~%~%~%~%-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------"
+    di-s
+    )
+    (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+    (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+      ;; reset bucket settings prior to drawing - font won't do this for us, and
+      ;; draw-raw-image can sometimes mess them up. (intro sequence)
+      (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+      (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 250 285 0.0 (font-color default) (font-flags middle shadow kerning large))))
+        (set! (-> font-ctx scale) 0.325)
+        (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+)
+
+(when 
+(and 
+(= in-dialogue? #t)
+(cpad-hold? 0 x)
+)
+    (clear matt-str)
+    (clear *pc-encoded-matt-str*)
+    (format matt-str "<COLOR_YELLOW>-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------~%~%~%~%~%~%~%~%~%-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------"
+    di-s
+    )
+    (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+    (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+      ;; reset bucket settings prior to drawing - font won't do this for us, and
+      ;; draw-raw-image can sometimes mess them up. (intro sequence)
+      (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+      (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 250 285 0.0 (font-color default) (font-flags middle shadow kerning large))))
+        (set! (-> font-ctx scale) 0.325)
+        (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+)
 
 
 (when (and (>= (-> *game-info* fuel) menu-value)(= in-menu #t)(cpad-pressed? 0 r1))
@@ -1597,7 +1712,7 @@
   )
 )
 
-(when (= reward-orbs #t)
+(when (= reward-orbs #t) ;reward for completing floor with certain health range
   (when (= (-> *target* fact health) 8.0)
       (+! (-> *game-info* skill) (rand-vu-float-range 10.0 15.0))
     )
@@ -1650,13 +1765,21 @@
   (set-setting-by-param *setting-control* 'mode-name 'cam-eye 0 0)
   (persist-with-delay *setting-control* 'gun (seconds 0.5) 'gun #f 0.0 0)
   (process-grab? *target* #f)
+  (set! camera-locked #f)
+)
+
+(when (= camera-unlocked #t)
+  (remove-setting-by-arg0 *setting-control* 'mode-name)
+  (set! pause-menu-blocked? #f)
+  (send-event *target* 'draw #t)
+  (process-release? *target*)
+  (set! camera-unlocked #f)
 )
 
 (when (= wait-exit #t)
   (+! waite-frame 1)
   (remove-setting-by-arg0 *setting-control* 'mode-name)
   (when (= waite-frame 1)
-    (set! camera-locked #f)
     (set! in-menu #f)
   )
   (when (= waite-frame 5)
@@ -1771,6 +1894,42 @@
 (when (and (= p-upgrade-damage #t)(not (logtest? (-> *game-info* features) (game-feature gun-upgrade-damage))))
   (logior! (-> *game-info* features) (game-feature gun-upgrade-damage))
 )
+
+;MODS
+
+(when (= dshotwait-r #t)
+  (+! dshotcount-r 1)
+  (when (= dshotcount-r 3)
+    (someone-fire-red *target* (-> *target* gun fire-point) (-> *target* gun fire-dir-out))
+    (set! dshotcount-r 0)
+    (set! dshotwait-r #f)
+  )
+)
+(when (= dshotwait-y #t)
+  (+! dshotcount-y 1)
+  (when (= dshotcount-y 6)
+    (someone-fire-yellow *target* (-> *target* gun fire-point) (-> *target* gun fire-dir-out))
+    (set! dshotcount-y 0)
+    (set! dshotwait-y #f)
+  )
+)
+(when (= dshotwait-b #t)
+  (+! dshotcount-b 1)
+  (when (= dshotcount-b 2)
+    (someone-fire-blue *target* (-> *target* gun fire-point) (-> *target* gun fire-dir-out))
+    (set! dshotcount-b 0)
+    (set! dshotwait-b #f)
+  )
+)
+(when (= dshotwait-d #t)
+  (+! dshotcount-d 1)
+  (when (= dshotcount-d 6)
+    (someone-fire-dark *target* (-> *target* gun fire-point) (-> *target* gun fire-dir-out))
+    (set! dshotcount-d 0)
+    (set! dshotwait-d #f)
+  )
+)
+
 
 
 #| All of these are set to IDs
@@ -2682,45 +2841,120 @@ Here are the shop IDs
   (task-node-close! (game-task-node city-krew-collection-resolution))
 )
 
+#| clear template
+(when (= log-sec 0)
+    (set! di-s "")
+    (set! di-s2 "")
+    (set! di-s3 "")
+    (set! di-s4 "")
+  )
+  |#
 
-
-
-
-
-;MODS
-
-(when (= dshotwait-r #t)
-  (+! dshotcount-r 1)
-  (when (= dshotcount-r 3)
-    (someone-fire-red *target* (-> *target* gun fire-point) (-> *target* gun fire-dir-out))
-    (set! dshotcount-r 0)
-    (set! dshotwait-r #f)
+(when 
+(and 
+(cpad-pressed? 0 x)
+(= log-id 1)
+(= in-dialogue? #t)
+)
+  (+! log-sec 1)
+  (when (= log-sec 1)
+    (set! di-s "Jak, it's me! Vin! When I dumped my brain into the eco grid,")
+    (set! di-s2 "I found some code that led me to believe that")
+    (set! di-s3 "I'm in a Video Game!!")
+    (set! di-s4 "")
+  )
+  (when (= log-sec 2)
+    (set! di-s "But that's the LEAST of our concerns..")
+    (set! di-s2 "")
+    (set! di-s3 "")
+    (set! di-s4 "")
+  )
+  (when (= log-sec 3)
+    (set! di-s "There's.. He... you-- you've got to get this all back to normal!")
+    (set! di-s2 "")
+    (set! di-s3 "")
+    (set! di-s4 "")
+  )
+  (when (= log-sec 4)
+    (set! di-s "I know there's systematically no way you")
+    (set! di-s2 "can talk back to me, so t-to be fair...oh God!")
+    (set! di-s3 "I'm not even sure you're even getting this transmission!")
+    (set! di-s4 "")
+  )
+  (when (= log-sec 5)
+    (set! di-s "Bu-but if you CAN hear me, listen carefully!")
+    (set! di-s2 "Someone ELSE is in these files. I-I'm not sure who it is,")
+    (set! di-s3 "but I do know he completely wrecked everything.")
+    (set! di-s4 "")
+  )
+  (when (= log-sec 6)
+    (set! di-s "The time loop is shattered! Gone! I was absolutely")
+    (set! di-s2 "tricked into giving you up to him. I'm.... sorry.")
+    (set! di-s3 "")
+    (set! di-s4 "")
+  )
+  (when (= log-sec 7)
+    (set! di-s "You--b-but you're safe! Safe right here in this room,")
+    (set! di-s2 "where he can't hear us. Believe me, there's no possible")
+    (set! di-s3 "way he can track us here... uh.. at least I think so...")
+    (set! di-s4 "Oh man..")
+  )
+  (when (= log-sec 8)
+    (set! di-s "Look, you've got to get back to your original")
+    (set! di-s2 "dimension and restore all of the timelines!")
+    (set! di-s3 "")
+    (set! di-s4 "")
+  )
+  (when (= log-sec 9)
+    (set! di-s "Now, I've calculated all the trajectories,")
+    (set! di-s2 "I can teleport you across infinity, and put")
+    (set! di-s3 "you EXACTLY where you need to be to restore")
+    (set! di-s4 "each timeline.")
+  )
+  (when (= log-sec 10)
+    (set! di-s "The system is automatic, if you complete whatever")
+    (set! di-s2 "you need to do, it'll jump you to the next dimension.")
+    (set! di-s3 "By my calculations, you SHOULD get closer to the")
+    (set! di-s4 "source of all this.")
+  )
+  (when (= log-sec 11)
+    (set! di-s "A-and don't worry if you die, the game tells me")
+    (set! di-s2 "your health and if it ever drops, I'll jump you")
+    (set! di-s3 "back here. But it'll reset our progress..")
+    (set! di-s4 "You've got to stay alive and make it to the end!")
+  )
+  (when (= log-sec 12)
+    (set! di-s "But we'll need more than just your will to")
+    (set! di-s2 "stay alive to repair this horrible travesty.")
+    (set! di-s3 "")
+    (set! di-s4 "")
+  )
+  (when (= log-sec 13)
+    (set! di-s "I-I'll show you what I mean.")
+    (set! di-s2 "")
+    (set! di-s3 "")
+    (set! di-s4 "")
+  )
+  (when (= log-sec 14)
+    (set! log-sec 0)
+    (set! in-dialogue? #f)
+    (set! camera-unlocked #t)
+    (set! intro-wait #t)
   )
 )
-(when (= dshotwait-y #t)
-  (+! dshotcount-y 1)
-  (when (= dshotcount-y 6)
-    (someone-fire-yellow *target* (-> *target* gun fire-point) (-> *target* gun fire-dir-out))
-    (set! dshotcount-y 0)
-    (set! dshotwait-y #f)
+
+(when (= intro-wait #t)
+  (+! intro-waiti 1)
+  (when (= intro-waiti 1)
+    ;(reset! *load-state*)
+  )
+  (when (= intro-waiti 60)
+    (play-task (game-task city-help-kid) 'debug #f)
+    (send-event *target* 'continue (get-continue-by-name *game-info* "ctyslumb-fort"))
   )
 )
-(when (= dshotwait-b #t)
-  (+! dshotcount-b 1)
-  (when (= dshotcount-b 2)
-    (someone-fire-blue *target* (-> *target* gun fire-point) (-> *target* gun fire-dir-out))
-    (set! dshotcount-b 0)
-    (set! dshotwait-b #f)
-  )
-)
-(when (= dshotwait-d #t)
-  (+! dshotcount-d 1)
-  (when (= dshotcount-d 6)
-    (someone-fire-dark *target* (-> *target* gun fire-point) (-> *target* gun fire-dir-out))
-    (set! dshotcount-d 0)
-    (set! dshotwait-d #f)
-  )
-)
+
+
 
 
 
