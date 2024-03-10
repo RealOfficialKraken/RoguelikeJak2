@@ -74,7 +74,6 @@
 
 (let ((v1-3 (copy *walk-mods* 'global)))
   (set! (-> v1-3 name) 'darkjak)
-  (set! (-> v1-3 flags) (surface-flag gun-off))
   (set! *darkjak-trans-mods* v1-3)
   )
 
@@ -259,6 +258,7 @@
   :event (behavior ((proc process) (argc int) (message symbol) (block event-message-block))
     (case message
       (('darkjak)
+      (go target-darkjak-get-off)
        (when (zero? (-> self darkjak want-stage))
          (set! (-> self darkjak want-stage) (the-as darkjak-stage (-> block param 0)))
          #t
@@ -331,7 +331,7 @@
         (suspend)
         )
       )
-    (let ((s5-2 (sound-play "djak-transform")))
+    #|(let ((s5-2 (sound-play "djak-transform")))
       (cond
         ((task-node-open? (game-task-node city-help-kid-battle))
          (ja-channel-push! 1 (seconds 0.1))
@@ -365,13 +365,12 @@
                 )
               (go target-darkjak-get-off)
               )
-              (go target-darkjak-get-off)
             (suspend)
             (ja :num! (seek! (ja-aframe 17.0 0)))
             )
           )
         )
-      )
+      )|#
     (send-event
       *traffic-manager*
       'increase-alert-level
@@ -383,7 +382,7 @@
           2
           )
       )
-    ;(go target-stance)
+    (go target-darkjak-get-off)
     )
   :post (-> target-grab post)
   )
@@ -1757,7 +1756,7 @@
                                             :tiltvf 150.0
                                             :tiltvvf 15.0
                                             :mode 'air
-                                            :flags (surface-flag air attack spin gun-off laser-hide)
+                                            :flags (surface-flag air attack spin laser-hide)
                                             )
             )
       (set! sv-64 0)
@@ -1829,7 +1828,6 @@
       (suspend)
       (ja :num! (seek!))
       )
-    (set-time! (-> self gun surpress-time))
     (send-event (handle->process (-> self notify)) 'notify 'attack 17)
     (go target-darkjak-get-off)
     )

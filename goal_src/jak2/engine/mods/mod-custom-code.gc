@@ -217,7 +217,7 @@
 (and 
 (= wait-tutorial #t)
 (= (pause-allowed?) #t)
-(= (-> (level-get-target-inside *level*) name) 'prison)
+(or (= (-> (level-get-target-inside *level*) name) 'prison) (= (-> (level-get-target-inside *level*) name) 'forexita))
 (= (paused?) #f)
 )
   (+! tutoriali 1)
@@ -2437,9 +2437,9 @@ Here are the shop IDs
     ~%<COLOR_BLUE>  Made by Kraken
     ~%<COLOR_WHITE>Project is about 40 percent done, still have lots of crashes. Playable to Krew Boss.
     ~%
-    ~%When you do <COLOR_GREEN>start your run<COLOR_WHITE>, you will be transported to the dimensions where Jak
+    ~%When you <COLOR_GREEN>start your run<COLOR_WHITE>, you will be transported to the dimensions where Jak
     ~%no longer exists, and you must take his place by completing the missions, and fulfilling the prophecy.
-    ~%Jak dying means <COLOR_RED>Perma-Death<COLOR_WHITE>! Stats like HP, gems, and orbs will transfer levels,
+    ~%Jak dying means <COLOR_RED>Perma-Death<COLOR_WHITE>! Orbs will be rewarded for playing well.
     ~%But if you die, you lose everything!
     ~%
     ~%Talk to Vin upstairs to look at his shop. You can save up <COLOR_PINK>Tokens<COLOR_WHITE> to purchase items
@@ -2479,7 +2479,7 @@ Here are the shop IDs
     ~%
     ~%<COLOR_RED>R1: <COLOR_WHITE>Buy <COLOR_GREEN>~S<COLOR_WHITE> for <COLOR_YELLOW>~d tokens!
     ~%
-    ~%<COLOR_GREEN>Press <COLOR_BLUE>X<COLOR_GREEN> to start the run!"
+    ~%<COLOR_GREEN>Press <COLOR_BLUE>X<COLOR_GREEN> to Continue"
     (the int temp-skullgemamount)
     act-act
     print-stage
