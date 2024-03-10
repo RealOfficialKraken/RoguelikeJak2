@@ -111,28 +111,12 @@
 (define shopid1 0)
 (define shopid2 0)
 (define shopid3 0)
+(define shop-tutorial #f)
 (define teleport-hiphog #f)
 (define already-teleported? #f)
 (define gt-i 0.0)
 (define gf-i 0.0)
 
-(define waitdie #f)
-(define waitdi 0)
-
-(define temp-skullgemamount 0.0)
-(define temp-health 0.0)
-(define temp-orbs 0.0)
-
-(define amountofdeaths 0) ;This is a saved variable inside RLsettings.ini.
-(define menu-value 0.0)
-
-(define in-dialogue? #f)
-(define di-s "")
-(define di-s2 "")
-(define di-s3 "")
-(define di-s4 "")
-(define log-sec 0)
-(define log-id 0)
 
 (define ohshit #f)
 (define ohshiti 0)
@@ -172,7 +156,7 @@
 (= tutorial-completed? #f)
 (= (pause-allowed?) #t)
 (>= (-> *game-info* task-deaths) 1)
-(= (-> (level-get-target-inside *level*) name) 'prison)
+(= (-> (level-get-target-inside *level*) name) 'consiteb)
 )
   (set! (-> *target* fact health) 8.0)
   (play-task (game-task fortress-escape) 'debug #f)
@@ -200,6 +184,10 @@
   (set! p-upgrade-vehicles #f)
   (set! wait-tutorial #f)
   (set! tutoriali 0)
+  (set! tin-game? #f)
+  (set! tin-game-wait #f)
+  (set! tin-wait 0)
+  (set! in-hub? #t)
   (auto-save-user)
 
   (when (= (-> *game-info* total-trys) 7) ;Buffed Vehicles
@@ -301,6 +289,7 @@
   (set! ohshit #f)
   (set! ohshiti 0)
   (send-event (ppointer->process *time-of-day*) 'change 'ratio 1.0) 
+  (set! (-> *target* fact health) 8.0)
 )
 )
 
@@ -1758,7 +1747,21 @@
   )
 )
 
+(when 
+(and 
+(= in-hub? #t) 
+*traffic-manager*
+)
+  (set! start-stage #t)
+)
 
+(when 
+(and 
+(= in-hub? #t) 
+(not *traffic-manager*)
+)
+  (set! start-stage #f)
+)
 ;camera menu
 (when (= camera-locked #t) ;sets camera params
   (send-event *target* 'draw #f)
@@ -1780,6 +1783,7 @@
   (+! waite-frame 1)
   (remove-setting-by-arg0 *setting-control* 'mode-name)
   (when (= waite-frame 1)
+    (set! in-hub? #f)
     (set! in-menu #f)
   )
   (when (= waite-frame 5)
@@ -1811,6 +1815,8 @@
   )
 )
 
+
+
 (when (= waitenter #t)
   (+! waitenteri 1)
   (when (= waitenteri 60)
@@ -1836,7 +1842,7 @@
 (and
 (= (pause-allowed?) #t)
 (= (-> *target* fact health) 0.0)
-(>= (-> *game-info* task-deaths) 1)
+(= in-game? #t)
 *target*
 )
   (set! waitdie #t)
@@ -1856,7 +1862,7 @@
     (+! (-> *game-info* fuel) (-> *game-info* gem))
   )
   (when (= waitdi 30)
-    (send-event *target* 'continue (get-continue-by-name *game-info* "prison-start"))
+    (send-event *target* 'continue (get-continue-by-name *game-info* "consite-airlock"))
     (set! waitdi 0)
     (set! waitdie #f)
   )
@@ -2279,6 +2285,9 @@ Here are the shop IDs
       (set! shopitem2 "(Out of Stock)")
       (set! p-double-shot #t)
     )
+    (when (= in-intro? #t)
+      (set! shop-tutorial #t)
+    )
   )
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -2420,7 +2429,7 @@ Here are the shop IDs
 )
 
 ;menu params
-(when (and (= in-menu #t)(= (paused?) #f)(= (-> *game-info* task-deaths) 0)(not (cpad-pressed? 0 x)))
+(when (and (= in-menu #t)(= (paused?) #f)(= (-> *game-info* task-deaths) 1)(not (cpad-pressed? 0 x)))
   (clear matt-str)
     (clear *pc-encoded-matt-str*)
     (format matt-str "
@@ -2428,18 +2437,18 @@ Here are the shop IDs
     ~%<COLOR_BLUE>  Made by Kraken
     ~%<COLOR_WHITE>Project is about 40 percent done, still have lots of crashes. Playable to Krew Boss.
     ~%
-    <COLOR_WHITE>~%Continuing from the Easter Egg in HeroMode+:
-    ~%The mysterious villain has dominated the world across vast dimensions, and
-    ~%the Jak time loop is completely wrecked.
-    ~%
-    ~%But there is still hope.
-    ~%
-    ~%When you <COLOR_GREEN>start your run<COLOR_WHITE>, you will be transported to the dimensions where Jak
+    ~%When you do <COLOR_GREEN>start your run<COLOR_WHITE>, you will be transported to the dimensions where Jak
     ~%no longer exists, and you must take his place by completing the missions, and fulfilling the prophecy.
-    ~%Grab orbs, Skull Gems, and get as powerful as you can! Every level gives you orbs based on how well you do!
-    ~%Jak dying means <COLOR_RED>perma-death<COLOR_WHITE>!
+    ~%Jak dying means <COLOR_RED>Perma-Death<COLOR_WHITE>! Stats like HP, gems, and orbs will transfer levels,
+    ~%But if you die, you lose everything!
     ~%
-    ~%<COLOR_GREEN>Press <COLOR_BLUE>X<COLOR_GREEN> to start the run!"
+    ~%Talk to Vin upstairs to look at his shop. You can save up <COLOR_PINK>Tokens<COLOR_WHITE> to purchase items
+    ~%to put into your run! <COLOR_PINK>Tokens<COLOR_WHITE> are obtained from collecting skull gems.
+    ~%
+    ~%You can exit the level to <COLOR_GREEN>start your run<COLOR_WHITE>.
+    ~%
+    ~%
+    ~%<COLOR_BLUE>X<COLOR_GREEN> Continue"
     )
     (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
     (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
@@ -2447,37 +2456,6 @@ Here are the shop IDs
       ;; draw-raw-image can sometimes mess them up. (intro sequence)
       (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
       (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 250 55 0.0 (font-color default) (font-flags middle shadow kerning large))))
-        (set! (-> font-ctx scale) 0.325)
-        (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
-)
-
-(when (and (= in-menu #t)(= (paused?) #f)(= (-> *game-info* task-deaths) 1)(not (cpad-pressed? 0 x)))
-  (clear matt-str)
-    (clear *pc-encoded-matt-str*)
-    (format matt-str "
-    <COLOR_WHITE>Welcome to<COLOR_RED> Roguelike Jak II<COLOR_WHITE>!
-    ~%<COLOR_BLUE>  Made by Kraken
-    ~%
-    ~%
-    <COLOR_RED>~%Wow! You died! How punishing---
-    ~%<COLOR_WHITE>The good thing here is that what you do in your run, is saved in this room.
-    ~%Like the <COLOR_YELLOW>~d Skull Gems<COLOR_WHITE> you acquired.
-    ~%They're all saved in additive to your OTHER currency.
-    ~%Your Tokens.
-    ~%
-    ~%You can use these to purchase items to put in the <COLOR_GREEN>shop at the <COLOR_PINK>HipHog!
-    ~%<COLOR_WHITE>The shop has <COLOR_GREEN>3 random items<COLOR_WHITE> that refresh after every boss, or every new run.
-    ~%You can press <COLOR_RED>R1<COLOR_WHITE> to purchase your next item to add to the shop for 200 Tokens.
-    ~%
-    ~%<COLOR_GREEN>Press <COLOR_BLUE>X<COLOR_GREEN> to start the run!"
-    (the int temp-skullgemamount)
-    )
-    (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
-    (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
-      ;; reset bucket settings prior to drawing - font won't do this for us, and
-      ;; draw-raw-image can sometimes mess them up. (intro sequence)
-      (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
-      (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 250 65 0.0 (font-color default) (font-flags middle shadow kerning large))))
         (set! (-> font-ctx scale) 0.325)
         (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
 )
@@ -2519,10 +2497,47 @@ Here are the shop IDs
         (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
 )
 
-(when (and (= in-menu #t)(cpad-pressed? 0 x))
+(when (and (= start-stage #t)(cpad-pressed? 0 r3))
   (set! tutorial-completed? #t)
   (set! wait-exit #t)
+  (set! start-stage #f)
+  (set! in-hub? #f)
+)
+
+(when (and (= in-menu #t) (cpad-pressed? 0 x))
+  (set! camera-unlocked #t)
+  (set! pause-menu-blocked? #f)
   (set! in-menu #f)
+)
+
+(when (and (= start-stage #t)(not (cpad-hold? 0 r3)))
+   (clear matt-str)
+    (clear *pc-encoded-matt-str*)
+    (format matt-str "<COLOR_RED>R3<COLOR_WHITE>:<COLOR_GREEN> Start Run"
+    )
+    (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+    (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+      ;; reset bucket settings prior to drawing - font won't do this for us, and
+      ;; draw-raw-image can sometimes mess them up. (intro sequence)
+      (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+      (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 0 245 0.0 (font-color default) (font-flags shadow kerning large))))
+        (set! (-> font-ctx scale) 0.325)
+        (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+)
+
+(when (and (= start-stage #t)(cpad-hold? 0 r3))
+   (clear matt-str)
+    (clear *pc-encoded-matt-str*)
+    (format matt-str "<COLOR_WHITE>R3<COLOR_WHITE>:<COLOR_YELLOW> Start Run"
+    )
+    (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+    (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+      ;; reset bucket settings prior to drawing - font won't do this for us, and
+      ;; draw-raw-image can sometimes mess them up. (intro sequence)
+      (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+      (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 0 245 0.0 (font-color default) (font-flags shadow kerning large))))
+        (set! (-> font-ctx scale) 0.325)
+        (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
 )
 
 #| shop
@@ -2940,22 +2955,114 @@ Here are the shop IDs
     (set! in-dialogue? #f)
     (set! camera-unlocked #t)
     (set! intro-wait #t)
+    (set! in-intro? #t)
+    (set! intro-sec 1)
   )
 )
 
 (when (= intro-wait #t)
   (+! intro-waiti 1)
   (when (= intro-waiti 1)
-    ;(reset! *load-state*)
+    (reset! *load-state*)
   )
   (when (= intro-waiti 60)
-    (play-task (game-task city-help-kid) 'debug #f)
-    (send-event *target* 'continue (get-continue-by-name *game-info* "ctyslumb-fort"))
+    (set! tin-game-wait #t)
+    (set! intro-wait #f)
+    (set! intro-waiti 0)
   )
 )
 
+(when (= di-wait #t)
+  (+! di-w 1)
+  (when (= di-w 30)
+    (set! camera-locked #t)
+    (set! in-dialogue? #t)
+    (set! di-w 0)
+    (set! di-wait #f)
+  )
+)
 
+(when (and (cpad-pressed? 0 x)(= intro-sec 1)(= in-dialogue? #t)(= in-intro? #t)) ;teleports you to city-help-kid 1st time
+  (set! intro-sec 2)
+  (set! camera-unlocked #t)
+  (set! in-dialogue? #f)
+  (set! tin-game-wait #t)
+  (send-event (ppointer->process *time-of-day*) 'change 'hour 20)
+)
+(when (and (cpad-pressed? 0 x)(= intro-sec 2)(= in-dialogue? #t)(= in-intro? #t)) ;teleports you to shop 1st time
+  (set! intro-sec 3)
+  (set! (-> *game-info* skill) 70.0)
+  (set! camera-unlocked #t)
+  (set! in-dialogue? #f)
+  (set! tin-game-wait #t)
+  (send-event (ppointer->process *time-of-day*) 'change 'hour 6)
+)
 
+(when (and (= shop-tutorial #t) (!= (-> (level-get-target-inside *level*) name) 'hiphog)) ;teleports you to city-help-kid for 3rd and final time
+  (send-event (ppointer->process *time-of-day*) 'change 'hour 20)
+  (play-task (game-task city-help-kid) 'debug #f)
+  (send-event *target* 'continue (get-continue-by-name *game-info* "ctyslumb-fort"))
+  (set! intro-sec 4)
+  (set! tin-game-wait #t)
+  (set! shop-tutorial #f)
+  (set! in-dialogue? #f)
+  (set! camera-unlocked #t)
+)
+
+(when 
+(and 
+(not (logtest? (-> *game-info* features) (game-feature gun gun-red)))
+(= intro-sec 4)
+)
+  (logior! (-> *game-info* features) (game-feature gun gun-red))
+)
+
+(when (and (cpad-pressed? 0 x)(= intro-sec 4)(= in-dialogue? #t)(= in-intro? #t)) ;teleports you to shop 1st time
+  (set! intro-sec 5)
+  (set! (-> *game-info* task-deaths) 1)
+  (auto-save-user)
+  (set! in-intro? #f)
+  (send-event *target* 'continue (get-continue-by-name *game-info* "consite-airlock"))
+  (play-task (game-task fortress-escape) 'debug #f)
+  (set! in-dialogue? #f)
+  (set! camera-unlocked #t)
+)
+
+(when (= tin-game-wait #t)
+  (+! tin-wait 1)
+  (when (= tin-wait 1)
+    (set! log-id 2)
+    (when (= intro-sec 1)
+      (play-task (game-task city-help-kid) 'debug #f)
+    (send-event *target* 'continue (get-continue-by-name *game-info* "ctyslumb-fort"))
+    )
+    (when (= intro-sec 2)
+      (play-task (game-task city-help-kid) 'debug #f)
+    (send-event *target* 'continue (get-continue-by-name *game-info* "ctyslumb-fort"))
+    )
+    (when (= intro-sec 3)
+      (task-node-close! (game-task-node nest-boss-resolution))
+    (send-event *target* 'continue (get-continue-by-name *game-info* "ctyport-hiphog"))
+    (set! shopitem1 "Yellow Gun (25 orbs)")
+    (set! shopid1 1)
+    (set! shopitem2 "Double Shot (25 orbs)")
+    (set! shopid2 9)
+    (set! shopitem3 "Upgrade Damage x2 (20 orbs)")
+    (set! shopid3 6)
+    )
+    (when (= intro-sec 5)
+      (play-task (game-task city-help-kid) 'debug #f)
+    (send-event *target* 'continue (get-continue-by-name *game-info* "consite-airlock"))
+    )
+  )
+  (when (= tin-wait 121)
+    (when (not (task-node-closed? (game-task-node nest-boss-resolution)))
+      (set! tin-game? #t)
+    )
+    (set! tin-wait 0)
+    (set! tin-game-wait #f)
+  )
+)
 
 
 #|

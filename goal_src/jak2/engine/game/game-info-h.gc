@@ -10,7 +10,12 @@
 (declare-type game-save basic)
 
 (define in-game? #f)
+(define tin-game? #f)
+(define tin-game-wait #f)
+(define tin-wait 0)
 (define level-completed? #f)
+
+(define start-stage #f)
 
 (define avoidc-waitb #f);this is to avoid glitches when completing missions while still in vehicles or turrets
 (define avoidc-wait 0) ;this is to avoid glitches when completing missions while still in vehicles or turrets
@@ -22,6 +27,27 @@
 (define unlock-gunyellow #f)
 (define unlock-gunblue #f)
 (define unlock-gundark #f)
+
+(define di-wait #f)
+(define di-w 0)
+
+(define waitdie #f)
+(define waitdi 0)
+
+(define temp-skullgemamount 0.0)
+(define temp-health 0.0)
+(define temp-orbs 0.0)
+
+(define amountofdeaths 0) ;This is a saved variable inside RLsettings.ini.
+(define menu-value 0.0)
+
+(define in-dialogue? #f)
+(define di-s "")
+(define di-s2 "")
+(define di-s3 "")
+(define di-s4 "")
+(define log-sec 0)
+(define log-id 0)
 
 
 (define roll-shopitems #f)
@@ -55,6 +81,11 @@
 (define dshotcount-y 0)
 (define dshotwait-d #f)
 (define dshotcount-d 0)
+
+(define in-intro? #f)
+(define intro-sec 0)
+
+(define in-hub? #f)
 
 (defenum pickup-type
   :bitfield #f

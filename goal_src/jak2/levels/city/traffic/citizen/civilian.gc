@@ -121,6 +121,10 @@
      (go-inactive this)
      )
     (else
+  (set! (-> this hit-points) (-> this enemy-info default-hit-points))
+  (when (= intro-sec 2)
+    (set! (-> this hit-points) (+ (-> this enemy-info default-hit-points) 6))
+  )
   (when (= (-> *game-info* buzzer-total) 1.0)
     (set! (-> this hit-points) (-> this enemy-info default-hit-points))
   )
