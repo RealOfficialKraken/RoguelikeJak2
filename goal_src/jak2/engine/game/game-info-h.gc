@@ -86,6 +86,7 @@
 (define intro-sec 0)
 
 (define in-hub? #f)
+(define talk-to-vin #f)
 
 (defenum pickup-type
   :bitfield #f

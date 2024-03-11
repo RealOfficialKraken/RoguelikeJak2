@@ -466,5 +466,10 @@
   "entity-debug.o" ;; added
   "mod-settings.o" ;; added
   "mod-common-functions.o" ;; added
+  "vin-ag.go"
+  "vinroom-vis.go"
+  "vinroom-scenes.o"
+  "vinroom-obs.o"
+  "vinroom-part.o"
   "mod-custom-code.o" ;; added
  ))

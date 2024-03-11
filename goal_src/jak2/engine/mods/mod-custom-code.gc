@@ -7,10 +7,10 @@
 
 
     ;;;;;;;;;;;;;;;;;;;;;;;;;;
-    ;; What is this file for.
+    ;; What is self file for.
     ;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-    #| This file contains function defenitions that are pre placed in the mod base,
+    #| self file contains function defenitions that are pre placed in the mod base,
     so if you place custom code inside of these functions, it will exectue based on
     the name of the function, for example, if you place (set! (-> *game-info* fuel) (+ (-> *game-info* fuel) 1))
     to the function named runs-on-orb-pickup, then jaks powercell count will increase each time you collect
@@ -85,6 +85,14 @@
 (define wait-for-ingame #f)
 (define waiting 0)
 
+(define vin-spawned? #f)
+(define waitspawn 0)
+(define wait-vinspawn #f)
+
+(define save-slot 0)
+
+(define run-in-progress #f)
+
 (define give-gunred? #f)
 
 ;menu funct
@@ -116,6 +124,11 @@
 (define already-teleported? #f)
 (define gt-i 0.0)
 (define gf-i 0.0)
+(define vin-shop #f)
+(define wait-loading #f)
+(define load-w 0)
+
+(define vin-shop-s "")
 
 
 (define ohshit #f)
@@ -126,6 +139,52 @@
 (define intro-wait #f)
 (define intro-waiti 0)
 
+(define autosave-delayed #f)
+(define save-w 0)
+
+
+
+
+
+
+  (deftype vin-npc (process-taskable)
+  ()
+  )
+
+
+(defskelgroup skel-vin vin vin-lod0-jg vin-idle-ja
+              ((vin-lod0-mg (meters 999999)))
+              :bounds (static-spherem 0 0 0 10)
+              :shadow vin-shadow-mg
+              :origin-joint-index 3
+              )
+
+
+(defmethod init-art! ((this vin-npc))
+  "@see [[initialize-skeleton]]"
+  (initialize-skeleton
+    this
+    (the-as skeleton-group (art-group-get-by-name *level* "skel-vin" (the-as (pointer uint32) #f)))
+    (the-as pair 0)
+    )
+  (none)
+  )
+
+(defbehavior vin-npc-init-by-other vin-npc ((vec vector))
+  (stack-size-set! (-> self main-thread) 512)
+  (process-taskable-method-31 self)
+  (logior! (-> self mask) (process-mask actor-pause))
+  (vector-copy! (-> self root trans) vec)
+  (quaternion-identity! (-> self root quat))
+  (vector-identity! (-> self root scale))
+  (set! (-> self task) (new 'process 'game-task-control (game-task-actor vin-vinroom)))
+  (init-art! self)
+  (process-taskable-method-32 self)
+  (set! (-> self event-hook) (-> (method-of-object self idle) event))
+  (go (method-of-object self hide))
+  (none)
+  )
+
 
 
 
@@ -133,6 +192,30 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
     (defun runs-every-frame ()
+
+(when (and 
+(!= (-> *progress-state* which-slot) -1)
+(!= (-> *progress-state* which-slot) save-slot)
+)
+  (set! save-slot (-> *progress-state* which-slot))
+)
+
+(when (= autosave-delayed #t)
+  (+! save-w 1)
+  (when (= save-w 120)
+    (set! save-w 0)
+    (set! autosave-delayed #f)
+    (when 
+    (or
+      (= save-slot 0)
+      (= save-slot 1)
+      (= save-slot 2)
+      (= save-slot 3)
+    )
+      (auto-save-command 'save 0 save-slot *default-pool* #f)
+    )
+  )
+)
 
 ;Checks to see if there's a new game, then sets you to look-around camera with the main menu.
 (when ;is new game started?
@@ -146,7 +229,6 @@
 )
   (set! wait-tutorial #t)
   (set! (-> *game-info* total-trys) 7)
-  (auto-save-user)
 )
 
 ;Checks to see if there's a new game, then sets you to look-around camera with the main menu.
@@ -159,7 +241,7 @@
 (= (-> (level-get-target-inside *level*) name) 'consiteb)
 )
   (set! (-> *target* fact health) 8.0)
-  (play-task (game-task fortress-escape) 'debug #f)
+  (play-task (game-task drill-eggs) 'debug #f)
   (set! wait-start #t)
   (set! act-before1 0)
   (set! act-before2 0)
@@ -187,8 +269,8 @@
   (set! tin-game? #f)
   (set! tin-game-wait #f)
   (set! tin-wait 0)
-  (set! in-hub? #t)
-  (auto-save-user)
+  ;(set! wait-loading #t)
+  (set! autosave-delayed #t)
 
   (when (= (-> *game-info* total-trys) 7) ;Buffed Vehicles
     (set! menu-value 200.0)
@@ -213,6 +295,16 @@
   )
 )
 
+
+(when (= wait-loading #t)
+  (+! load-w 1)
+  (when (= load-w 300)
+    (script-eval '(want-load 'vinroom 'consiteb))
+    (set! load-w 0)
+    (set! wait-loading #f)
+  )
+)
+
 (when ;tutorial for tp jak out of fortress
 (and 
 (= wait-tutorial #t)
@@ -229,6 +321,28 @@
     (set! wait-tutorial #f)
   )
 )
+
+#|(when ;closed off to come back to later on
+(and 
+(= in-hub? #t)
+(= vin-spawned? #f)
+*target*
+(= (pause-allowed?) #t)
+(= (paused?) #f)
+)
+  (set! wait-vinspawn #t)
+)|#
+
+(when (= wait-vinspawn #t)
+  (+! waitspawn 1)
+  (when (= waitspawn 300)
+  (process-spawn vin-npc (new 'static 'vector :x (meters 755.3596) :y (meters 18.15) :z (meters 907.9631)))
+  (set! vin-spawned? #t)
+  (set! waitspawn 0)
+  (set! wait-vinspawn #f)
+  )
+)
+
 
 (when ;when the easter egg happens from HM+
 (and 
@@ -301,8 +415,6 @@
   (when (= waitdiei 120)
     (play-task (game-task drill-eggs) 'debug #f)
     (script-eval '(want-load 'vinroom 'consiteb))
-    (script-eval '(want-display 'vinroom))
-    (script-eval '(want-display 'consiteb))
     (set! in-dialogue? #t)
     (set! log-sec 0)
     (set! log-id 1)
@@ -340,7 +452,7 @@
     )
     (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
     (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
-      ;; reset bucket settings prior to drawing - font won't do this for us, and
+      ;; reset bucket settings prior to drawing - font won't do self for us, and
       ;; draw-raw-image can sometimes mess them up. (intro sequence)
       (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
       (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 250 300 0.0 (font-color default) (font-flags middle shadow kerning large))))
@@ -363,7 +475,7 @@
     )
     (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
     (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
-      ;; reset bucket settings prior to drawing - font won't do this for us, and
+      ;; reset bucket settings prior to drawing - font won't do self for us, and
       ;; draw-raw-image can sometimes mess them up. (intro sequence)
       (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
       (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 250 300 0.0 (font-color default) (font-flags middle shadow kerning large))))
@@ -383,7 +495,7 @@
     )
     (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
     (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
-      ;; reset bucket settings prior to drawing - font won't do this for us, and
+      ;; reset bucket settings prior to drawing - font won't do self for us, and
       ;; draw-raw-image can sometimes mess them up. (intro sequence)
       (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
       (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 250 285 0.0 (font-color default) (font-flags middle shadow kerning large))))
@@ -403,7 +515,7 @@
     )
     (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
     (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
-      ;; reset bucket settings prior to drawing - font won't do this for us, and
+      ;; reset bucket settings prior to drawing - font won't do self for us, and
       ;; draw-raw-image can sometimes mess them up. (intro sequence)
       (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
       (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 250 285 0.0 (font-color default) (font-flags middle shadow kerning large))))
@@ -412,27 +524,27 @@
 )
 
 
-(when (and (>= (-> *game-info* fuel) menu-value)(= in-menu #t)(cpad-pressed? 0 r1))
+(when (and (>= (-> *game-info* fuel) menu-value)(= vin-shop #t)(cpad-pressed? 0 r1))
   (-! (-> *game-info* fuel) menu-value)
   (when (= (-> *game-info* total-trys) 9)
     (set! (-> *game-info* total-trys) 10)
-    (auto-save-user)
+    (set! autosave-delayed #t)
   )
   (when (= (-> *game-info* total-trys) 8)
     (set! (-> *game-info* total-trys) 9)
-    (auto-save-user)
+    (set! autosave-delayed #t)
   )
   (when (= (-> *game-info* total-trys) 7)
     (set! (-> *game-info* total-trys) 8)
     (set! menu-value 210.0)
     (set! mod-s "Double Shot")
-    (auto-save-user)
+    (set! autosave-delayed #t)
   )
 )
 
 
 
-;This is the randomizer. It teleports the player to a random stage in a certain act, and then sets their task.
+;self is the randomizer. It teleports the player to a random stage in a certain act, and then sets their task.
     (when (= act1-1 #t)
       (let (
         (level-pick (rand-vu-int-range 1 8))
@@ -1750,6 +1862,8 @@
 (when 
 (and 
 (= in-hub? #t) 
+(= (paused?) #f)
+(= (pause-allowed?) #t)
 *traffic-manager*
 )
   (set! start-stage #t)
@@ -1757,11 +1871,105 @@
 
 (when 
 (and 
-(= in-hub? #t) 
+(= (paused?) #f)
+(= (pause-allowed?) #t)
+(= in-menu #f) 
+(= in-hub? #t)
 (not *traffic-manager*)
 )
   (set! start-stage #f)
 )
+
+(when (and (= vin-shop #t))
+  (clear matt-str)
+    (clear *pc-encoded-matt-str*)
+    (format matt-str "
+    <COLOR_WHITE>Vin:
+    ~%Jak! I've found something that might be of interest to us.
+    ~%There's a <COLOR_GREEN>Green Eco Shard<COLOR_WHITE> that a <COLOR_RED>Krimzon Guard<COLOR_WHITE> has.
+    ~%It's somewhere in Act 1, if you see it, please grab it!
+    ~%
+    ~%
+    ~%
+    ~%
+    ~%
+    ~%<COLOR_WHITE>Current Tokens:
+    ~%<COLOR_PINK>~d
+    ~%
+    ~%<COLOR_RED>R1: <COLOR_WHITE>Buy <COLOR_GREEN>~S<COLOR_WHITE> to permenantly put in the shop for <COLOR_YELLOW>~d Tokens!
+    ~%
+    ~%<COLOR_GREEN>Press <COLOR_RED>R3<COLOR_GREEN> to Exit"
+    (the int (-> *game-info* fuel))
+    mod-s
+    (the int menu-value)
+    )
+    (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+    (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+      ;; reset bucket settings prior to drawing - font won't do self for us, and
+      ;; draw-raw-image can sometimes mess them up. (intro sequence)
+      (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+      (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 250 65 0.0 (font-color default) (font-flags middle shadow kerning large))))
+        (set! (-> font-ctx scale) 0.325)
+        (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+)
+
+(when 
+(and 
+(= vin-shop #f) 
+(= (paused?) #f)
+(= (pause-allowed?) #t)
+(= in-menu #f) 
+(= start-stage #f) 
+(= in-hub? #t)
+)
+  (clear matt-str)
+    (clear *pc-encoded-matt-str*)
+    (format matt-str "<COLOR_GREEN>Triangle<COLOR_WHITE>:<COLOR_WHITE> Talk with Vin"
+    )
+    (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+    (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+      ;; reset bucket settings prior to drawing - font won't do self for us, and
+      ;; draw-raw-image can sometimes mess them up. (intro sequence)
+      (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+      (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 0 245 0.0 (font-color default) (font-flags shadow kerning large))))
+        (set! (-> font-ctx scale) 0.325)
+        (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+)
+
+(when 
+(and 
+(= vin-shop #f)
+(= start-stage #f)
+(= in-hub? #t)
+(cpad-pressed? 0 triangle))
+  (set! vin-shop #t)
+  (set! camera-locked #t)
+)
+
+(when 
+(and 
+(= in-game? #f)
+(= (paused?) #f)
+(= (pause-allowed?) #t)
+*target*
+(= run-in-progress #f)
+(>= (-> *game-info* task-deaths) 1)
+(not (= (-> (level-get-target-inside *level*) name) 'consiteb))
+)
+  (send-event *target* 'continue (get-continue-by-name *game-info* "consite-airlock"))
+)
+
+(when 
+(and 
+(= vin-shop #t)
+(= start-stage #f)
+(= in-hub? #t)
+(cpad-pressed? 0 r3)
+)
+  (set! vin-shop #f)
+  (set! camera-unlocked #t)
+)
+
 ;camera menu
 (when (= camera-locked #t) ;sets camera params
   (send-event *target* 'draw #f)
@@ -1785,6 +1993,7 @@
   (when (= waite-frame 1)
     (set! in-hub? #f)
     (set! in-menu #f)
+    (set! run-in-progress #t)
   )
   (when (= waite-frame 5)
     (set! pause-menu-blocked? #f)
@@ -1799,6 +2008,7 @@
     (set! print-stage 0)
     (set! level-completed? #t)
     (set! display-run #t)
+    (set! vin-spawned? #f)
   )
 )
 (when (= wait-start #t)
@@ -1812,6 +2022,7 @@
     (set! waits-frame 0)
     (set! camera-locked #t)
     (set! pause-menu-blocked? #t)
+    (set! in-hub? #t)
   )
 )
 
@@ -1845,6 +2056,7 @@
 (= in-game? #t)
 *target*
 )
+  (set! run-in-progress #f)
   (set! waitdie #t)
   (set! in-game? #f)
   (set! avoidc-waitb #f)
@@ -2298,7 +2510,7 @@ Here are the shop IDs
     )
     (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
     (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
-      ;; reset bucket settings prior to drawing - font won't do this for us, and
+      ;; reset bucket settings prior to drawing - font won't do self for us, and
       ;; draw-raw-image can sometimes mess them up. (intro sequence)
       (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
       (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 0 245 0.0 (font-color default) (font-flags shadow kerning large))))
@@ -2323,7 +2535,7 @@ Here are the shop IDs
     )
     (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
     (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
-      ;; reset bucket settings prior to drawing - font won't do this for us, and
+      ;; reset bucket settings prior to drawing - font won't do self for us, and
       ;; draw-raw-image can sometimes mess them up. (intro sequence)
       (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
       (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 0 245 0.0 (font-color default) (font-flags shadow kerning large))))
@@ -2356,7 +2568,7 @@ Here are the shop IDs
     )
     (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
     (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
-      ;; reset bucket settings prior to drawing - font won't do this for us, and
+      ;; reset bucket settings prior to drawing - font won't do self for us, and
       ;; draw-raw-image can sometimes mess them up. (intro sequence)
       (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
       (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 125 55 0.0 (font-color default) (font-flags middle shadow kerning large))))
@@ -2388,7 +2600,7 @@ Here are the shop IDs
     )
     (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
     (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
-      ;; reset bucket settings prior to drawing - font won't do this for us, and
+      ;; reset bucket settings prior to drawing - font won't do self for us, and
       ;; draw-raw-image can sometimes mess them up. (intro sequence)
       (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
       (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 125 55 0.0 (font-color default) (font-flags middle shadow kerning large))))
@@ -2420,7 +2632,7 @@ Here are the shop IDs
     )
     (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
     (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
-      ;; reset bucket settings prior to drawing - font won't do this for us, and
+      ;; reset bucket settings prior to drawing - font won't do self for us, and
       ;; draw-raw-image can sometimes mess them up. (intro sequence)
       (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
       (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 125 55 0.0 (font-color default) (font-flags middle shadow kerning large))))
@@ -2452,7 +2664,7 @@ Here are the shop IDs
     )
     (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
     (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
-      ;; reset bucket settings prior to drawing - font won't do this for us, and
+      ;; reset bucket settings prior to drawing - font won't do self for us, and
       ;; draw-raw-image can sometimes mess them up. (intro sequence)
       (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
       (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 250 55 0.0 (font-color default) (font-flags middle shadow kerning large))))
@@ -2477,7 +2689,7 @@ Here are the shop IDs
     ~%<COLOR_WHITE>Current Tokens:
     ~%<COLOR_PINK>~d
     ~%
-    ~%<COLOR_RED>R1: <COLOR_WHITE>Buy <COLOR_GREEN>~S<COLOR_WHITE> for <COLOR_YELLOW>~d tokens!
+    ~%
     ~%
     ~%<COLOR_GREEN>Press <COLOR_BLUE>X<COLOR_GREEN> to Continue"
     (the int temp-skullgemamount)
@@ -2489,7 +2701,7 @@ Here are the shop IDs
     )
     (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
     (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
-      ;; reset bucket settings prior to drawing - font won't do this for us, and
+      ;; reset bucket settings prior to drawing - font won't do self for us, and
       ;; draw-raw-image can sometimes mess them up. (intro sequence)
       (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
       (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 250 65 0.0 (font-color default) (font-flags middle shadow kerning large))))
@@ -2517,7 +2729,7 @@ Here are the shop IDs
     )
     (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
     (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
-      ;; reset bucket settings prior to drawing - font won't do this for us, and
+      ;; reset bucket settings prior to drawing - font won't do self for us, and
       ;; draw-raw-image can sometimes mess them up. (intro sequence)
       (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
       (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 0 245 0.0 (font-color default) (font-flags shadow kerning large))))
@@ -2532,7 +2744,7 @@ Here are the shop IDs
     )
     (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
     (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
-      ;; reset bucket settings prior to drawing - font won't do this for us, and
+      ;; reset bucket settings prior to drawing - font won't do self for us, and
       ;; draw-raw-image can sometimes mess them up. (intro sequence)
       (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
       (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 0 245 0.0 (font-color default) (font-flags shadow kerning large))))
@@ -2552,7 +2764,7 @@ Here are the shop IDs
     )
     (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
     (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
-      ;; reset bucket settings prior to drawing - font won't do this for us, and
+      ;; reset bucket settings prior to drawing - font won't do self for us, and
       ;; draw-raw-image can sometimes mess them up. (intro sequence)
       (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
       (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 250 0 0.0 (font-color default) (font-flags shadow middle kerning large))))
@@ -2566,7 +2778,7 @@ Here are the shop IDs
     )
     (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
     (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
-      ;; reset bucket settings prior to drawing - font won't do this for us, and
+      ;; reset bucket settings prior to drawing - font won't do self for us, and
       ;; draw-raw-image can sometimes mess them up. (intro sequence)
       (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
       (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 250 0 0.0 (font-color default) (font-flags shadow middle kerning large))))
@@ -2580,7 +2792,7 @@ Here are the shop IDs
     )
     (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
     (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
-      ;; reset bucket settings prior to drawing - font won't do this for us, and
+      ;; reset bucket settings prior to drawing - font won't do self for us, and
       ;; draw-raw-image can sometimes mess them up. (intro sequence)
       (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
       (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 250 0 0.0 (font-color default) (font-flags shadow middle kerning large))))
@@ -2594,7 +2806,7 @@ Here are the shop IDs
     )
     (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
     (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
-      ;; reset bucket settings prior to drawing - font won't do this for us, and
+      ;; reset bucket settings prior to drawing - font won't do self for us, and
       ;; draw-raw-image can sometimes mess them up. (intro sequence)
       (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
       (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 250 0 0.0 (font-color default) (font-flags shadow middle kerning large))))
@@ -2608,7 +2820,7 @@ Here are the shop IDs
     )
     (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
     (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
-      ;; reset bucket settings prior to drawing - font won't do this for us, and
+      ;; reset bucket settings prior to drawing - font won't do self for us, and
       ;; draw-raw-image can sometimes mess them up. (intro sequence)
       (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
       (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 250 0 0.0 (font-color default) (font-flags shadow middle kerning large))))
@@ -2623,7 +2835,7 @@ Here are the shop IDs
     )
     (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
     (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
-      ;; reset bucket settings prior to drawing - font won't do this for us, and
+      ;; reset bucket settings prior to drawing - font won't do self for us, and
       ;; draw-raw-image can sometimes mess them up. (intro sequence)
       (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
       (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 250 0 0.0 (font-color default) (font-flags shadow middle kerning large))))
@@ -2637,7 +2849,7 @@ Here are the shop IDs
     )
     (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
     (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
-      ;; reset bucket settings prior to drawing - font won't do this for us, and
+      ;; reset bucket settings prior to drawing - font won't do self for us, and
       ;; draw-raw-image can sometimes mess them up. (intro sequence)
       (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
       (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 250 0 0.0 (font-color default) (font-flags shadow middle kerning large))))
@@ -2651,7 +2863,7 @@ Here are the shop IDs
     )
     (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
     (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
-      ;; reset bucket settings prior to drawing - font won't do this for us, and
+      ;; reset bucket settings prior to drawing - font won't do self for us, and
       ;; draw-raw-image can sometimes mess them up. (intro sequence)
       (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
       (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 250 0 0.0 (font-color default) (font-flags shadow middle kerning large))))
@@ -2665,7 +2877,7 @@ Here are the shop IDs
     )
     (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
     (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
-      ;; reset bucket settings prior to drawing - font won't do this for us, and
+      ;; reset bucket settings prior to drawing - font won't do self for us, and
       ;; draw-raw-image can sometimes mess them up. (intro sequence)
       (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
       (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 250 0 0.0 (font-color default) (font-flags shadow middle kerning large))))
@@ -2679,7 +2891,7 @@ Here are the shop IDs
     )
     (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
     (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
-      ;; reset bucket settings prior to drawing - font won't do this for us, and
+      ;; reset bucket settings prior to drawing - font won't do self for us, and
       ;; draw-raw-image can sometimes mess them up. (intro sequence)
       (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
       (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 250 0 0.0 (font-color default) (font-flags shadow middle kerning large))))
@@ -2695,7 +2907,7 @@ Here are the shop IDs
     )
     (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
     (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
-      ;; reset bucket settings prior to drawing - font won't do this for us, and
+      ;; reset bucket settings prior to drawing - font won't do self for us, and
       ;; draw-raw-image can sometimes mess them up. (intro sequence)
       (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
       (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 250 0 0.0 (font-color default) (font-flags shadow middle kerning large))))
@@ -2709,7 +2921,7 @@ Here are the shop IDs
     )
     (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
     (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
-      ;; reset bucket settings prior to drawing - font won't do this for us, and
+      ;; reset bucket settings prior to drawing - font won't do self for us, and
       ;; draw-raw-image can sometimes mess them up. (intro sequence)
       (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
       (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 250 0 0.0 (font-color default) (font-flags shadow middle kerning large))))
@@ -2723,7 +2935,7 @@ Here are the shop IDs
     )
     (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
     (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
-      ;; reset bucket settings prior to drawing - font won't do this for us, and
+      ;; reset bucket settings prior to drawing - font won't do self for us, and
       ;; draw-raw-image can sometimes mess them up. (intro sequence)
       (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
       (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 250 0 0.0 (font-color default) (font-flags shadow middle kerning large))))
@@ -2737,7 +2949,7 @@ Here are the shop IDs
     )
     (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
     (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
-      ;; reset bucket settings prior to drawing - font won't do this for us, and
+      ;; reset bucket settings prior to drawing - font won't do self for us, and
       ;; draw-raw-image can sometimes mess them up. (intro sequence)
       (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
       (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 250 0 0.0 (font-color default) (font-flags shadow middle kerning large))))
@@ -2751,7 +2963,7 @@ Here are the shop IDs
     )
     (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
     (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
-      ;; reset bucket settings prior to drawing - font won't do this for us, and
+      ;; reset bucket settings prior to drawing - font won't do self for us, and
       ;; draw-raw-image can sometimes mess them up. (intro sequence)
       (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
       (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 250 0 0.0 (font-color default) (font-flags shadow middle kerning large))))
@@ -2767,7 +2979,7 @@ Here are the shop IDs
     )
     (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
     (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
-      ;; reset bucket settings prior to drawing - font won't do this for us, and
+      ;; reset bucket settings prior to drawing - font won't do self for us, and
       ;; draw-raw-image can sometimes mess them up. (intro sequence)
       (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
       (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 250 0 0.0 (font-color default) (font-flags shadow middle kerning large))))
@@ -2781,7 +2993,7 @@ Here are the shop IDs
     )
     (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
     (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
-      ;; reset bucket settings prior to drawing - font won't do this for us, and
+      ;; reset bucket settings prior to drawing - font won't do self for us, and
       ;; draw-raw-image can sometimes mess them up. (intro sequence)
       (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
       (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 250 0 0.0 (font-color default) (font-flags shadow middle kerning large))))
@@ -2795,7 +3007,7 @@ Here are the shop IDs
     )
     (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
     (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
-      ;; reset bucket settings prior to drawing - font won't do this for us, and
+      ;; reset bucket settings prior to drawing - font won't do self for us, and
       ;; draw-raw-image can sometimes mess them up. (intro sequence)
       (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
       (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 250 0 0.0 (font-color default) (font-flags shadow middle kerning large))))
@@ -2809,7 +3021,7 @@ Here are the shop IDs
     )
     (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
     (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
-      ;; reset bucket settings prior to drawing - font won't do this for us, and
+      ;; reset bucket settings prior to drawing - font won't do self for us, and
       ;; draw-raw-image can sometimes mess them up. (intro sequence)
       (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
       (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 250 0 0.0 (font-color default) (font-flags shadow middle kerning large))))
@@ -2823,7 +3035,7 @@ Here are the shop IDs
     )
     (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
     (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
-      ;; reset bucket settings prior to drawing - font won't do this for us, and
+      ;; reset bucket settings prior to drawing - font won't do self for us, and
       ;; draw-raw-image can sometimes mess them up. (intro sequence)
       (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
       (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 250 0 0.0 (font-color default) (font-flags shadow middle kerning large))))
@@ -2835,7 +3047,7 @@ Here are the shop IDs
 
 
 
-;<<<<<<<<<<<<<<<<<<<<<<<<<<<<This area is meant for fixes with specific missions<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+;<<<<<<<<<<<<<<<<<<<<<<<<<<<<self area is meant for fixes with specific missions<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 ;(send-event proc 'target-turret-get-off 90)
 
 ;Immediate mission completion without going back to mission giver.
@@ -3020,7 +3232,7 @@ Here are the shop IDs
 (when (and (cpad-pressed? 0 x)(= intro-sec 4)(= in-dialogue? #t)(= in-intro? #t)) ;teleports you to shop 1st time
   (set! intro-sec 5)
   (set! (-> *game-info* task-deaths) 1)
-  (auto-save-user)
+  (set! autosave-delayed #t)
   (set! in-intro? #f)
   (send-event *target* 'continue (get-continue-by-name *game-info* "consite-airlock"))
   (play-task (game-task fortress-escape) 'debug #f)
