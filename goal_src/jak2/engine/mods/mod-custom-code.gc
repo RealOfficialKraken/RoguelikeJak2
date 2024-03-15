@@ -27,15 +27,22 @@
 
 
 #| TODO:
-
+--------------------------------------------------------------------------------------------------
 
 - Make a settings file for saved runs
-- Fix crashes at drill platform
-- Make modifiers at the end of boss levels to select from
-- Make tutorial with (= (-> *game-info* task-deaths) 0)
+- Make modifiers at the end of boss levels to select from?
 - Make Dark Eco act
-- Make the campaign and Ending to unlock Dark Eco act, and fun modifiers after ending
-- Make purchaseable items to put in runs in the main menu
+- Make the item search campaign
+- Make more purchaseable items to put in runs in the main menu
+- Make different lines vin has for giving you the item quests
+
+--------------------------------------------------------------------------------------------------
+BUGS
+
+- Stages will sometimes think you're not in game (maybe because of the teleport shop method?).
+- Drill Platform crashes upon TPing out (CRITICAL)
+
+--------------------------------------------------------------------------------------------------
 
 |#
     ;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -122,11 +129,14 @@
 (define shop-tutorial #f)
 (define teleport-hiphog #f)
 (define already-teleported? #f)
+(define teleport-back? #f)
 (define gt-i 0.0)
 (define gf-i 0.0)
 (define vin-shop #f)
 (define wait-loading #f)
 (define load-w 0)
+(define teleport-wait #f)
+(define teleport-w 0)
 
 (define vin-shop-s "")
 
@@ -636,6 +646,7 @@
         (level-pick (rand-vu-int-range 1 13))
         )
         (format #t "<<<<<<<<<<<<<<<<<<<<<<<<<<Level picked: ~D" level-pick)
+        (set! print-stage 2)
         (when (= level-pick act-before1)
             (set! level-pick (rand-vu-int-range 1 13))
             (format #t "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<Level picked the same mission! Rerolling to: ~D" level-pick)
@@ -783,6 +794,7 @@
         (level-pick (rand-vu-int-range 1 13))
         )
         (format #t "<<<<<<<<<<<<<<<<<<<<<<<<<<Level picked: ~D" level-pick)
+        (set! print-stage 3)
         (when (= level-pick (or act-before1 act-before2))
             (set! level-pick (rand-vu-int-range 1 13))
             (format #t "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<Level picked the same mission! Rerolling to: ~D" level-pick)
@@ -936,6 +948,7 @@
             (task-node-close! (game-task-node city-krew-collection-resolution))
           )
         )
+        (set! print-stage 4)
         (set! act1-4 #f)
         (set! waitenter #t)
         (set! (-> *game-info* gem) temp-skullgemamount)
@@ -956,6 +969,7 @@
             (task-node-close! (game-task-node city-krew-collection-resolution))
           )
         
+        (set! print-stage 5)
         (set! act1-5 #f)
         (set! waitenter #t)
         (set! (-> *game-info* gem) temp-skullgemamount)
@@ -1108,6 +1122,7 @@
         (level-pick (rand-vu-int-range 1 11))
         )
         (format #t "<<<<<<<<<<<<<<<<<<<<<<<<<<Level picked: ~D" level-pick)
+        (set! print-stage 2)
         (when (= level-pick act-before4)
             (set! level-pick (rand-vu-int-range 1 11))
             (format #t "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<Level picked the same mission! Rerolling to: ~D" level-pick)
@@ -1233,6 +1248,7 @@
         (level-pick (rand-vu-int-range 1 11))
         )
         (format #t "<<<<<<<<<<<<<<<<<<<<<<<<<<Level picked: ~D" level-pick)
+        (set! print-stage 3)
         (when (= level-pick act-before4)
             (set! level-pick (rand-vu-int-range 1 11))
             (format #t "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<Level picked the same mission! Rerolling to: ~D" level-pick)
@@ -1357,6 +1373,7 @@
       (let (
         (level-pick 1)
         )
+          (set! print-stage 4)
           (when (= level-pick 1)
             (send-event *target* 'continue (get-continue-by-name *game-info* "tomb-boulder-pre"))
             (play-task (game-task tomb-water) 'debug #f)
@@ -1381,6 +1398,7 @@
             (play-task (game-task tomb-boss) 'debug #f)
           )
         
+        (set! print-stage 5)
         (set! act2-5 #f)
         (set! waitenter #t)
         (set! (-> *game-info* gem) temp-skullgemamount)
@@ -1498,6 +1516,7 @@
         (level-pick (rand-vu-int-range 1 9))
         )
         (format #t "<<<<<<<<<<<<<<<<<<<<<<<<<<Level picked: ~D" level-pick)
+        (set! print-stage 2)
         (when (= level-pick act-before4)
             (set! level-pick (rand-vu-int-range 1 9))
             (format #t "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<Level picked the same mission! Rerolling to: ~D" level-pick)
@@ -1587,6 +1606,7 @@
         (level-pick (rand-vu-int-range 1 9))
         )
         (format #t "<<<<<<<<<<<<<<<<<<<<<<<<<<Level picked: ~D" level-pick)
+        (set! print-stage 3)
         (when (= level-pick act-before4)
             (set! level-pick (rand-vu-int-range 1 9))
             (format #t "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<Level picked the same mission! Rerolling to: ~D" level-pick)
@@ -1686,6 +1706,7 @@
             (task-node-close! (game-task-node tomb-poles-poles2))
           )
         )
+        (set! print-stage 4)
         (set! act3-4 #f)
         (set! waitenter #t)
         (set! (-> *game-info* gem) temp-skullgemamount)
@@ -1703,6 +1724,7 @@
             (play-task (game-task castle-boss) 'debug #f)
           )
         
+        (set! print-stage 5)
         (set! act3-5 #f)
         (set! waitenter #t)
         (set! (-> *game-info* gem) temp-skullgemamount)
@@ -1727,11 +1749,7 @@
 
 (when (= level-completed? #t)
   (+! act-stage 1)
-  (+! print-stage 1)
   (+! (-> *game-info* buzzer-total) 1.0)
-  (when (> print-stage 5)
-    (set! print-stage 1)
-  )
   (set! temp-skullgemamount (-> *game-info* gem))
   (set! temp-health (-> *target* fact health))
   (set! temp-orbs (-> *game-info* skill))
@@ -1796,7 +1814,7 @@
       (set! level-completed? #f)
     )
   (set! level-completed? #f)
-  (set! print-stage (the int (-> *game-info* buzzer-total)))
+  (set! act-stage (the int (-> *game-info* buzzer-total)))
 )
 
 ;wait for the in-game to not get the infinite complete mission glitch
@@ -1888,7 +1906,7 @@
     ~%Jak! I've found something that might be of interest to us.
     ~%There's a <COLOR_GREEN>Green Eco Shard<COLOR_WHITE> that a <COLOR_RED>Krimzon Guard<COLOR_WHITE> has.
     ~%It's somewhere in Act 1, if you see it, please grab it!
-    ~%
+    ~%<COLOR_YELLOW>This item could be part of our ticket out of here!
     ~%
     ~%
     ~%
@@ -2523,10 +2541,40 @@ Here are the shop IDs
 )
 
 (when (and (= teleport-hiphog #t)(= already-teleported? #f)(cpad-pressed? 0 r3))
-  (send-event *target* 'continue (get-continue-by-name *game-info* "ctyport-hiphog"))
+  (send-event *target* 'continue (get-continue-by-name *game-info* "hiphog-start"))
   (set! already-teleported? #t)
   (set! teleport-hiphog #f)
+  (set! teleport-wait #t)
 )
+
+(when (and 
+(!= (-> (level-get-target-inside *level*) name) 'hiphog)
+(= teleport-back? #t)
+(= (pause-allowed?) #t)
+(= (paused?) #f)
+)
+  (when (= act-stage 4)
+    (send-event *target* 'continue (get-continue-by-name *game-info* "palcab-start"))
+  )
+  (when (= act-stage 9)
+    (send-event *target* 'continue (get-continue-by-name *game-info* "tomb-boulder-pre"))
+  )
+  (when (= act-stage 14)
+    (send-event *target* 'continue (get-continue-by-name *game-info* "castle-start"))
+  )
+  (set! teleport-back? #f)
+)
+
+
+(when (= teleport-wait #t)
+  (+! teleport-w 1)
+  (when (= teleport-w 120)
+    (set! teleport-back? #t)
+    (set! teleport-w 0)
+    (set! teleport-wait #f)
+  )
+)
+
 
 (when (and (= teleport-hiphog #t)(= already-teleported? #f))
   (clear matt-str)
@@ -3145,19 +3193,19 @@ Here are the shop IDs
     (set! di-s4 "source of all this.")
   )
   (when (= log-sec 11)
-    (set! di-s "A-and don't worry if you die, the game tells me")
-    (set! di-s2 "your health and if it ever drops, I'll jump you")
-    (set! di-s3 "back here. But it'll reset our progress..")
-    (set! di-s4 "You've got to stay alive and make it to the end!")
+    (set! di-s "I know this may be a lot of information at once,")
+    (set! di-s2 "but just trust me, and hopefully we get everything back to normal.")
+    (set! di-s3 "")
+    (set! di-s4 "")
   )
   (when (= log-sec 12)
-    (set! di-s "But we'll need more than just your will to")
+    (set! di-s "B-but we'll need more than just your will to")
     (set! di-s2 "stay alive to repair this horrible travesty.")
     (set! di-s3 "")
     (set! di-s4 "")
   )
   (when (= log-sec 13)
-    (set! di-s "I-I'll show you what I mean.")
+    (set! di-s "Testing machine!")
     (set! di-s2 "")
     (set! di-s3 "")
     (set! di-s4 "")
