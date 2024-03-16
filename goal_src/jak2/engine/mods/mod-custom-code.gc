@@ -3225,8 +3225,7 @@ Here are the shop IDs
     (when (= vin-talk 1)
       (clear matt-str)
     (clear *pc-encoded-matt-str*)
-    (format matt-str "
-    <COLOR_WHITE>Vin:~%Jak! I've found something that might be of interest to us.
+    (format matt-str "<COLOR_WHITE>Vin:~%Jak! I've found something that might be of interest to us.
     ~%There's a <COLOR_GREEN>Green Eco Shard<COLOR_WHITE> that a <COLOR_RED>Krimzon Guard<COLOR_WHITE> has.
     ~%It's somewhere in Act 1, if you see it, please grab it!
     ~%<COLOR_YELLOW>This item could be part of our ticket out of here!
@@ -3256,8 +3255,7 @@ Here are the shop IDs
     (when (= vin-talk 2)
       (clear matt-str)
     (clear *pc-encoded-matt-str*)
-    (format matt-str "
-    <COLOR_WHITE>Vin:~%Listen, if we want to get out of here, we should think about getting certain items across dimensions.
+    (format matt-str "<COLOR_WHITE>Vin:~%Listen, if we want to get out of here, we should think about getting certain items across dimensions.
     ~%If you happen to see a <COLOR_GREEN>Green Eco Shard<COLOR_WHITE> that a <COLOR_RED>Krimzon Guard<COLOR_WHITE> has,
     ~%don't hesitate to go and grab it. My radar indicates it's located in Act 1.
     ~%<COLOR_YELLOW>We need this item in order to locate the source of all this dark eco!
@@ -3287,8 +3285,7 @@ Here are the shop IDs
     (when (= vin-talk 3)
       (clear matt-str)
     (clear *pc-encoded-matt-str*)
-    (format matt-str "
-    <COLOR_WHITE>Vin:~%Remember, we need an item in order to locate the dimension where all the dark eco is concentrated.
+    (format matt-str "<COLOR_WHITE>Vin:~%Remember, we need an item in order to locate the dimension where all the dark eco is concentrated.
     ~%Right now, a <COLOR_GREEN>Green Eco Shard<COLOR_WHITE> can be collected from a <COLOR_RED>Krimzon Guard<COLOR_WHITE>.
     ~%It's in Act 1, if you see it, please get it for me!
     ~%<COLOR_YELLOW>Getting this item is crucial for our mission!
@@ -3318,8 +3315,7 @@ Here are the shop IDs
     (when (= vin-talk 4)
       (clear matt-str)
     (clear *pc-encoded-matt-str*)
-    (format matt-str "
-    <COLOR_WHITE>Vin:~%Alright, here's the deal...
+    (format matt-str "<COLOR_WHITE>Vin:~%Alright, here's the deal...
     ~%Right now, a <COLOR_GREEN>Green Eco Shard<COLOR_WHITE> can be collected from a <COLOR_RED>Krimzon Guard<COLOR_WHITE> in Act 1.
     ~%This item is very useful, and could help us locate the original dimension.
     ~%<COLOR_YELLOW>Locating the source can help us fix all of the timelines!
@@ -3353,10 +3349,9 @@ Here are the shop IDs
   (when (= vin-talk 1)
     (clear matt-str)
     (clear *pc-encoded-matt-str*)
-    (format matt-str "
-    <COLOR_WHITE>Vin:~%Amazing! This shard you collected is 1 of 3 pieces we need to locate the original dimension!
+    (format matt-str "<COLOR_WHITE>Vin:~%Amazing! This shard you collected is 1 of 3 pieces we need to locate the original dimension!
     ~%The next item you'll need to look out for is a <COLOR_BLUE>Blue Eco Shard<COLOR_WHITE>.
-    ~%Somewhere in Act 2, <COLOR_PINK>any Dark Eco Creature<COLOR_WHITE> could have it.
+    ~%Somewhere in Act 2, <COLOR_PINK>a crate<COLOR_WHITE> contains the piece we need.
     ~%Find it, and we'll be one step closer to saving our universes!
     ~%
     ~%
@@ -3384,11 +3379,10 @@ Here are the shop IDs
   (when (= vin-talk 2)
     (clear matt-str)
     (clear *pc-encoded-matt-str*)
-    (format matt-str "
-    <COLOR_WHITE>Vin:~%It would seem that this item you've collected is one of three we need.
+    (format matt-str "<COLOR_WHITE>Vin:~%It would seem that this item you've collected is one of three we need.
     ~%Right now, you're looking for a <COLOR_BLUE>Blue Eco Shard<COLOR_WHITE> in Act 2.
-    ~%My radar says a <COLOR_PINK>any Dark Eco Creature<COLOR_WHITE> could have it.
-    ~%Please, this is crucial for finding the source of all this dark eco!
+    ~%My radar says <COLOR_PINK>a crate<COLOR_WHITE> could have this item.
+    ~%Please, Jak! This is crucial for finding the source of all this dark eco!
     ~%
     ~%
     ~%
@@ -3415,9 +3409,8 @@ Here are the shop IDs
   (when (= vin-talk 3)
     (clear matt-str)
     (clear *pc-encoded-matt-str*)
-    (format matt-str "
-    <COLOR_WHITE>Vin:~%You've found the <COLOR_GREEN>Green Eco Shard<COLOR_WHITE>! Good work!
-    ~%Next you'll need a <COLOR_BLUE>Blue Eco Shard<COLOR_WHITE> from <COLOR_PINK>any Dark Eco Creature<COLOR_WHITE> that has it.
+    (format matt-str "<COLOR_WHITE>Vin:~%You've found the <COLOR_GREEN>Green Eco Shard<COLOR_WHITE>! Good work!
+    ~%Next you'll need a <COLOR_BLUE>Blue Eco Shard<COLOR_WHITE> from <COLOR_PINK>a crate<COLOR_WHITE> that contains it.
     ~%This item can be found in Act 2, so keep looking!
     ~%
     ~%
@@ -3446,12 +3439,11 @@ Here are the shop IDs
   (when (= vin-talk 4)
     (clear matt-str)
     (clear *pc-encoded-matt-str*)
-    (format matt-str "
-    <COLOR_WHITE>Vin:~%Good job for finding this piece for me.
+    (format matt-str "<COLOR_WHITE>Vin:~%Good job for finding this piece for me.
     ~%The next item you'll need to look out for is a <COLOR_BLUE>Blue Eco Shard<COLOR_WHITE>.
-    ~%Somewhere in Act 2, <COLOR_PINK>Any Dark Eco Creature<COLOR_WHITE> could have it. Specifically
-    ~%any creature that DROPS dark eco. If we find this, we can be one step closer to saving
-    ~%all of the universes.
+    ~%Somewhere in Act 2, my scans read that <COLOR_PINK>a crate<COLOR_WHITE> could contain this item.
+    ~%If we find this, we can be one step closer to saving everyone, and everything.
+    ~%
     ~%
     ~%
     ~%
@@ -3480,10 +3472,9 @@ Here are the shop IDs
   (when (= vin-talk 1)
     (clear matt-str)
     (clear *pc-encoded-matt-str*)
-    (format matt-str "
-    <COLOR_WHITE>Vin:~%Nice work! We have almost all of the pieces we need!
+    (format matt-str "<COLOR_WHITE>Vin:~%Nice work! We have almost all of the pieces we need!
     ~%Now we just have to find a <COLOR_RED>Red Eco Shard<COLOR_WHITE> from Act 3.
-    ~%My sources say that a <COLOR_YELLOW>Yellow Krimzon Guard<COLOR_WHITE> carries it.
+    ~%My scans say that it's in <COLOR_YELLOW>the Hiphog Shop<COLOR_WHITE> selling for 100 orbs.
     ~%We're so close, Jak! This will be the last piece to locate our original dimension.
     ~%
     ~%
@@ -3511,10 +3502,9 @@ Here are the shop IDs
   (when (= vin-talk 2)
     (clear matt-str)
     (clear *pc-encoded-matt-str*)
-    (format matt-str "
-    <COLOR_WHITE>Vin:~%Nice work! We have almost all of the pieces we need!
+    (format matt-str "<COLOR_WHITE>Vin:~%Nice work! We have almost all of the pieces we need!
     ~%Now we just have to find a <COLOR_RED>Red Eco Shard<COLOR_WHITE> from Act 3.
-    ~%My sources say that a <COLOR_YELLOW>Yellow Krimzon Guard<COLOR_WHITE> carries it.
+    ~%My scans say that it's in <COLOR_YELLOW>the Hiphog Shop<COLOR_WHITE> selling for 100 orbs.
     ~%We're so close, Jak! This will be the last piece to locate our original dimension.
     ~%
     ~%
@@ -3542,10 +3532,9 @@ Here are the shop IDs
   (when (= vin-talk 3)
     (clear matt-str)
     (clear *pc-encoded-matt-str*)
-    (format matt-str "
-    <COLOR_WHITE>Vin:~%Nice work! We have almost all of the pieces we need!
+    (format matt-str "<COLOR_WHITE>Vin:~%Nice work! We have almost all of the pieces we need!
     ~%Now we just have to find a <COLOR_RED>Red Eco Shard<COLOR_WHITE> from Act 3.
-    ~%My sources say that a <COLOR_YELLOW>Yellow Krimzon Guard<COLOR_WHITE> carries it.
+    ~%My scans say that it's in <COLOR_YELLOW>the Hiphog Shop<COLOR_WHITE> selling for 100 orbs.
     ~%We're so close, Jak! This will be the last piece to locate our original dimension.
     ~%
     ~%
@@ -3573,10 +3562,9 @@ Here are the shop IDs
   (when (= vin-talk 4)
     (clear matt-str)
     (clear *pc-encoded-matt-str*)
-    (format matt-str "
-    <COLOR_WHITE>Vin:~%Nice work! We have almost all of the pieces we need!
+    (format matt-str "<COLOR_WHITE>Vin:~%Nice work! We have almost all of the pieces we need!
     ~%Now we just have to find a <COLOR_RED>Red Eco Shard<COLOR_WHITE> from Act 3.
-    ~%My sources say that a <COLOR_YELLOW>Yellow Krimzon Guard<COLOR_WHITE> carries it.
+    ~%My scans say that it's in <COLOR_YELLOW>the Hiphog Shop<COLOR_WHITE> selling for 100 orbs.
     ~%We're so close, Jak! This will be the last piece to locate our original dimension.
     ~%
     ~%
@@ -3619,7 +3607,7 @@ Here are the shop IDs
     ~%closer you draw near. The original dimension we were in is completely covered in MORE THAN vast amounts!
     ~%I-I mean, it's not just a quantifiable amount.. It's virtually infinite amounts of dark eco!
     ~%If you're still having trouble, you can always give me <COLOR_YELLOW>Skull Gems<COLOR_WHITE> to get stronger items.
-    ~%We're all counting on you, Jak! <COLOR_GREEN>Save the universes!
+    ~%We're all counting on you, Jak! <COLOR_GREEN>Save the universes... and everybody in it!
     ~%
     ~%<COLOR_WHITE>Current Tokens:
     ~%<COLOR_PINK>~d
