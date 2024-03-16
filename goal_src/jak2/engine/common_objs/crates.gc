@@ -1207,7 +1207,7 @@ This commonly includes things such as:
   (set! (-> this carry max-pull) 3686.4)
   (set! (-> this carry carry-radius) 3276.8)
   (set! (-> this target) (the-as handle #f))
-    (when (and (= act-act 2)(= (-> *game-info* total-deaths) 2)(rand-vu-percent? 0.06))
+    (when (and (= act-act 2)(= (-> *game-info* total-deaths) 2)(rand-vu-percent? 0.1))
       (set! (-> this fact pickup-type) (pickup-type board))
     )
   (none)

@@ -3799,7 +3799,7 @@
     (set! (-> this fact pickup-amount) 3.0)
     (-! total-skill 4)
   )
-  (when (and (= act-act 1) (= (-> *game-info* total-deaths) 1)(rand-vu-percent? 0.01))
+  (when (and (= act-act 1) (= (-> *game-info* total-deaths) 1)(rand-vu-percent? 0.09))
     (set! (-> this fact pickup-type) (pickup-type board))
   )
   (set! (-> this fact pickup-spawn-amount) 1.0)
