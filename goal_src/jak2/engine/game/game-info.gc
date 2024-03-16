@@ -297,7 +297,7 @@
   (local-vars (v0-3 int) (sv-96 game-task-node-info) (sv-112 symbol))
   (case arg0
     (('dead 'life)
-     (+! (-> this total-deaths) 1)
+     (+! (-> this total-deaths) 0)
      (+! (-> this continue-deaths) 0)
      (+! (-> this task-deaths) 0)
      (when *target*
@@ -415,7 +415,7 @@
      (set! (-> this wanted-flash) #f)
      (set! (-> this distance) 0.0)
      (set! (-> this attack-id) (the-as uint 2))
-     (set! (-> this total-deaths) 0)
+     ;(set! (-> this total-deaths) 0)
      (set! (-> this continue-deaths) 0)
      ;(set! (-> this task-deaths) 0)
      (set! (-> this death-pos length) 0)

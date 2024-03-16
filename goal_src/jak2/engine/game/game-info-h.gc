@@ -85,8 +85,18 @@
 (define in-intro? #f)
 (define intro-sec 0)
 
+(define act-act 0)
+
 (define in-hub? #f)
 (define talk-to-vin #f)
+
+(define autosave-delayed #f)
+
+(define main-msg-1 #f)
+(define main-msg-2 #f)
+(define main-msg-3 #f)
+(define total-skill 10)
+(define msgi 0)
 
 (defenum pickup-type
   :bitfield #f

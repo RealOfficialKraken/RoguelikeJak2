@@ -88,6 +88,8 @@ BUGS
 (define act-before11 0)
 (define act-before12 0)
 
+(define vin-talk 0)
+
 (define reward-orbs #f)
 (define wait-for-ingame #f)
 (define waiting 0)
@@ -119,7 +121,6 @@ BUGS
 (define quicksave #f)
 (define display-run #f)
 (define print-stage 0)
-(define act-act 0)
 (define current-level "")
 (define mod-s "")
 (define purchase-amount 0)
@@ -149,7 +150,6 @@ BUGS
 (define intro-wait #f)
 (define intro-waiti 0)
 
-(define autosave-delayed #f)
 (define save-w 0)
 
 
@@ -281,27 +281,28 @@ BUGS
   (set! tin-wait 0)
   ;(set! wait-loading #t)
   (set! autosave-delayed #t)
+  (set! (-> *mood-control* overide-weather-flag) #f)
 
   (when (= (-> *game-info* total-trys) 7) ;Buffed Vehicles
-    (set! menu-value 200.0)
+    (set! menu-value 100.0)
     (set! mod-s "Buffed Vehicles and Speed")
   )
   (when (= (-> *game-info* total-trys) 8) ;Double shot
-    (set! menu-value 210.0)
+    (set! menu-value 125.0)
     (set! mod-s "Double Shot")
   )
   (when (= (-> *game-info* total-trys) 9)
-    (set! menu-value 220.0)
+    (set! menu-value 150.0)
     (set! mod-s "")
   )
   (when (= (-> *game-info* total-trys) 10)
-    (set! menu-value 230.0)
+    (set! menu-value 175.0)
   )
   (when (= (-> *game-info* total-trys) 11)
-    (set! menu-value 240.0)
+    (set! menu-value 200.0)
   )
   (when (= (-> *game-info* total-trys) 12)
-    (set! menu-value 250.0)
+    (set! menu-value 225.0)
   )
 )
 
@@ -329,10 +330,12 @@ BUGS
     (set! (-> *game-info* gem) 99999.0)
     (set! tutoriali 0)
     (set! wait-tutorial #f)
+    (set! (-> *game-info* total-deaths) 0)
   )
 )
 
-#|(when ;closed off to come back to later on
+#|
+(when ;closed off to come back to later on
 (and 
 (= in-hub? #t)
 (= vin-spawned? #f)
@@ -341,7 +344,8 @@ BUGS
 (= (paused?) #f)
 )
   (set! wait-vinspawn #t)
-)|#
+)
+|#
 
 (when (= wait-vinspawn #t)
   (+! waitspawn 1)
@@ -976,6 +980,9 @@ BUGS
         (set! (-> *target* fact health) temp-health)
         (set! (-> *game-info* skill) temp-orbs)
         (set! wait-for-ingame #t)
+        (set! teleport-hiphog #f)
+        (set! teleport-back? #f)
+        (set! already-teleported? #f)
         (when (and 
         (not (logtest? gp-0 (game-feature gun-red)))
         (not (logtest? gp-0 (game-feature gun-yellow)))
@@ -1413,6 +1420,9 @@ BUGS
         )
         (logior! gp-0 (game-feature gun-red))
         (set! give-gunred? #t)
+        (set! teleport-hiphog #f)
+        (set! teleport-back? #f)
+        (set! already-teleported? #f)
         )
       )
     )    
@@ -1739,6 +1749,9 @@ BUGS
         )
         (logior! gp-0 (game-feature gun-red))
         (set! give-gunred? #t)
+        (set! teleport-hiphog #f)
+        (set! teleport-back? #f)
+        (set! already-teleported? #f)
         )
       )
     )    
@@ -1753,6 +1766,7 @@ BUGS
   (set! temp-skullgemamount (-> *game-info* gem))
   (set! temp-health (-> *target* fact health))
   (set! temp-orbs (-> *game-info* skill))
+  (set! total-skill 10)
     (when (= (-> *game-info* buzzer-total) 1.0)
       (set! act1-1 #t)
       (set! level-completed? #f)
@@ -1898,70 +1912,24 @@ BUGS
   (set! start-stage #f)
 )
 
-(when (and (= vin-shop #t))
-  (clear matt-str)
-    (clear *pc-encoded-matt-str*)
-    (format matt-str "
-    <COLOR_WHITE>Vin:
-    ~%Jak! I've found something that might be of interest to us.
-    ~%There's a <COLOR_GREEN>Green Eco Shard<COLOR_WHITE> that a <COLOR_RED>Krimzon Guard<COLOR_WHITE> has.
-    ~%It's somewhere in Act 1, if you see it, please grab it!
-    ~%<COLOR_YELLOW>This item could be part of our ticket out of here!
-    ~%
-    ~%
-    ~%
-    ~%
-    ~%<COLOR_WHITE>Current Tokens:
-    ~%<COLOR_PINK>~d
-    ~%
-    ~%<COLOR_RED>R1: <COLOR_WHITE>Buy <COLOR_GREEN>~S<COLOR_WHITE> to permenantly put in the shop for <COLOR_YELLOW>~d Tokens!
-    ~%
-    ~%<COLOR_GREEN>Press <COLOR_RED>R3<COLOR_GREEN> to Exit"
-    (the int (-> *game-info* fuel))
-    mod-s
-    (the int menu-value)
-    )
-    (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
-    (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
-      ;; reset bucket settings prior to drawing - font won't do self for us, and
-      ;; draw-raw-image can sometimes mess them up. (intro sequence)
-      (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
-      (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 250 65 0.0 (font-color default) (font-flags middle shadow kerning large))))
-        (set! (-> font-ctx scale) 0.325)
-        (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
-)
-
 (when 
 (and 
+(= vin-shop #f) 
 (= vin-shop #f) 
 (= (paused?) #f)
 (= (pause-allowed?) #t)
 (= in-menu #f) 
-(= start-stage #f) 
-(= in-hub? #t)
-)
-  (clear matt-str)
-    (clear *pc-encoded-matt-str*)
-    (format matt-str "<COLOR_GREEN>Triangle<COLOR_WHITE>:<COLOR_WHITE> Talk with Vin"
-    )
-    (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
-    (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
-      ;; reset bucket settings prior to drawing - font won't do self for us, and
-      ;; draw-raw-image can sometimes mess them up. (intro sequence)
-      (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
-      (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 0 245 0.0 (font-color default) (font-flags shadow kerning large))))
-        (set! (-> font-ctx scale) 0.325)
-        (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
-)
-
-(when 
-(and 
 (= vin-shop #f)
+(= (paused?) #f)
+(= (pause-allowed?) #t)
+(= in-menu #f) 
 (= start-stage #f)
 (= in-hub? #t)
-(cpad-pressed? 0 triangle))
+(cpad-pressed? 0 triangle)
+)
   (set! vin-shop #t)
   (set! camera-locked #t)
+  (set! vin-talk (rand-vu-int-range 1 4))
 )
 
 (when 
@@ -2180,6 +2148,7 @@ Here are the shop IDs
 7 Full HP (7 orbs)
 8 Buffed Vehicles
 9 Double Shot
+10 Red Eco Shard
 
 |#
 
@@ -2304,6 +2273,28 @@ Here are the shop IDs
   (when (= shoproll3 9)
     (set! shopitem3 "Double Shot (25 orbs)")
     (set! shopid3 9)
+  )
+  (when 
+  (and 
+  (= (-> *game-info* total-deaths) 3)
+  (= act-act 3)
+  )
+    (let (
+      (shopinroll (rand-vu-int-range 1 3))
+      )
+        (when (= shopinroll 1)
+          (set! shopitem1 "Red Eco Shard (100 orbs)")
+          (set! shopid1 10)
+        )
+        (when (= shopinroll 2)
+          (set! shopitem2 "Red Eco Shard (100 orbs)")
+          (set! shopid2 10)
+        )
+        (when (= shopinroll 3)
+          (set! shopitem3 "Red Eco Shard (100 orbs)")
+          (set! shopid3 10)
+        )
+      )
   )
   (when (and (!= shoproll1 shoproll2)(!= shoproll1 shoproll3)(!= shoproll2 shoproll3)) ;if the pick is NOT the same on two options, stop rolling.
     (set! roll-shopitems #f)
@@ -2515,6 +2506,21 @@ Here are the shop IDs
       (set! shopitem2 "(Out of Stock)")
       (set! p-double-shot #t)
     )
+    (when (and (= menu-slot 0)(= (-> *game-info* total-deaths) 3)(>= (-> *game-info* skill) 100.0)(= shopid1 10))
+      (-! (-> *game-info* skill) 25.0)
+      (set! shopitem1 "(Out of Stock)")
+      (set! (-> *game-info* total-deaths) 4)
+    )
+    (when (and (= menu-slot 1)(= (-> *game-info* total-deaths) 3)(>= (-> *game-info* skill) 100.0)(= shopid3 10))
+      (-! (-> *game-info* skill) 25.0)
+      (set! shopitem3 "(Out of Stock)")
+      (set! (-> *game-info* total-deaths) 4)
+    )
+    (when (and (= menu-slot 2)(= (-> *game-info* total-deaths) 3)(>= (-> *game-info* skill) 100.0)(= shopid2 10))
+      (-! (-> *game-info* skill) 25.0)
+      (set! shopitem2 "(Out of Stock)")
+      (set! (-> *game-info* total-deaths) 4)
+    )
     (when (= in-intro? #t)
       (set! shop-tutorial #t)
     )
@@ -2538,6 +2544,12 @@ Here are the shop IDs
 
 (when (and (= already-teleported? #f)(!= (-> (level-get-target-inside *level*) name) 'hiphog)(= print-stage 4))
   (set! teleport-hiphog #t)
+)
+
+(when (and (= teleport-hiphog #t)(!= (-> (level-get-target-inside *level*) name) 'hiphog)(!= print-stage 4))
+  (set! teleport-hiphog #f)
+  (set! already-teleported? #f)
+  (set! teleport-back? #f)
 )
 
 (when (and (= teleport-hiphog #t)(= already-teleported? #f)(cpad-pressed? 0 r3))
@@ -2574,7 +2586,10 @@ Here are the shop IDs
     (set! teleport-wait #f)
   )
 )
-
+#|
+(when (pickup-collectable! (-> *target* fact) (pickup-type board) 1.0 (the-as handle #f))
+  (+! (-> *game-info* total-deaths) 1)
+)|#
 
 (when (and (= teleport-hiphog #t)(= already-teleported? #f))
   (clear matt-str)
@@ -3092,6 +3107,482 @@ Here are the shop IDs
 )
 
 
+(when (= main-msg-1 #t)
+  (+! msgi 1)
+  (clear matt-str)
+    (clear *pc-encoded-matt-str*)
+    (format matt-str "<COLOR_WHITE>INFO~%<COLOR_GREEN>Green Eco Shard collected!"
+    )
+    (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+    (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+      ;; reset bucket settings prior to drawing - font won't do self for us, and
+      ;; draw-raw-image can sometimes mess them up. (intro sequence)
+      (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+      (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 0 245 0.0 (font-color default) (font-flags shadow kerning large))))
+        (set! (-> font-ctx scale) 0.325)
+        (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+  (when (= msgi 600)
+    (set! main-msg-1 #f)
+    (set! msgi 0)
+  )
+)
+(when (= main-msg-2 #t)
+  (+! msgi 1)
+  (clear matt-str)
+    (clear *pc-encoded-matt-str*)
+    (format matt-str "<COLOR_WHITE>INFO~%<COLOR_BLUE>Blue Eco Shard collected!"
+    )
+    (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+    (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+      ;; reset bucket settings prior to drawing - font won't do self for us, and
+      ;; draw-raw-image can sometimes mess them up. (intro sequence)
+      (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+      (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 0 245 0.0 (font-color default) (font-flags shadow kerning large))))
+        (set! (-> font-ctx scale) 0.325)
+        (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+  (when (= msgi 600)
+    (set! main-msg-1 #f)
+    (set! msgi 0)
+  )
+)
+(when (= main-msg-3 #t)
+  (+! msgi 1)
+  (clear matt-str)
+    (clear *pc-encoded-matt-str*)
+    (format matt-str "<COLOR_WHITE>INFO~%<COLOR_RED>Red Eco Shard collected!"
+    )
+    (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+    (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+      ;; reset bucket settings prior to drawing - font won't do self for us, and
+      ;; draw-raw-image can sometimes mess them up. (intro sequence)
+      (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+      (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 0 245 0.0 (font-color default) (font-flags shadow kerning large))))
+        (set! (-> font-ctx scale) 0.325)
+        (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+  (when (= msgi 600)
+    (set! main-msg-1 #f)
+    (set! msgi 0)
+  )
+)
+
+(when (and (= (-> *game-info* total-deaths) 1)(= vin-shop #t))
+    (when (= vin-talk 1)
+      (clear matt-str)
+    (clear *pc-encoded-matt-str*)
+    (format matt-str "
+    <COLOR_WHITE>Vin:
+    ~%Jak! I've found something that might be of interest to us.
+    ~%There's a <COLOR_GREEN>Green Eco Shard<COLOR_WHITE> that a <COLOR_RED>Krimzon Guard<COLOR_WHITE> has.
+    ~%It's somewhere in Act 1, if you see it, please grab it!
+    ~%<COLOR_YELLOW>This item could be part of our ticket out of here!
+    ~%
+    ~%
+    ~%
+    ~%
+    ~%<COLOR_WHITE>Current Tokens:
+    ~%<COLOR_PINK>~d
+    ~%
+    ~%<COLOR_RED>R1: <COLOR_WHITE>Buy <COLOR_GREEN>~S<COLOR_WHITE> to permenantly put in the shop for <COLOR_YELLOW>~d Tokens!
+    ~%
+    ~%<COLOR_GREEN>Press <COLOR_RED>R3<COLOR_GREEN> to Exit"
+    (the int (-> *game-info* fuel))
+    mod-s
+    (the int menu-value)
+    )
+    (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+    (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+      ;; reset bucket settings prior to drawing - font won't do self for us, and
+      ;; draw-raw-image can sometimes mess them up. (intro sequence)
+      (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+      (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 250 65 0.0 (font-color default) (font-flags middle shadow kerning large))))
+        (set! (-> font-ctx scale) 0.325)
+        (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+    )
+    (when (= vin-talk 2)
+      (clear matt-str)
+    (clear *pc-encoded-matt-str*)
+    (format matt-str "
+    <COLOR_WHITE>Vin:
+    ~%Listen, if we want to get out of here, we should think about getting certain items across dimensions.
+    ~%If you happen to see a <COLOR_GREEN>Green Eco Shard<COLOR_WHITE> that a <COLOR_RED>Krimzon Guard<COLOR_WHITE> has,
+    ~%don't hesitate to go and grab it. My radar indicates it's located in Act 1.
+    ~%<COLOR_YELLOW>We need this item in order to locate the source of all this dark eco!
+    ~%
+    ~%
+    ~%
+    ~%
+    ~%<COLOR_WHITE>Current Tokens:
+    ~%<COLOR_PINK>~d
+    ~%
+    ~%<COLOR_RED>R1: <COLOR_WHITE>Buy <COLOR_GREEN>~S<COLOR_WHITE> to permenantly put in the shop for <COLOR_YELLOW>~d Tokens!
+    ~%
+    ~%<COLOR_GREEN>Press <COLOR_RED>R3<COLOR_GREEN> to Exit"
+    (the int (-> *game-info* fuel))
+    mod-s
+    (the int menu-value)
+    )
+    (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+    (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+      ;; reset bucket settings prior to drawing - font won't do self for us, and
+      ;; draw-raw-image can sometimes mess them up. (intro sequence)
+      (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+      (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 250 65 0.0 (font-color default) (font-flags middle shadow kerning large))))
+        (set! (-> font-ctx scale) 0.325)
+        (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+    )
+    (when (= vin-talk 3)
+      (clear matt-str)
+    (clear *pc-encoded-matt-str*)
+    (format matt-str "
+    <COLOR_WHITE>Vin:
+    ~%Remember, we need an item in order to locate the dimension where all the dark eco is concentrated.
+    ~%Right now, a <COLOR_GREEN>Green Eco Shard<COLOR_WHITE> can be collected from a <COLOR_RED>Krimzon Guard<COLOR_WHITE>.
+    ~%It's in Act 1, if you see it, please get it for me!
+    ~%<COLOR_YELLOW>Getting this item is crucial for our mission!
+    ~%
+    ~%
+    ~%
+    ~%
+    ~%<COLOR_WHITE>Current Tokens:
+    ~%<COLOR_PINK>~d
+    ~%
+    ~%<COLOR_RED>R1: <COLOR_WHITE>Buy <COLOR_GREEN>~S<COLOR_WHITE> to permenantly put in the shop for <COLOR_YELLOW>~d Tokens!
+    ~%
+    ~%<COLOR_GREEN>Press <COLOR_RED>R3<COLOR_GREEN> to Exit"
+    (the int (-> *game-info* fuel))
+    mod-s
+    (the int menu-value)
+    )
+    (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+    (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+      ;; reset bucket settings prior to drawing - font won't do self for us, and
+      ;; draw-raw-image can sometimes mess them up. (intro sequence)
+      (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+      (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 250 65 0.0 (font-color default) (font-flags middle shadow kerning large))))
+        (set! (-> font-ctx scale) 0.325)
+        (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+    )
+    (when (= vin-talk 4)
+      (clear matt-str)
+    (clear *pc-encoded-matt-str*)
+    (format matt-str "
+    <COLOR_WHITE>Vin:
+    ~%Alright, here's the deal...
+    ~%Right now, a <COLOR_GREEN>Green Eco Shard<COLOR_WHITE> can be collected from a <COLOR_RED>Krimzon Guard<COLOR_WHITE> in Act 1.
+    ~%This item is very useful, and could help us locate the original dimension.
+    ~%<COLOR_YELLOW>Locating the source can help us fix all of the timelines!
+    ~%
+    ~%
+    ~%
+    ~%
+    ~%<COLOR_WHITE>Current Tokens:
+    ~%<COLOR_PINK>~d
+    ~%
+    ~%<COLOR_RED>R1: <COLOR_WHITE>Buy <COLOR_GREEN>~S<COLOR_WHITE> to permenantly put in the shop for <COLOR_YELLOW>~d Tokens!
+    ~%
+    ~%<COLOR_GREEN>Press <COLOR_RED>R3<COLOR_GREEN> to Exit"
+    (the int (-> *game-info* fuel))
+    mod-s
+    (the int menu-value)
+    )
+    (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+    (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+      ;; reset bucket settings prior to drawing - font won't do self for us, and
+      ;; draw-raw-image can sometimes mess them up. (intro sequence)
+      (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+      (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 250 65 0.0 (font-color default) (font-flags middle shadow kerning large))))
+        (set! (-> font-ctx scale) 0.325)
+        (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+    )
+    
+  )
+
+(when (and (= (-> *game-info* total-deaths) 2)(= vin-shop #t))
+  (when (= vin-talk 1)
+    (clear matt-str)
+    (clear *pc-encoded-matt-str*)
+    (format matt-str "
+    <COLOR_WHITE>Vin:
+    ~%Amazing! This shard you collected is 1 of 3 pieces we need to locate the original dimension!
+    ~%The next item you'll need to look out for is a <COLOR_BLUE>Blue Eco Shard<COLOR_WHITE>.
+    ~%Somewhere in Act 2, <COLOR_PINK>any Dark Eco Creature<COLOR_WHITE> could have it.
+    ~%Find it, and we'll be one step closer to saving our universes!
+    ~%
+    ~%
+    ~%
+    ~%
+    ~%<COLOR_WHITE>Current Tokens:
+    ~%<COLOR_PINK>~d
+    ~%
+    ~%<COLOR_RED>R1: <COLOR_WHITE>Buy <COLOR_GREEN>~S<COLOR_WHITE> to permenantly put in the shop for <COLOR_YELLOW>~d Tokens!
+    ~%
+    ~%<COLOR_GREEN>Press <COLOR_RED>R3<COLOR_GREEN> to Exit"
+    (the int (-> *game-info* fuel))
+    mod-s
+    (the int menu-value)
+    )
+    (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+    (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+      ;; reset bucket settings prior to drawing - font won't do self for us, and
+      ;; draw-raw-image can sometimes mess them up. (intro sequence)
+      (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+      (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 250 65 0.0 (font-color default) (font-flags middle shadow kerning large))))
+        (set! (-> font-ctx scale) 0.325)
+        (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+  )
+  (when (= vin-talk 2)
+    (clear matt-str)
+    (clear *pc-encoded-matt-str*)
+    (format matt-str "
+    <COLOR_WHITE>Vin:
+    ~%It would seem that this item you've collected is one of three we need.
+    ~%Right now, you're looking for a <COLOR_BLUE>Blue Eco Shard<COLOR_WHITE> in Act 2.
+    ~%My radar says a <COLOR_PINK>any Dark Eco Creature<COLOR_WHITE> could have it.
+    ~%Please, this is crucial for finding the source of all this dark eco!
+    ~%
+    ~%
+    ~%
+    ~%
+    ~%<COLOR_WHITE>Current Tokens:
+    ~%<COLOR_PINK>~d
+    ~%
+    ~%<COLOR_RED>R1: <COLOR_WHITE>Buy <COLOR_GREEN>~S<COLOR_WHITE> to permenantly put in the shop for <COLOR_YELLOW>~d Tokens!
+    ~%
+    ~%<COLOR_GREEN>Press <COLOR_RED>R3<COLOR_GREEN> to Exit"
+    (the int (-> *game-info* fuel))
+    mod-s
+    (the int menu-value)
+    )
+    (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+    (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+      ;; reset bucket settings prior to drawing - font won't do self for us, and
+      ;; draw-raw-image can sometimes mess them up. (intro sequence)
+      (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+      (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 250 65 0.0 (font-color default) (font-flags middle shadow kerning large))))
+        (set! (-> font-ctx scale) 0.325)
+        (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+  )
+  (when (= vin-talk 3)
+    (clear matt-str)
+    (clear *pc-encoded-matt-str*)
+    (format matt-str "
+    <COLOR_WHITE>Vin:
+    ~%You've found the <COLOR_GREEN>Green Eco Shard<COLOR_WHITE>! Good work!
+    ~%Next you'll need a <COLOR_BLUE>Blue Eco Shard<COLOR_WHITE> from <COLOR_PINK>any Dark Eco Creature<COLOR_WHITE> that has it.
+    ~%This item can be found in Act 2, so keep looking!
+    ~%
+    ~%
+    ~%
+    ~%
+    ~%
+    ~%<COLOR_WHITE>Current Tokens:
+    ~%<COLOR_PINK>~d
+    ~%
+    ~%<COLOR_RED>R1: <COLOR_WHITE>Buy <COLOR_GREEN>~S<COLOR_WHITE> to permenantly put in the shop for <COLOR_YELLOW>~d Tokens!
+    ~%
+    ~%<COLOR_GREEN>Press <COLOR_RED>R3<COLOR_GREEN> to Exit"
+    (the int (-> *game-info* fuel))
+    mod-s
+    (the int menu-value)
+    )
+    (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+    (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+      ;; reset bucket settings prior to drawing - font won't do self for us, and
+      ;; draw-raw-image can sometimes mess them up. (intro sequence)
+      (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+      (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 250 65 0.0 (font-color default) (font-flags middle shadow kerning large))))
+        (set! (-> font-ctx scale) 0.325)
+        (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+  )
+  (when (= vin-talk 4)
+    (clear matt-str)
+    (clear *pc-encoded-matt-str*)
+    (format matt-str "
+    <COLOR_WHITE>Vin:
+    ~%Good job for finding this piece for me.
+    ~%The next item you'll need to look out for is a <COLOR_BLUE>Blue Eco Shard<COLOR_WHITE>.
+    ~%Somewhere in Act 2, <COLOR_PINK>Any Dark Eco Creature<COLOR_WHITE> could have it. Specifically
+    ~%any creature that DROPS dark eco. If we find this, we can be one step closer to saving
+    ~%all of the universes.
+    ~%
+    ~%
+    ~%
+    ~%<COLOR_WHITE>Current Tokens:
+    ~%<COLOR_PINK>~d
+    ~%
+    ~%<COLOR_RED>R1: <COLOR_WHITE>Buy <COLOR_GREEN>~S<COLOR_WHITE> to permenantly put in the shop for <COLOR_YELLOW>~d Tokens!
+    ~%
+    ~%<COLOR_GREEN>Press <COLOR_RED>R3<COLOR_GREEN> to Exit"
+    (the int (-> *game-info* fuel))
+    mod-s
+    (the int menu-value)
+    )
+    (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+    (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+      ;; reset bucket settings prior to drawing - font won't do self for us, and
+      ;; draw-raw-image can sometimes mess them up. (intro sequence)
+      (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+      (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 250 65 0.0 (font-color default) (font-flags middle shadow kerning large))))
+        (set! (-> font-ctx scale) 0.325)
+        (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+  )
+)
+
+(when (and (= (-> *game-info* total-deaths) 3)(= vin-shop #t))
+  (when (= vin-talk 1)
+    (clear matt-str)
+    (clear *pc-encoded-matt-str*)
+    (format matt-str "
+    <COLOR_WHITE>Vin:
+    ~%Nice work! We have almost all of the pieces we need!
+    ~%Now we just have to find a <COLOR_RED>Red Eco Shard<COLOR_WHITE> from Act 3.
+    ~%My sources say that a <COLOR_YELLOW>Yellow Krimzon Guard<COLOR_WHITE> carries it.
+    ~%We're so close, Jak! This will be the last piece to locate our original dimension.
+    ~%
+    ~%
+    ~%
+    ~%
+    ~%<COLOR_WHITE>Current Tokens:
+    ~%<COLOR_PINK>~d
+    ~%
+    ~%<COLOR_RED>R1: <COLOR_WHITE>Buy <COLOR_GREEN>~S<COLOR_WHITE> to permenantly put in the shop for <COLOR_YELLOW>~d Tokens!
+    ~%
+    ~%<COLOR_GREEN>Press <COLOR_RED>R3<COLOR_GREEN> to Exit"
+    (the int (-> *game-info* fuel))
+    mod-s
+    (the int menu-value)
+    )
+    (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+    (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+      ;; reset bucket settings prior to drawing - font won't do self for us, and
+      ;; draw-raw-image can sometimes mess them up. (intro sequence)
+      (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+      (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 250 65 0.0 (font-color default) (font-flags middle shadow kerning large))))
+        (set! (-> font-ctx scale) 0.325)
+        (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+  )
+  (when (= vin-talk 2)
+    (clear matt-str)
+    (clear *pc-encoded-matt-str*)
+    (format matt-str "
+    <COLOR_WHITE>Vin:
+    ~%Nice work! We have almost all of the pieces we need!
+    ~%Now we just have to find a <COLOR_RED>Red Eco Shard<COLOR_WHITE> from Act 3.
+    ~%My sources say that a <COLOR_YELLOW>Yellow Krimzon Guard<COLOR_WHITE> carries it.
+    ~%We're so close, Jak! This will be the last piece to locate our original dimension.
+    ~%
+    ~%
+    ~%
+    ~%
+    ~%<COLOR_WHITE>Current Tokens:
+    ~%<COLOR_PINK>~d
+    ~%
+    ~%<COLOR_RED>R1: <COLOR_WHITE>Buy <COLOR_GREEN>~S<COLOR_WHITE> to permenantly put in the shop for <COLOR_YELLOW>~d Tokens!
+    ~%
+    ~%<COLOR_GREEN>Press <COLOR_RED>R3<COLOR_GREEN> to Exit"
+    (the int (-> *game-info* fuel))
+    mod-s
+    (the int menu-value)
+    )
+    (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+    (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+      ;; reset bucket settings prior to drawing - font won't do self for us, and
+      ;; draw-raw-image can sometimes mess them up. (intro sequence)
+      (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+      (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 250 65 0.0 (font-color default) (font-flags middle shadow kerning large))))
+        (set! (-> font-ctx scale) 0.325)
+        (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+  )
+  (when (= vin-talk 3)
+    (clear matt-str)
+    (clear *pc-encoded-matt-str*)
+    (format matt-str "
+    <COLOR_WHITE>Vin:
+    ~%Nice work! We have almost all of the pieces we need!
+    ~%Now we just have to find a <COLOR_RED>Red Eco Shard<COLOR_WHITE> from Act 3.
+    ~%My sources say that a <COLOR_YELLOW>Yellow Krimzon Guard<COLOR_WHITE> carries it.
+    ~%We're so close, Jak! This will be the last piece to locate our original dimension.
+    ~%
+    ~%
+    ~%
+    ~%
+    ~%<COLOR_WHITE>Current Tokens:
+    ~%<COLOR_PINK>~d
+    ~%
+    ~%<COLOR_RED>R1: <COLOR_WHITE>Buy <COLOR_GREEN>~S<COLOR_WHITE> to permenantly put in the shop for <COLOR_YELLOW>~d Tokens!
+    ~%
+    ~%<COLOR_GREEN>Press <COLOR_RED>R3<COLOR_GREEN> to Exit"
+    (the int (-> *game-info* fuel))
+    mod-s
+    (the int menu-value)
+    )
+    (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+    (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+      ;; reset bucket settings prior to drawing - font won't do self for us, and
+      ;; draw-raw-image can sometimes mess them up. (intro sequence)
+      (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+      (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 250 65 0.0 (font-color default) (font-flags middle shadow kerning large))))
+        (set! (-> font-ctx scale) 0.325)
+        (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+  )
+  (when (= vin-talk 4)
+    (clear matt-str)
+    (clear *pc-encoded-matt-str*)
+    (format matt-str "
+    <COLOR_WHITE>Vin:
+    ~%Nice work! We have almost all of the pieces we need!
+    ~%Now we just have to find a <COLOR_RED>Red Eco Shard<COLOR_WHITE> from Act 3.
+    ~%My sources say that a <COLOR_YELLOW>Yellow Krimzon Guard<COLOR_WHITE> carries it.
+    ~%We're so close, Jak! This will be the last piece to locate our original dimension.
+    ~%
+    ~%
+    ~%
+    ~%
+    ~%<COLOR_WHITE>Current Tokens:
+    ~%<COLOR_PINK>~d
+    ~%
+    ~%<COLOR_RED>R1: <COLOR_WHITE>Buy <COLOR_GREEN>~S<COLOR_WHITE> to permenantly put in the shop for <COLOR_YELLOW>~d Tokens!
+    ~%
+    ~%<COLOR_GREEN>Press <COLOR_RED>R3<COLOR_GREEN> to Exit"
+    (the int (-> *game-info* fuel))
+    mod-s
+    (the int menu-value)
+    )
+    (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+    (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+      ;; reset bucket settings prior to drawing - font won't do self for us, and
+      ;; draw-raw-image can sometimes mess them up. (intro sequence)
+      (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+      (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 250 65 0.0 (font-color default) (font-flags middle shadow kerning large))))
+        (set! (-> font-ctx scale) 0.325)
+        (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+  )
+)
+
+(when 
+(and 
+(= vin-shop #f) 
+(= (paused?) #f)
+(= (pause-allowed?) #t)
+(= in-menu #f) 
+(= start-stage #f) 
+(= in-hub? #t)
+)
+  (clear matt-str)
+    (clear *pc-encoded-matt-str*)
+    (format matt-str "<COLOR_GREEN>Triangle<COLOR_WHITE>:<COLOR_WHITE> Talk with Vin"
+    )
+    (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+    (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+      ;; reset bucket settings prior to drawing - font won't do self for us, and
+      ;; draw-raw-image can sometimes mess them up. (intro sequence)
+      (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+      (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 0 245 0.0 (font-color default) (font-flags shadow kerning large))))
+        (set! (-> font-ctx scale) 0.325)
+        (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+)
+
+
 
 
 
@@ -3283,6 +3774,7 @@ Here are the shop IDs
   (set! autosave-delayed #t)
   (set! in-intro? #f)
   (send-event *target* 'continue (get-continue-by-name *game-info* "consite-airlock"))
+  (set! (-> *game-info* total-deaths) 1)
   (play-task (game-task fortress-escape) 'debug #f)
   (set! in-dialogue? #f)
   (set! camera-unlocked #t)
