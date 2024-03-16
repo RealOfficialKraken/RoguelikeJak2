@@ -1168,8 +1168,12 @@ This commonly includes things such as:
   (set! (-> this fact)
         (new 'process 'fact-info-crate this (pickup-type eco-pill-random) (-> *FACT-bank* default-eco-pill-green-inc))
         )
-          (when (and (= act-act 2)(= (-> *game-info* total-deaths) 2)(rand-vu-percent? 0.06))
+          (when (and (= act-act 2)(= (-> *game-info* total-deaths) 2)(rand-vu-percent? 0.1))
       (set! (-> this fact pickup-type) (pickup-type board))
+      (print "
+      
+Eco Shard spawned in a crate nearby!
+")
     )
   (when (-> this entity)
     (let ((v1-22 (-> this entity extra perm)))
@@ -1209,6 +1213,10 @@ This commonly includes things such as:
   (set! (-> this target) (the-as handle #f))
     (when (and (= act-act 2)(= (-> *game-info* total-deaths) 2)(rand-vu-percent? 0.1))
       (set! (-> this fact pickup-type) (pickup-type board))
+      (print "
+
+Eco Shard spawned in a crate nearby!
+")
     )
   (none)
   )
