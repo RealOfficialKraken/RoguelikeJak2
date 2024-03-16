@@ -638,7 +638,7 @@
               (set! tin-game? #f)
            )
            (when (and (= tin-game? #t)(= in-intro? #t)(= intro-sec 2))
-            (set! di-s "H-holy SMOKES! The amout of dark eco in this area is absolutely")
+            (set! di-s "H-holy SMOKES! The amount of dark eco in this area is absolutely")
               (set! di-s2 "GARGANTUAN! You're going to need more firepower!")
               (set! di-s3 "")
               (set! di-s4 "")

@@ -3061,23 +3061,22 @@ Here are the shop IDs
 (when (and (= in-menu #t)(= (paused?) #f)(= (-> *game-info* task-deaths) 1)(not (cpad-pressed? 0 x)))
   (clear matt-str)
     (clear *pc-encoded-matt-str*)
-    (format matt-str "
-    <COLOR_WHITE>Welcome to<COLOR_RED> Roguelike Jak II (demo)<COLOR_WHITE>!
-    ~%<COLOR_BLUE>  Made by Kraken
-    ~%<COLOR_WHITE>Project is about 40 percent done, still have lots of crashes. Playable to Krew Boss.
-    ~%
-    ~%When you <COLOR_GREEN>start your run<COLOR_WHITE>, you will be transported to the dimensions where Jak
-    ~%no longer exists, and you must take his place by completing the missions, and fulfilling the prophecy.
-    ~%Jak dying means <COLOR_RED>Perma-Death<COLOR_WHITE>! Orbs will be rewarded for playing well.
-    ~%But if you die, you lose everything!
-    ~%
-    ~%Talk to Vin upstairs to look at his shop. You can save up <COLOR_PINK>Tokens<COLOR_WHITE> to purchase items
-    ~%to put into your run! <COLOR_PINK>Tokens<COLOR_WHITE> are obtained from collecting skull gems.
-    ~%
-    ~%You can exit the level to <COLOR_GREEN>start your run<COLOR_WHITE>.
-    ~%
-    ~%
-    ~%<COLOR_BLUE>X<COLOR_GREEN> Continue"
+    (format matt-str "<COLOR_WHITE>Welcome to<COLOR_RED> Roguelike Jak II (demo)<COLOR_WHITE>!
+~%<COLOR_BLUE>  Made by Kraken
+~%When you <COLOR_GREEN>start your run<COLOR_WHITE>, you will be transported to the dimensions where Jak
+~%no longer exists, and you must take his place by completing the missions, and fulfilling the prophecy.
+~%by completing the missions, and fulfilling the prophecy.
+~%
+~% 
+~%Jak dying means <COLOR_RED>Perma-Death<COLOR_WHITE>!
+~%Orbs will be rewarded for playing well. But if you die, you lose everything!
+~%Talk to Vin to look at his shop here. You can save up <COLOR_PINK>Tokens<COLOR_WHITE> to purchase items
+~%to put into your run! <COLOR_PINK>Tokens<COLOR_WHITE> are obtained from collecting skull gems.
+~%
+~%You can exit the level to <COLOR_GREEN>start your run<COLOR_WHITE>.
+~%
+~%
+~%<COLOR_BLUE>X<COLOR_GREEN> Continue"
     )
     (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
     (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
