@@ -87,6 +87,22 @@
 
 (define act-act 0)
 
+(define item-display? #f)
+(define item-update #f)
+(define post-item-display? #f)
+(define item-tracker 0)
+(define item-ts1 "")
+(define item-ts2 "")
+(define item-ts3 "")
+(define item-ts4 "")
+(define item-ts5 "")
+(define item-ts6 "")
+(define item-ts7 "")
+(define item-ts8 "")
+(define item-ts9 "")
+(define item-ts10 "")
+(define item-tss1 "")
+
 (define in-hub? #f)
 (define talk-to-vin #f)
 
