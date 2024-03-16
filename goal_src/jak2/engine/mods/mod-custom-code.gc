@@ -147,8 +147,11 @@ BUGS
 (define teleport-wait #f)
 (define teleport-w 0)
 (define win-lose #f)
+(define popup-intro #f)
 
 (define vin-shop-s "")
+
+(define p-explode-shot #f)
 
 
 
@@ -292,30 +295,38 @@ BUGS
   (set! item-tracker 1)
   (set! post-item-display? #t)
   (set! item-display? #f)
+  (set! teleport-hiphog #f)
+  (set! already-teleported? #f)
+  (set! teleport-back? #f)
+  (set! teleport-w 0)
+  (set! teleport-wait #f)
   ;(set! wait-loading #t)
   (set! autosave-delayed #t)
   (set! (-> *mood-control* overide-weather-flag) #f)
 
   (when (= (-> *game-info* total-trys) 7) ;Buffed Vehicles
-    (set! menu-value 100.0)
+    (set! menu-value 75.0)
     (set! mod-s "Buffed Vehicles and Speed")
   )
   (when (= (-> *game-info* total-trys) 8) ;Double shot
-    (set! menu-value 125.0)
+    (set! menu-value 150.0)
     (set! mod-s "Double Shot")
   )
   (when (= (-> *game-info* total-trys) 9)
-    (set! menu-value 150.0)
-    (set! mod-s "")
+    (set! menu-value 99999999999.0)
+    (set! mod-s "(More coming soon!)")
   )
   (when (= (-> *game-info* total-trys) 10)
     (set! menu-value 175.0)
+    (set! mod-s "")
   )
   (when (= (-> *game-info* total-trys) 11)
     (set! menu-value 200.0)
+    (set! mod-s "")
   )
   (when (= (-> *game-info* total-trys) 12)
     (set! menu-value 225.0)
+    (set! mod-s "")
   )
 )
 
@@ -563,8 +574,14 @@ BUGS
   )
   (when (= (-> *game-info* total-trys) 7)
     (set! (-> *game-info* total-trys) 8)
-    (set! menu-value 210.0)
+    (set! menu-value 150.0)
     (set! mod-s "Double Shot")
+    (set! autosave-delayed #t)
+  )
+  (when (= (-> *game-info* total-trys) 8)
+    (set! (-> *game-info* total-trys) 9)
+    (set! menu-value 99999999999999.0)
+    (set! mod-s "(More coming soon!)")
     (set! autosave-delayed #t)
   )
 )
@@ -2050,6 +2067,9 @@ BUGS
     (when (and (= (-> *game-info* buzzer-total) 15.0)(= level-completed? #t))
       (set! act3-5 #t)
       (set! level-completed? #f)
+      (when (= (-> *game-info* task-deaths) 2)
+        (set! (-> *game-info* task-deaths) 3)
+      )
     )
     (when (and (>= (-> *game-info* total-deaths) 4)(= (-> *game-info* buzzer-total) 16.0)(= level-completed? #t))
       (set! act4-1 #t)
@@ -2058,6 +2078,7 @@ BUGS
     (when (and (< (-> *game-info* total-deaths) 4)(= (-> *game-info* buzzer-total) 16.0)(= level-completed? #t))
       (set! (-> *target* fact health) 0.0)
       (set! win-lose #t)
+      (set! in-game? #t)
       (set! level-completed? #f)
     )
     (when (and (>= (-> *game-info* total-deaths) 4)(= (-> *game-info* buzzer-total) 17.0)(= level-completed? #t))
@@ -2320,7 +2341,6 @@ BUGS
 (when (and (= waitdie #t)(>= (-> *game-info* task-deaths) 1)(= (pause-allowed?) #t))
   (+! waitdi 1)
   (when (= waitdi 1)
-    (+! (-> *game-info* task-deaths) 1)
     (set! temp-skullgemamount (-> *game-info* gem))
     (+! (-> *game-info* fuel) (-> *game-info* gem))
   )
@@ -2538,6 +2558,18 @@ Here are the shop IDs
   (when (= shoproll3 9)
     (set! shopitem3 "Double Shot (25 orbs)")
     (set! shopid3 9)
+  )
+  (when (and (rand-vu-percent? 0.1) (>= (-> *game-info* task-deaths) 3))
+    (set! shopitem1 "Explosive Shot (35 orbs)")
+    (set! shopid1 10)
+  )
+  (when (and (rand-vu-percent? 0.1) (>= (-> *game-info* task-deaths) 3))
+    (set! shopitem2 "Explosive Shot (35 orbs)")
+    (set! shopid2 10)
+  )
+  (when (and (rand-vu-percent? 0.1) (>= (-> *game-info* task-deaths) 3))
+    (set! shopitem3 "Explosive Shot (35 orbs)")
+    (set! shopid3 10)
   )
   (when 
   (and 
@@ -2854,6 +2886,27 @@ Here are the shop IDs
       (set! item-update #t)
       (set! p-double-shot #t)
     )
+    (when (and (= menu-slot 0)(= p-explode-shot #f)(>= (-> *game-info* skill) 35.0)(= shopid1 10))
+      (-! (-> *game-info* skill) 35.0)
+      (set! shopitem1 "(Out of Stock)")
+      (set! item-tss1 "Shots Explode")
+      (set! item-update #t)
+      (set! p-double-shot #t)
+    )
+    (when (and (= menu-slot 1)(= p-explode-shot #f)(>= (-> *game-info* skill) 35.0)(= shopid3 10))
+      (-! (-> *game-info* skill) 35.0)
+      (set! shopitem3 "(Out of Stock)")
+      (set! item-tss1 "Shots Explode")
+      (set! item-update #t)
+      (set! p-double-shot #t)
+    )
+    (when (and (= menu-slot 2)(= p-explode-shot #f)(>= (-> *game-info* skill) 35.0)(= shopid2 10))
+      (-! (-> *game-info* skill) 35.0)
+      (set! shopitem2 "(Out of Stock)")
+      (set! item-tss1 "Shots Explode")
+      (set! item-update #t)
+      (set! p-double-shot #t)
+    )
     (when (and (= menu-slot 0)(= (-> *game-info* total-deaths) 3)(>= (-> *game-info* skill) 100.0)(= shopid1 99))
       (-! (-> *game-info* skill) 100.0)
       (set! shopitem1 "(Out of Stock)")
@@ -3063,10 +3116,11 @@ Here are the shop IDs
     (clear *pc-encoded-matt-str*)
     (format matt-str "<COLOR_WHITE>Welcome to<COLOR_RED> Roguelike Jak II (demo)<COLOR_WHITE>!
 ~%<COLOR_BLUE>  Made by Kraken
-~%When you <COLOR_GREEN>start your run<COLOR_WHITE>, you will be transported to the dimensions where Jak
-~%no longer exists, and you must take his place by completing the missions, and fulfilling the prophecy.
-~%by completing the missions, and fulfilling the prophecy.
 ~%
+~%<COLOR_WHITE>When you <COLOR_GREEN>start your run<COLOR_WHITE>,
+~%you will be transported to the dimensions where Jak
+~%no longer exists, and you must take his place
+~%by completing missions, and fulfilling the prophecy.
 ~% 
 ~%Jak dying means <COLOR_RED>Perma-Death<COLOR_WHITE>!
 ~%Orbs will be rewarded for playing well. But if you die, you lose everything!
@@ -3131,7 +3185,7 @@ Here are the shop IDs
 ~%<COLOR_BLUE>Made by Kraken
 ~%
 ~%<COLOR_GREEN>~%You Won!
-~%<COLOR_RED>The Time Loop remains broken.
+~%<COLOR_RED>The Time Loops remain broken.
 ~%<COLOR_WHITE>Skulls Gems turned into Tokens:
 ~%<COLOR_YELLOW>~d
 ~%<COLOR_ORANGE>Hint: Try to collect important items for Vin!
@@ -3141,7 +3195,7 @@ Here are the shop IDs
 ~%<COLOR_WHITE>Current Tokens:
 ~%<COLOR_PINK>~d
 ~%
-~%
+~%<COLOR_ORANGE>Bounce Shot unlocked in shops across all dimensions!
 ~%
 ~%<COLOR_GREEN>Press <COLOR_BLUE>X<COLOR_GREEN> to Continue"
     (the int temp-skullgemamount)
@@ -3183,6 +3237,9 @@ Here are the shop IDs
   (set! item-ts8 "")
   (set! item-ts9 "")
   (set! item-ts10 "")
+  (when (= (-> *game-info* task-deaths) 1)
+    (set! (-> *game-info* task-deaths) 2)
+  )
   (set! post-item-display? #f)
 )
 
