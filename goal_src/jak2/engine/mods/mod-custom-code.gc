@@ -75,6 +75,11 @@ BUGS
 (define act3-4 #f)
 (define act3-5 #f)
 (define act3-shop #f)
+(define act4-1 #f)
+(define act4-2 #f)
+(define act4-3 #f)
+(define act4-4 #f)
+(define act4-5 #f)
 (define act-before1 0)
 (define act-before2 0)
 (define act-before3 0)
@@ -87,6 +92,9 @@ BUGS
 (define act-before10 0)
 (define act-before11 0)
 (define act-before12 0)
+(define act-before13 0)
+(define act-before14 0)
+(define act-before15 0)
 
 (define vin-talk 0)
 
@@ -138,6 +146,7 @@ BUGS
 (define load-w 0)
 (define teleport-wait #f)
 (define teleport-w 0)
+(define win-lose #f)
 
 (define vin-shop-s "")
 
@@ -1719,6 +1728,7 @@ BUGS
         (set! print-stage 4)
         (set! act3-4 #f)
         (set! waitenter #t)
+        (set! wait-for-ingame #t)
         (set! (-> *game-info* gem) temp-skullgemamount)
         (set! (-> *target* fact health) temp-health)
         (set! (-> *game-info* skill) temp-orbs)
@@ -1825,6 +1835,15 @@ BUGS
     )
     (when (and (= (-> *game-info* buzzer-total) 15.0)(= level-completed? #t))
       (set! act3-5 #t)
+      (set! level-completed? #f)
+    )
+    (when (and (>= (-> *game-info* total-deaths) 4)(= (-> *game-info* buzzer-total) 16.0)(= level-completed? #t))
+      (set! act4-1 #t)
+      (set! level-completed? #f)
+    )
+    (when (and (< (-> *game-info* total-deaths) 4)(= (-> *game-info* buzzer-total) 16.0)(= level-completed? #t))
+      (set! (-> *target* fact health) 0.0)
+      (set! win-lose #t)
       (set! level-completed? #f)
     )
   (set! level-completed? #f)
@@ -2148,7 +2167,7 @@ Here are the shop IDs
 7 Full HP (7 orbs)
 8 Buffed Vehicles
 9 Double Shot
-10 Red Eco Shard
+99 Red Eco Shard
 
 |#
 
@@ -2284,15 +2303,15 @@ Here are the shop IDs
       )
         (when (= shopinroll 1)
           (set! shopitem1 "Red Eco Shard (100 orbs)")
-          (set! shopid1 10)
+          (set! shopid1 99)
         )
         (when (= shopinroll 2)
           (set! shopitem2 "Red Eco Shard (100 orbs)")
-          (set! shopid2 10)
+          (set! shopid2 99)
         )
         (when (= shopinroll 3)
           (set! shopitem3 "Red Eco Shard (100 orbs)")
-          (set! shopid3 10)
+          (set! shopid3 9910)
         )
       )
   )
@@ -2506,18 +2525,18 @@ Here are the shop IDs
       (set! shopitem2 "(Out of Stock)")
       (set! p-double-shot #t)
     )
-    (when (and (= menu-slot 0)(= (-> *game-info* total-deaths) 3)(>= (-> *game-info* skill) 100.0)(= shopid1 10))
-      (-! (-> *game-info* skill) 25.0)
+    (when (and (= menu-slot 0)(= (-> *game-info* total-deaths) 3)(>= (-> *game-info* skill) 100.0)(= shopid1 99))
+      (-! (-> *game-info* skill) 100.0)
       (set! shopitem1 "(Out of Stock)")
       (set! (-> *game-info* total-deaths) 4)
     )
-    (when (and (= menu-slot 1)(= (-> *game-info* total-deaths) 3)(>= (-> *game-info* skill) 100.0)(= shopid3 10))
-      (-! (-> *game-info* skill) 25.0)
+    (when (and (= menu-slot 1)(= (-> *game-info* total-deaths) 3)(>= (-> *game-info* skill) 100.0)(= shopid3 99))
+      (-! (-> *game-info* skill) 100.0)
       (set! shopitem3 "(Out of Stock)")
       (set! (-> *game-info* total-deaths) 4)
     )
-    (when (and (= menu-slot 2)(= (-> *game-info* total-deaths) 3)(>= (-> *game-info* skill) 100.0)(= shopid2 10))
-      (-! (-> *game-info* skill) 25.0)
+    (when (and (= menu-slot 2)(= (-> *game-info* total-deaths) 3)(>= (-> *game-info* skill) 100.0)(= shopid2 99))
+      (-! (-> *game-info* skill) 100.0)
       (set! shopitem2 "(Out of Stock)")
       (set! (-> *game-info* total-deaths) 4)
     )
@@ -2735,26 +2754,62 @@ Here are the shop IDs
         (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
 )
 
-(when (and (= in-menu #t)(= (paused?) #f)(>= (-> *game-info* task-deaths) 2)(not (cpad-pressed? 0 x)))
+(when (and (= in-menu #t)(= (paused?) #f)(= win-lose #f)(>= (-> *game-info* task-deaths) 2)(not (cpad-pressed? 0 x)))
   (clear matt-str)
     (clear *pc-encoded-matt-str*)
-    (format matt-str "
-    <COLOR_WHITE>Welcome to<COLOR_RED> Roguelike Jak II<COLOR_WHITE>!
-    ~%<COLOR_BLUE>  Made by Kraken
-    ~%
-    ~%
-    <COLOR_RED>~%You Died!
-    ~%<COLOR_WHITE>Skulls Gems turned into Tokens:
-    ~%<COLOR_YELLOW>~d
-    ~%<COLOR_WHITE>Progress:
-    ~%<COLOR_GREEN> Act ~d <COLOR_YELLOW>Stage ~d
-    ~%
-    ~%<COLOR_WHITE>Current Tokens:
-    ~%<COLOR_PINK>~d
-    ~%
-    ~%
-    ~%
-    ~%<COLOR_GREEN>Press <COLOR_BLUE>X<COLOR_GREEN> to Continue"
+    (format matt-str "<COLOR_WHITE>Welcome to<COLOR_RED> Roguelike Jak II<COLOR_WHITE>!
+~%<COLOR_BLUE>  Made by Kraken
+~%
+~%
+<COLOR_RED>~%You Died!
+~%<COLOR_WHITE>Skulls Gems turned into Tokens:
+~%<COLOR_YELLOW>~d
+~%<COLOR_WHITE>Progress:
+~%<COLOR_GREEN> Act ~d <COLOR_YELLOW>Stage ~d
+~%
+~%<COLOR_WHITE>Current Tokens:
+~%<COLOR_PINK>~d
+~%
+~%
+~%
+~%<COLOR_GREEN>Press <COLOR_BLUE>X<COLOR_GREEN> to Continue"
+    (the int temp-skullgemamount)
+    act-act
+    print-stage
+    (the int (-> *game-info* fuel))
+    mod-s
+    (the int menu-value)
+    )
+    (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+    (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+      ;; reset bucket settings prior to drawing - font won't do self for us, and
+      ;; draw-raw-image can sometimes mess them up. (intro sequence)
+      (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+      (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 250 65 0.0 (font-color default) (font-flags middle shadow kerning large))))
+        (set! (-> font-ctx scale) 0.325)
+        (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+)
+
+(when (and (= in-menu #t)(= (paused?) #f)(= win-lose #t)(>= (-> *game-info* task-deaths) 2)(not (cpad-pressed? 0 x)))
+  (clear matt-str)
+    (clear *pc-encoded-matt-str*)
+    (format matt-str "<COLOR_WHITE>Welcome to<COLOR_RED> Roguelike Jak II<COLOR_WHITE>!
+~%<COLOR_BLUE>Made by Kraken
+~%
+~%<COLOR_GREEN>~%You Won!
+~%<COLOR_RED>The Time Loop remains destroyed.
+~%<COLOR_WHITE>Skulls Gems turned into Tokens:
+~%<COLOR_YELLOW>~d
+~%<COLOR_ORANGE>Hint: Try to collect items for Vin!
+~%<COLOR_WHITE>Progress:
+~%<COLOR_GREEN> Act ~d <COLOR_YELLOW>Stage ~d
+~%
+~%<COLOR_WHITE>Current Tokens:
+~%<COLOR_PINK>~d
+~%
+~%
+~%
+~%<COLOR_GREEN>Press <COLOR_BLUE>X<COLOR_GREEN> to Continue"
     (the int temp-skullgemamount)
     act-act
     print-stage
@@ -2783,6 +2838,7 @@ Here are the shop IDs
   (set! camera-unlocked #t)
   (set! pause-menu-blocked? #f)
   (set! in-menu #f)
+  (set! win-lose #f)
 )
 
 (when (and (= start-stage #t)(not (cpad-hold? 0 r3)))
@@ -3141,7 +3197,7 @@ Here are the shop IDs
         (set! (-> font-ctx scale) 0.325)
         (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
   (when (= msgi 600)
-    (set! main-msg-1 #f)
+    (set! main-msg-2 #f)
     (set! msgi 0)
   )
 )
@@ -3160,7 +3216,7 @@ Here are the shop IDs
         (set! (-> font-ctx scale) 0.325)
         (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
   (when (= msgi 600)
-    (set! main-msg-1 #f)
+    (set! main-msg-3 #f)
     (set! msgi 0)
   )
 )
@@ -3170,8 +3226,7 @@ Here are the shop IDs
       (clear matt-str)
     (clear *pc-encoded-matt-str*)
     (format matt-str "
-    <COLOR_WHITE>Vin:
-    ~%Jak! I've found something that might be of interest to us.
+    <COLOR_WHITE>Vin:~%Jak! I've found something that might be of interest to us.
     ~%There's a <COLOR_GREEN>Green Eco Shard<COLOR_WHITE> that a <COLOR_RED>Krimzon Guard<COLOR_WHITE> has.
     ~%It's somewhere in Act 1, if you see it, please grab it!
     ~%<COLOR_YELLOW>This item could be part of our ticket out of here!
@@ -3202,8 +3257,7 @@ Here are the shop IDs
       (clear matt-str)
     (clear *pc-encoded-matt-str*)
     (format matt-str "
-    <COLOR_WHITE>Vin:
-    ~%Listen, if we want to get out of here, we should think about getting certain items across dimensions.
+    <COLOR_WHITE>Vin:~%Listen, if we want to get out of here, we should think about getting certain items across dimensions.
     ~%If you happen to see a <COLOR_GREEN>Green Eco Shard<COLOR_WHITE> that a <COLOR_RED>Krimzon Guard<COLOR_WHITE> has,
     ~%don't hesitate to go and grab it. My radar indicates it's located in Act 1.
     ~%<COLOR_YELLOW>We need this item in order to locate the source of all this dark eco!
@@ -3234,8 +3288,7 @@ Here are the shop IDs
       (clear matt-str)
     (clear *pc-encoded-matt-str*)
     (format matt-str "
-    <COLOR_WHITE>Vin:
-    ~%Remember, we need an item in order to locate the dimension where all the dark eco is concentrated.
+    <COLOR_WHITE>Vin:~%Remember, we need an item in order to locate the dimension where all the dark eco is concentrated.
     ~%Right now, a <COLOR_GREEN>Green Eco Shard<COLOR_WHITE> can be collected from a <COLOR_RED>Krimzon Guard<COLOR_WHITE>.
     ~%It's in Act 1, if you see it, please get it for me!
     ~%<COLOR_YELLOW>Getting this item is crucial for our mission!
@@ -3266,8 +3319,7 @@ Here are the shop IDs
       (clear matt-str)
     (clear *pc-encoded-matt-str*)
     (format matt-str "
-    <COLOR_WHITE>Vin:
-    ~%Alright, here's the deal...
+    <COLOR_WHITE>Vin:~%Alright, here's the deal...
     ~%Right now, a <COLOR_GREEN>Green Eco Shard<COLOR_WHITE> can be collected from a <COLOR_RED>Krimzon Guard<COLOR_WHITE> in Act 1.
     ~%This item is very useful, and could help us locate the original dimension.
     ~%<COLOR_YELLOW>Locating the source can help us fix all of the timelines!
@@ -3302,8 +3354,7 @@ Here are the shop IDs
     (clear matt-str)
     (clear *pc-encoded-matt-str*)
     (format matt-str "
-    <COLOR_WHITE>Vin:
-    ~%Amazing! This shard you collected is 1 of 3 pieces we need to locate the original dimension!
+    <COLOR_WHITE>Vin:~%Amazing! This shard you collected is 1 of 3 pieces we need to locate the original dimension!
     ~%The next item you'll need to look out for is a <COLOR_BLUE>Blue Eco Shard<COLOR_WHITE>.
     ~%Somewhere in Act 2, <COLOR_PINK>any Dark Eco Creature<COLOR_WHITE> could have it.
     ~%Find it, and we'll be one step closer to saving our universes!
@@ -3334,8 +3385,7 @@ Here are the shop IDs
     (clear matt-str)
     (clear *pc-encoded-matt-str*)
     (format matt-str "
-    <COLOR_WHITE>Vin:
-    ~%It would seem that this item you've collected is one of three we need.
+    <COLOR_WHITE>Vin:~%It would seem that this item you've collected is one of three we need.
     ~%Right now, you're looking for a <COLOR_BLUE>Blue Eco Shard<COLOR_WHITE> in Act 2.
     ~%My radar says a <COLOR_PINK>any Dark Eco Creature<COLOR_WHITE> could have it.
     ~%Please, this is crucial for finding the source of all this dark eco!
@@ -3366,8 +3416,7 @@ Here are the shop IDs
     (clear matt-str)
     (clear *pc-encoded-matt-str*)
     (format matt-str "
-    <COLOR_WHITE>Vin:
-    ~%You've found the <COLOR_GREEN>Green Eco Shard<COLOR_WHITE>! Good work!
+    <COLOR_WHITE>Vin:~%You've found the <COLOR_GREEN>Green Eco Shard<COLOR_WHITE>! Good work!
     ~%Next you'll need a <COLOR_BLUE>Blue Eco Shard<COLOR_WHITE> from <COLOR_PINK>any Dark Eco Creature<COLOR_WHITE> that has it.
     ~%This item can be found in Act 2, so keep looking!
     ~%
@@ -3398,8 +3447,7 @@ Here are the shop IDs
     (clear matt-str)
     (clear *pc-encoded-matt-str*)
     (format matt-str "
-    <COLOR_WHITE>Vin:
-    ~%Good job for finding this piece for me.
+    <COLOR_WHITE>Vin:~%Good job for finding this piece for me.
     ~%The next item you'll need to look out for is a <COLOR_BLUE>Blue Eco Shard<COLOR_WHITE>.
     ~%Somewhere in Act 2, <COLOR_PINK>Any Dark Eco Creature<COLOR_WHITE> could have it. Specifically
     ~%any creature that DROPS dark eco. If we find this, we can be one step closer to saving
@@ -3433,8 +3481,7 @@ Here are the shop IDs
     (clear matt-str)
     (clear *pc-encoded-matt-str*)
     (format matt-str "
-    <COLOR_WHITE>Vin:
-    ~%Nice work! We have almost all of the pieces we need!
+    <COLOR_WHITE>Vin:~%Nice work! We have almost all of the pieces we need!
     ~%Now we just have to find a <COLOR_RED>Red Eco Shard<COLOR_WHITE> from Act 3.
     ~%My sources say that a <COLOR_YELLOW>Yellow Krimzon Guard<COLOR_WHITE> carries it.
     ~%We're so close, Jak! This will be the last piece to locate our original dimension.
@@ -3465,8 +3512,7 @@ Here are the shop IDs
     (clear matt-str)
     (clear *pc-encoded-matt-str*)
     (format matt-str "
-    <COLOR_WHITE>Vin:
-    ~%Nice work! We have almost all of the pieces we need!
+    <COLOR_WHITE>Vin:~%Nice work! We have almost all of the pieces we need!
     ~%Now we just have to find a <COLOR_RED>Red Eco Shard<COLOR_WHITE> from Act 3.
     ~%My sources say that a <COLOR_YELLOW>Yellow Krimzon Guard<COLOR_WHITE> carries it.
     ~%We're so close, Jak! This will be the last piece to locate our original dimension.
@@ -3497,8 +3543,7 @@ Here are the shop IDs
     (clear matt-str)
     (clear *pc-encoded-matt-str*)
     (format matt-str "
-    <COLOR_WHITE>Vin:
-    ~%Nice work! We have almost all of the pieces we need!
+    <COLOR_WHITE>Vin:~%Nice work! We have almost all of the pieces we need!
     ~%Now we just have to find a <COLOR_RED>Red Eco Shard<COLOR_WHITE> from Act 3.
     ~%My sources say that a <COLOR_YELLOW>Yellow Krimzon Guard<COLOR_WHITE> carries it.
     ~%We're so close, Jak! This will be the last piece to locate our original dimension.
@@ -3529,14 +3574,52 @@ Here are the shop IDs
     (clear matt-str)
     (clear *pc-encoded-matt-str*)
     (format matt-str "
-    <COLOR_WHITE>Vin:
-    ~%Nice work! We have almost all of the pieces we need!
+    <COLOR_WHITE>Vin:~%Nice work! We have almost all of the pieces we need!
     ~%Now we just have to find a <COLOR_RED>Red Eco Shard<COLOR_WHITE> from Act 3.
     ~%My sources say that a <COLOR_YELLOW>Yellow Krimzon Guard<COLOR_WHITE> carries it.
     ~%We're so close, Jak! This will be the last piece to locate our original dimension.
     ~%
     ~%
     ~%
+    ~%
+    ~%<COLOR_WHITE>Current Tokens:
+    ~%<COLOR_PINK>~d
+    ~%
+    ~%<COLOR_RED>R1: <COLOR_WHITE>Buy <COLOR_GREEN>~S<COLOR_WHITE> to permenantly put in the shop for <COLOR_YELLOW>~d Tokens!
+    ~%
+    ~%<COLOR_GREEN>Press <COLOR_RED>R3<COLOR_GREEN> to Exit"
+    (the int (-> *game-info* fuel))
+    mod-s
+    (the int menu-value)
+    )
+    (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+    (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+      ;; reset bucket settings prior to drawing - font won't do self for us, and
+      ;; draw-raw-image can sometimes mess them up. (intro sequence)
+      (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+      (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 250 65 0.0 (font-color default) (font-flags middle shadow kerning large))))
+        (set! (-> font-ctx scale) 0.325)
+        (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+  )
+)
+
+(when (and (= (-> *game-info* total-deaths) 4)(= vin-shop #t))
+  (when (or
+    (= vin-talk 1)
+    (= vin-talk 2)
+    (= vin-talk 3)
+    (= vin-talk 4)
+  )
+    (clear matt-str)
+    (clear *pc-encoded-matt-str*)
+    (format matt-str "
+    <COLOR_WHITE>Vin:~%Jak! I've successfully triangulated the position of where this <COLOR_PINK>dark eco<COLOR_WHITE> is coming from!
+    ~%Thanks to you, we can finally travel there if you get past <COLOR_YELLOW>Act 3.
+    ~%<COLOR_WHITE>But be warned, as you've noticed, the enemies have gotten stronger with how
+    ~%closer you draw near. The original dimension we were in is completely covered in MORE THAN vast amounts!
+    ~%I-I mean, it's not just a quantifiable amount.. It's virtually infinite amounts of dark eco!
+    ~%If you're still having trouble, you can always give me <COLOR_YELLOW>Skull Gems<COLOR_WHITE> to get stronger items.
+    ~%We're all counting on you, Jak! <COLOR_GREEN>Save the universes!
     ~%
     ~%<COLOR_WHITE>Current Tokens:
     ~%<COLOR_PINK>~d
