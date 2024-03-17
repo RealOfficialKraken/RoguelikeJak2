@@ -408,6 +408,9 @@ BUGS
   (when (> (-> *game-info* gem) 121.0)
   (-! (-> *game-info* gem) 121.0)
   )
+  (when (= (-> *game-info* gem) 53.0)
+    (set! (-> *game-info* gem) 0.0)
+  )
   (when (= ohshiti 1200)
     (play-sound-file "goal_src/jak2/pc/snd/endofworld.mp3" 100)
     (set! (-> *game-info* gem) 0.0)
@@ -2116,9 +2119,9 @@ BUGS
     (and
     (= please-reward #t) 
     (!= act-stage 1)
-    (!= act-stage 6)
-    (!= act-stage 11)
-    (!= act-stage 16)
+    (!= act-stage 5)
+    (!= act-stage 10)
+    (!= act-stage 15)
     )
       (set! reward-orbs #t)
       (set! please-reward #f)
@@ -2198,8 +2201,8 @@ This number is taken from (-> *game-info* total-deaths). It is used to save the 
 These numbers go down in order from the ids. The first 1 is to save all the 0's
 
 (/ (mod 0000000001 10) 1) = 1's (1st place, Yellow Gun)
-(/ (mod 0000000010 100) 10) = 10's (2rd place, Blue Gun)
-(/ (mod 0000000100 1000) 100) = 100's (3th place, Peacemaker)
+(/ (mod 0000000010 100) 10) = 10's (2nd place, Blue Gun)
+(/ (mod 0000000100 1000) 100) = 100's (3rd place, Peacemaker)
 (/ (mod 0000001000 10000) 1000) = 1000's (4th place, Upgrade Red Speed)
 (/ (mod 0000010000 100000) 10000) = 10,000's (5th place, Upgrade Ammo)
 (/ (mod 0000100000 1000000) 100000) = 100,000's (6th place, Upgrade Damage)
@@ -2223,6 +2226,12 @@ These numbers go down in order from the ids. The first 1 is to save all the 0's
   (set! wait-extra-for-ingame #t)
   (set! display-run #t)
   (set! roll-shopitems #t)
+  (set! ohshiti 0)
+  (set! ohshit #f)
+  (set! wait-tutorial #f)
+  (set! tutoriali 0)
+    (set! (-> (level-get-target-inside *level*) mood-func)update-mood-default)
+
   (when (!= (the int (-> *game-info* buzzer-total)) act-stage)
     (set! act-stage (the int (-> *game-info* buzzer-total)))
     (when 
@@ -2351,7 +2360,7 @@ These numbers go down in order from the ids. The first 1 is to save all the 0's
   )
   (when 
   (and 
-  (= p-upgrade-vehicles #f)
+  (!= (-> *game-info* total-deaths) 2)
   (= (/ (mod (-> *game-info* task-deaths) 10000000000) 1000000000) 2)
   )
     (set! (-> *game-info* total-deaths) 2)
@@ -2360,7 +2369,7 @@ These numbers go down in order from the ids. The first 1 is to save all the 0's
   )
   (when 
   (and 
-  (= p-upgrade-vehicles #f)
+  (!= (-> *game-info* total-deaths) 3)
   (= (/ (mod (-> *game-info* task-deaths) 10000000000) 1000000000) 3)
   )
     (set! (-> *game-info* total-deaths) 3)
@@ -2369,7 +2378,7 @@ These numbers go down in order from the ids. The first 1 is to save all the 0's
   )
   (when 
   (and 
-  (= p-upgrade-vehicles #f)
+  (!= (-> *game-info* total-deaths) 4)
   (= (/ (mod (-> *game-info* task-deaths) 10000000000) 1000000000) 4)
   )
     (set! (-> *game-info* total-deaths) 4)
@@ -2529,6 +2538,16 @@ These numbers go down in order from the ids. The first 1 is to save all the 0's
   )
 )
 
+
+(when (= wait-kill #t)
+  (+! wait-killi 1)
+  (when (= wait-killi 400)
+    (send-event *target* 'continue (get-continue-by-name *game-info* "consite-airlock"))
+    (set! wait-killi 0)
+    (set! wait-kill #f)
+  )
+)
+
 (when 
 (and
 (= pause-menu-blocked? #t)
@@ -2673,7 +2692,6 @@ Here are the shop IDs
     (set! shoproll3 (rand-vu-int-range 1 (-> *game-info* total-trys)))
   )
 
-  (set! already-teleported? #f)
 
   (when (= shoproll1 1)
     (set! shopitem1 "Yellow Gun (25 orbs)")
@@ -3212,13 +3230,22 @@ Here are the shop IDs
         (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
 )
 
-(when (and (= already-teleported? #f)(!= (-> (level-get-target-inside *level*) name) 'hiphog)(= print-stage 4))
+(when 
+(and 
+(= already-teleported? #f)
+(!= (-> (level-get-target-inside *level*) name) 'hiphog)
+(= print-stage 4)
+)
   (set! teleport-hiphog #t)
 )
 
-(when (and (= teleport-hiphog #t)(!= (-> (level-get-target-inside *level*) name) 'hiphog)(!= print-stage 4))
+(when 
+(and 
+(= teleport-hiphog #t)
+(!= (-> (level-get-target-inside *level*) name) 'hiphog)
+(!= print-stage 4)
+)
   (set! teleport-hiphog #f)
-  (set! already-teleported? #f)
   (set! teleport-back? #f)
 )
 
@@ -3261,10 +3288,10 @@ Here are the shop IDs
   (+! (-> *game-info* total-deaths) 1)
 )|#
 
-(when (and (= teleport-hiphog #t)(= already-teleported? #f))
+(when (and (= teleport-hiphog #t)(= teleport-back? #f)(= already-teleported? #f))
   (clear matt-str)
     (clear *pc-encoded-matt-str*)
-    (format matt-str "<COLOR_RED>R3<COLOR_WHITE>:<COLOR_GREEN> Teleport to <COLOR_PINK>Hip Hog Shop!"
+    (format matt-str "<COLOR_RED>R3<COLOR_WHITE>:<COLOR_GREEN> Teleport to <COLOR_PINK>HipHog Shop!"
     )
     (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
     (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
@@ -4433,6 +4460,173 @@ Here are the shop IDs
           (set! (-> font-ctx scale) 0.325)
           (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
   )
+  
+  (when (= teleport-back? #t)
+    (clear matt-str)
+      (clear *pc-encoded-matt-str*)
+      (format matt-str "<COLOR_GREEN>teleport-back? = true"
+      )
+      (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+      (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+        ;; reset bucket settings prior to drawing - font won't do self for us, and
+        ;; draw-raw-image can sometimes mess them up. (intro sequence)
+        (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+        (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 510 20 0.0 (font-color default) (font-flags right shadow kerning large))))
+          (set! (-> font-ctx scale) 0.325)
+          (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+  )
+  (when (= teleport-back? #f)
+    (clear matt-str)
+      (clear *pc-encoded-matt-str*)
+      (format matt-str "<COLOR_RED>teleport-back? = false"
+      )
+      (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+      (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+        ;; reset bucket settings prior to drawing - font won't do self for us, and
+        ;; draw-raw-image can sometimes mess them up. (intro sequence)
+        (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+        (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 510 20 0.0 (font-color default) (font-flags right shadow kerning large))))
+          (set! (-> font-ctx scale) 0.325)
+          (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+  )
+
+  (when (= already-teleported? #t)
+    (clear matt-str)
+      (clear *pc-encoded-matt-str*)
+      (format matt-str "<COLOR_GREEN>already-teleported? = true"
+      )
+      (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+      (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+        ;; reset bucket settings prior to drawing - font won't do self for us, and
+        ;; draw-raw-image can sometimes mess them up. (intro sequence)
+        (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+        (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 510 30 0.0 (font-color default) (font-flags right shadow kerning large))))
+          (set! (-> font-ctx scale) 0.325)
+          (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+  )
+  (when (= already-teleported? #f)
+    (clear matt-str)
+      (clear *pc-encoded-matt-str*)
+      (format matt-str "<COLOR_RED>already-teleported? = false"
+      )
+      (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+      (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+        ;; reset bucket settings prior to drawing - font won't do self for us, and
+        ;; draw-raw-image can sometimes mess them up. (intro sequence)
+        (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+        (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 510 30 0.0 (font-color default) (font-flags right shadow kerning large))))
+          (set! (-> font-ctx scale) 0.325)
+          (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+  )
+  (when (= wait-tutorial #t)
+    (clear matt-str)
+      (clear *pc-encoded-matt-str*)
+      (format matt-str "<COLOR_GREEN>wait-tutorial = true~%tutoriali = <COLOR_ORANGE>~D/1600"
+      tutoriali
+      )
+      (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+      (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+        ;; reset bucket settings prior to drawing - font won't do self for us, and
+        ;; draw-raw-image can sometimes mess them up. (intro sequence)
+        (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+        (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 510 50 0.0 (font-color default) (font-flags right shadow kerning large))))
+          (set! (-> font-ctx scale) 0.325)
+          (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+  )
+  (when (= ohshit #t)
+    (clear matt-str)
+      (clear *pc-encoded-matt-str*)
+      (format matt-str "<COLOR_GREEN>ohshit = true~%ohshiti = <COLOR_ORANGE>~D/3290"
+      ohshiti
+      )
+      (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+      (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+        ;; reset bucket settings prior to drawing - font won't do self for us, and
+        ;; draw-raw-image can sometimes mess them up. (intro sequence)
+        (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+        (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 510 50 0.0 (font-color default) (font-flags right shadow kerning large))))
+          (set! (-> font-ctx scale) 0.325)
+          (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+  )
+
+  (when (and (= in-hub? #t)(= vin-shop #t))
+    (clear matt-str)
+      (clear *pc-encoded-matt-str*)
+      (format matt-str "<COLOR_GREEN>vin-shop = true~%vin-talk = <COLOR_ORANGE>~D/4"
+      vin-talk
+      )
+      (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+      (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+        ;; reset bucket settings prior to drawing - font won't do self for us, and
+        ;; draw-raw-image can sometimes mess them up. (intro sequence)
+        (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+        (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 510 50 0.0 (font-color default) (font-flags right shadow kerning large))))
+          (set! (-> font-ctx scale) 0.325)
+          (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+  )
+  
+  (when (and (= in-hub? #t)(= vin-shop #f))
+    (clear matt-str)
+      (clear *pc-encoded-matt-str*)
+      (format matt-str "<COLOR_RED>vin-shop = false~%vin-talk = <COLOR_ORANGE>~D/4"
+      vin-talk
+      )
+      (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+      (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+        ;; reset bucket settings prior to drawing - font won't do self for us, and
+        ;; draw-raw-image can sometimes mess them up. (intro sequence)
+        (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+        (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 510 50 0.0 (font-color default) (font-flags right shadow kerning large))))
+          (set! (-> font-ctx scale) 0.325)
+          (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+  )
+  (when (= in-hub? #t)
+    (clear matt-str)
+      (clear *pc-encoded-matt-str*)
+      (format matt-str "<COLOR_GREEN>total-deaths (story) = <COLOR_ORANGE>~D/4"
+      (-> *game-info* total-deaths)
+      )
+      (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+      (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+        ;; reset bucket settings prior to drawing - font won't do self for us, and
+        ;; draw-raw-image can sometimes mess them up. (intro sequence)
+        (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+        (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 510 70 0.0 (font-color default) (font-flags right shadow kerning large))))
+          (set! (-> font-ctx scale) 0.325)
+          (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+  )
+
+  (when (= in-hub? #t)
+    (clear matt-str)
+      (clear *pc-encoded-matt-str*)
+      (format matt-str "<COLOR_RED>task-deaths = <COLOR_ORANGE>~D"
+      (-> *game-info* task-deaths)
+      )
+      (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+      (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+        ;; reset bucket settings prior to drawing - font won't do self for us, and
+        ;; draw-raw-image can sometimes mess them up. (intro sequence)
+        (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+        (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 510 90 0.0 (font-color default) (font-flags right shadow kerning large))))
+          (set! (-> font-ctx scale) 0.325)
+          (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+  )
+  (when (and (= in-hub? #f)(= wait-tutorial #f)(= ohshit #f))
+    (clear matt-str)
+      (clear *pc-encoded-matt-str*)
+      (format matt-str "<COLOR_GREEN>task-deaths = <COLOR_ORANGE>~D"
+      (-> *game-info* task-deaths)
+      )
+      (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+      (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+        ;; reset bucket settings prior to drawing - font won't do self for us, and
+        ;; draw-raw-image can sometimes mess them up. (intro sequence)
+        (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+        (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 510 50 0.0 (font-color default) (font-flags right shadow kerning large))))
+          (set! (-> font-ctx scale) 0.325)
+          (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+  )
+  
 )
 ;---------------------^^^THIS IS TO DEBUG THE VARS^^^--------------------
 
