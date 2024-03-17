@@ -301,10 +301,10 @@ BUGS
   (set! teleport-back? #f)
   (set! teleport-w 0)
   (set! teleport-wait #f)
-  ;(set! wait-loading #t)
-  (set! autosave-delayed #t)
+  (set! (-> *game-info* buzzer-total) 0.0)
   (set! (-> *mood-control* overide-weather-flag) #f)
   (set! (-> *game-info* task-deaths) 1000000000)
+  (set! autosave-delayed #t)
 
   (when (= (-> *game-info* total-trys) 7) ;Buffed Vehicles
     (set! menu-value 75.0)
@@ -2106,9 +2106,9 @@ BUGS
 
 ;wait for the in-game to not get the infinite complete mission glitch
 
-(when (and (= in-game? #f)(= wait-for-ingame #t))
+(when (and (= in-game? #f)(= wait-for-ingame #t)) ;waits a little bit to give grace period and to fix bugs too
   (+! waiting 1)
-  (when (= waiting 400)
+  (when (= waiting 800)
     (set! in-game? #t)
     (set! waiting 0)
     (set! wait-for-ingame #f)
@@ -2126,13 +2126,18 @@ BUGS
   )
 )
 
-(when (and (= in-game? #f)(= wait-extra-for-ingame #t))
+(when (and (= in-game? #f)(= wait-extra-for-ingame #t)) ;wait the extra time for in-game? without rewarding orbs.
   (+! waiting 1)
-  (when (= waiting 800)
+  (when (= waiting 1200)
     (set! in-game? #t)
     (set! waiting 0)
     (set! wait-extra-for-ingame #f)
   )
+)
+
+(when (and (= in-hub? #t)(= in-game? #t)) ;Workaround fix where in-game returns #t in hub.
+  (set! in-game? #f)
+  (set! run-in-progress #f)
 )
 
 (when (= reward-orbs #t) ;reward for completing floor with certain health range
@@ -2217,6 +2222,7 @@ These numbers go down in order from the ids. The first 1 is to save all the 0's
   (set! run-in-progress #t)
   (set! wait-extra-for-ingame #t)
   (set! display-run #t)
+  (set! roll-shopitems #t)
   (when (!= (the int (-> *game-info* buzzer-total)) act-stage)
     (set! act-stage (the int (-> *game-info* buzzer-total)))
     (when 
@@ -2507,6 +2513,7 @@ These numbers go down in order from the ids. The first 1 is to save all the 0's
     (set! waits-frame 0)
     (set! camera-locked #t)
     (set! pause-menu-blocked? #t)
+    (set! display-run #f)
     (set! in-hub? #t)
   )
 )
@@ -2545,6 +2552,7 @@ These numbers go down in order from the ids. The first 1 is to save all the 0's
   (set! waitdie #t)
   (set! in-game? #f)
   (set! avoidc-waitb #f)
+  (set! display-run #f)
   (set! avoidc-wait 0)
 )
 
@@ -4367,8 +4375,64 @@ Here are the shop IDs
         (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
 )
 
-
-
+;---------------------vvvTHIS IS TO DEBUG THE VARSvvv--------------------
+(when (= in-game? #t)
+  (clear matt-str)
+    (clear *pc-encoded-matt-str*)
+    (format matt-str "<COLOR_GREEN>in-game? = true"
+    )
+    (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+    (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+      ;; reset bucket settings prior to drawing - font won't do self for us, and
+      ;; draw-raw-image can sometimes mess them up. (intro sequence)
+      (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+      (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 510 0 0.0 (font-color default) (font-flags right shadow kerning large))))
+        (set! (-> font-ctx scale) 0.325)
+        (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+)
+(when (= in-game? #f)
+  (clear matt-str)
+    (clear *pc-encoded-matt-str*)
+    (format matt-str "<COLOR_RED>in-game? = false"
+    )
+    (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+    (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+      ;; reset bucket settings prior to drawing - font won't do self for us, and
+      ;; draw-raw-image can sometimes mess them up. (intro sequence)
+      (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+      (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 510 0 0.0 (font-color default) (font-flags right shadow kerning large))))
+        (set! (-> font-ctx scale) 0.325)
+        (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+)
+(when (= avoidc-waitb #f)
+  (clear matt-str)
+    (clear *pc-encoded-matt-str*)
+    (format matt-str "<COLOR_RED>avoidc-waitb = false"
+    )
+    (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+    (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+      ;; reset bucket settings prior to drawing - font won't do self for us, and
+      ;; draw-raw-image can sometimes mess them up. (intro sequence)
+      (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+      (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 510 10 0.0 (font-color default) (font-flags right shadow kerning large))))
+        (set! (-> font-ctx scale) 0.325)
+        (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+)
+(when (= avoidc-waitb #t)
+  (clear matt-str)
+    (clear *pc-encoded-matt-str*)
+    (format matt-str "<COLOR_GREEN>avoidc-waitb = true"
+    )
+    (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+    (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+      ;; reset bucket settings prior to drawing - font won't do self for us, and
+      ;; draw-raw-image can sometimes mess them up. (intro sequence)
+      (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+      (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 510 10 0.0 (font-color default) (font-flags right shadow kerning large))))
+        (set! (-> font-ctx scale) 0.325)
+        (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+)
+;---------------------^^^THIS IS TO DEBUG THE VARS^^^--------------------
 
 
 ;<<<<<<<<<<<<<<<<<<<<<<<<<<<<self area is meant for fixes with specific missions<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
