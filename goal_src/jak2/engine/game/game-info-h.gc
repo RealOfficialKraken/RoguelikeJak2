@@ -72,6 +72,7 @@
 (define p-upgrade-damage #f)
 (define p-upgrade-vehicles #f)
 (define p-double-shot #f)
+(define p-explode-shot #f)
 
 (define dshotwait-r #f)
 (define dshotcount-r 0)
@@ -101,6 +102,8 @@
 (define item-ts8 "")
 (define item-ts9 "")
 (define item-ts10 "")
+(define item-ts11 "")
+(define item-ts12 "")
 (define item-tss1 "")
 
 (define in-hub? #f)

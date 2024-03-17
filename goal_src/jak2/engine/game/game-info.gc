@@ -233,7 +233,7 @@
         (set! (-> this current-continue) s5-0)
         )
     (when (!= s5-0 (-> this current-continue))
-      (set! (-> this continue-deaths) 0)
+      ;(set! (-> this continue-deaths) 0)
       (set! (-> this continue-time) (-> *display* game-clock frame-counter))
       )
     )

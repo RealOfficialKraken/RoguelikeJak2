@@ -308,6 +308,7 @@ After most of these, the mod will be completed and I can get on with my life
   (set! (-> *game-info* buzzer-total) 0.0)
   (set! (-> *mood-control* overide-weather-flag) #f)
   (set! (-> *game-info* task-deaths) 1000000000)
+  (set! (-> *game-info* continue-deaths) 1000000000)
   (set! autosave-delayed #t)
 
   (when (= (-> *game-info* total-trys) 4)
@@ -2286,10 +2287,12 @@ These numbers go down in order from the ids. The first 1 is to save all the 0's
       (set! act-act 4)
     )
   )
+)
 
 (when 
   (and 
   (= p-yellow-gun #f)
+  (= item-update #f)
   (= (/ (mod (-> *game-info* task-deaths) 10) 1) 1)
   )
     (set! p-yellow-gun #t)
@@ -2299,6 +2302,7 @@ These numbers go down in order from the ids. The first 1 is to save all the 0's
   (when 
   (and 
   (= p-blue-gun #f)
+  (= item-update #f)
   (= (/ (mod (-> *game-info* task-deaths) 100) 10) 1)
   )
     (set! p-blue-gun #t)
@@ -2308,6 +2312,7 @@ These numbers go down in order from the ids. The first 1 is to save all the 0's
   (when 
   (and 
   (= p-dark-gun #f)
+  (= item-update #f)
   (= (/ (mod (-> *game-info* task-deaths) 1000) 100) 1)
   )
     (set! p-dark-gun #t)
@@ -2317,6 +2322,7 @@ These numbers go down in order from the ids. The first 1 is to save all the 0's
   (when 
   (and 
   (= p-upgrade-red #f)
+  (= item-update #f)
   (= (/ (mod (-> *game-info* task-deaths) 10000) 1000) 1)
   )
     (set! p-upgrade-red #t)
@@ -2326,6 +2332,7 @@ These numbers go down in order from the ids. The first 1 is to save all the 0's
     (when 
   (and 
   (= p-upgrade-red #f)
+  (= item-update #f)
   (= (/ (mod (-> *game-info* task-deaths) 100000) 10000) 1)
   )
     (set! p-upgrade-red #t)
@@ -2335,6 +2342,7 @@ These numbers go down in order from the ids. The first 1 is to save all the 0's
       (when 
   (and 
   (= p-upgrade-ammo #f)
+  (= item-update #f)
   (= (/ (mod (-> *game-info* task-deaths) 1000000) 100000) 1)
   )
     (set! p-upgrade-ammo #t)
@@ -2345,6 +2353,7 @@ These numbers go down in order from the ids. The first 1 is to save all the 0's
       (when 
   (and 
   (= p-upgrade-damage #f)
+  (= item-update #f)
   (= (/ (mod (-> *game-info* task-deaths) 10000000) 1000000) 1)
   )
     (set! p-upgrade-damage #t)
@@ -2354,33 +2363,39 @@ These numbers go down in order from the ids. The first 1 is to save all the 0's
   (when 
   (and 
   (= p-upgrade-vehicles #f)
+  (= item-update #f)
   (= (/ (mod (-> *game-info* task-deaths) 100000000) 10000000) 1)
   )
     (set! p-upgrade-vehicles #t)
+    (= item-update #f)
     (set! item-tss1 "Upgraded Vehicles")
     (set! item-update #t)
   )
   (when 
   (and 
-  (= p-upgrade-vehicles #f)
+  (= p-double-shot #f)
+  (= item-update #f)
   (= (/ (mod (-> *game-info* task-deaths) 1000000000) 100000000) 1)
   )
-    (set! p-upgrade-vehicles #t)
+    (set! p-double-shot #t)
+    (= item-update #f)
     (set! item-tss1 "Double Shot")
     (set! item-update #t)
   )
   (when 
   (and 
-  (= p-upgrade-vehicles #f)
+  (= p-explode-shot #f)
+  (= item-update #f)
   (= (/ (mod (-> *game-info* task-deaths) 1000000000) 100000000) 1)
   )
-    (set! p-upgrade-vehicles #t)
+    (set! p-explode-shot #t)
     (set! item-tss1 "Explosive Shot")
     (set! item-update #t)
   )
   (when 
   (and 
   (!= (-> *game-info* total-deaths) 2)
+  (= item-update #f)
   (= (/ (mod (-> *game-info* task-deaths) 10000000000) 1000000000) 2)
   )
     (set! (-> *game-info* total-deaths) 2)
@@ -2390,6 +2405,7 @@ These numbers go down in order from the ids. The first 1 is to save all the 0's
   (when 
   (and 
   (!= (-> *game-info* total-deaths) 3)
+  (= item-update #f)
   (= (/ (mod (-> *game-info* task-deaths) 10000000000) 1000000000) 3)
   )
     (set! (-> *game-info* total-deaths) 3)
@@ -2399,13 +2415,13 @@ These numbers go down in order from the ids. The first 1 is to save all the 0's
   (when 
   (and 
   (!= (-> *game-info* total-deaths) 4)
+  (= item-update #f)
   (= (/ (mod (-> *game-info* task-deaths) 10000000000) 1000000000) 4)
   )
     (set! (-> *game-info* total-deaths) 4)
     (set! item-tss1 "Red Eco Shard")
     (set! item-update #t)
   )
-)
 
 
 (when 
@@ -2975,6 +2991,12 @@ Here are the shop IDs
   (when (= item-tracker 10)
     (set! item-ts10 item-tss1)
   )
+  (when (= item-tracker 11)
+    (set! item-ts11 item-tss1)
+  )
+  (when (= item-tracker 12)
+    (set! item-ts12 item-tss1)
+  )
   (+! item-tracker 1)
   (set! item-update #f)
 )
@@ -3360,8 +3382,6 @@ Here are the shop IDs
     )
     (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
     (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
-      ;; reset bucket settings prior to drawing - font won't do self for us, and
-      ;; draw-raw-image can sometimes mess them up. (intro sequence)
       (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
       (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 125 55 0.0 (font-color default) (font-flags middle shadow kerning large))))
         (set! (-> font-ctx scale) 0.325)
@@ -4433,6 +4453,61 @@ Here are the shop IDs
         (set! (-> font-ctx scale) 0.325)
         (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
 )
+(when 
+(and 
+(= (paused?) #f)
+(= (pause-allowed?) #t)
+(= in-menu #f) 
+(= item-display? #t)
+(= in-hub? #f)
+)
+  (clear matt-str)
+    (clear *pc-encoded-matt-str*)
+    (format matt-str "<COLOR_GREEN>~%~S~%~S~%~S~%~S~%~S~%~S"
+    item-ts7
+    item-ts8
+    item-ts9
+    item-ts10
+    item-ts11
+    item-ts12
+    )
+    (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+    (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+      ;; reset bucket settings prior to drawing - font won't do self for us, and
+      ;; draw-raw-image can sometimes mess them up. (intro sequence)
+      (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+      (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 510 225 0.0 (font-color default) (font-flags right shadow kerning large))))
+        (set! (-> font-ctx scale) 0.325)
+        (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+)
+
+(when 
+(and 
+(= (paused?) #f)
+(= (pause-allowed?) #t)
+(= in-menu #t) 
+(= post-item-display? #t)
+(= in-hub? #t)
+)
+  (clear matt-str)
+    (clear *pc-encoded-matt-str*)
+    (format matt-str "<COLOR_GREEN>~%~S~%~S~%~S~%~S~%~S~%~S"
+    item-ts7
+    item-ts8
+    item-ts9
+    item-ts10
+    item-ts11
+    item-ts12
+    )
+    (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+    (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+      ;; reset bucket settings prior to drawing - font won't do self for us, and
+      ;; draw-raw-image can sometimes mess them up. (intro sequence)
+      (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+      (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 510 225 0.0 (font-color default) (font-flags right shadow kerning large))))
+        (set! (-> font-ctx scale) 0.325)
+        (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+)
 
 ;---------------------vvvTHIS IS TO DEBUG THE VARSvvv--------------------
 (when *debug-segment*
@@ -4631,8 +4706,9 @@ Here are the shop IDs
   (when (= in-hub? #t)
     (clear matt-str)
       (clear *pc-encoded-matt-str*)
-      (format matt-str "<COLOR_RED>task-deaths = <COLOR_ORANGE>~D"
+      (format matt-str "<COLOR_RED>task-deaths (game-save1) = <COLOR_ORANGE>~D~%<COLOR_RED>continue-deaths (game-save2) = <COLOR_ORANGE>~D"
       (-> *game-info* task-deaths)
+      (-> *game-info* continue-deaths)
       )
       (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
       (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
@@ -4646,8 +4722,9 @@ Here are the shop IDs
   (when (and (= in-hub? #f)(= wait-tutorial #f)(= ohshit #f))
     (clear matt-str)
       (clear *pc-encoded-matt-str*)
-      (format matt-str "<COLOR_GREEN>task-deaths = <COLOR_ORANGE>~D"
+      (format matt-str "<COLOR_GREEN>task-deaths (game-save1) = <COLOR_ORANGE>~D~%<COLOR_GREEN>continue-deaths (game-save2) = <COLOR_ORANGE>~D"
       (-> *game-info* task-deaths)
+      (-> *game-info* continue-deaths)
       )
       (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
       (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
