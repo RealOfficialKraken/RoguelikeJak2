@@ -100,6 +100,7 @@ BUGS
 
 (define reward-orbs #f)
 (define wait-for-ingame #f)
+(define wait-extra-for-ingame #f)
 (define waiting 0)
 
 (define vin-spawned? #f)
@@ -247,7 +248,7 @@ BUGS
 (= tutorial-completed? #f)
 (= (pause-allowed?) #t)
 (= (-> *game-info* total-trys) 0)
-(<= (-> *game-info* task-deaths) 1)
+(<= (-> *game-info* karma) 1.0)
 (= (-> (level-get-target-inside *level*) name) 'prison)
 )
   (set! wait-tutorial #t)
@@ -260,7 +261,7 @@ BUGS
 *target*
 (= tutorial-completed? #f)
 (= (pause-allowed?) #t)
-(>= (-> *game-info* task-deaths) 1)
+(>= (-> *game-info* karma) 1.0)
 (= (-> (level-get-target-inside *level*) name) 'consiteb)
 )
   (set! (-> *target* fact health) 8.0)
@@ -303,6 +304,7 @@ BUGS
   ;(set! wait-loading #t)
   (set! autosave-delayed #t)
   (set! (-> *mood-control* overide-weather-flag) #f)
+  (set! (-> *game-info* task-deaths) 1000000000)
 
   (when (= (-> *game-info* total-trys) 7) ;Buffed Vehicles
     (set! menu-value 75.0)
@@ -671,7 +673,7 @@ BUGS
             (set! waitenter #t)
             
           )
-          (set! wait-for-ingame #t)
+          (set! wait-extra-for-ingame #t)
           (set! act-act 1)
         )
     )
@@ -2008,6 +2010,7 @@ BUGS
   (set! temp-health (-> *target* fact health))
   (set! temp-orbs (-> *game-info* skill))
   (set! total-skill 10)
+  (set! autosave-delayed #t)
     (when (= (-> *game-info* buzzer-total) 1.0)
       (set! act1-1 #t)
       (set! level-completed? #f)
@@ -2075,8 +2078,8 @@ BUGS
     (when (and (< (-> *game-info* total-deaths) 4)(= (-> *game-info* buzzer-total) 16.0)(= level-completed? #t))
       (set! (-> *target* fact health) 0.0)
       (set! win-lose #t)
-      (when (= (-> *game-info* task-deaths) 2)
-        (set! (-> *game-info* task-deaths) 3)
+      (when (= (-> *game-info* karma) 2.0)
+        (set! (-> *game-info* karma) 3.0)
       )
       (set! in-game? #t)
       (set! level-completed? #f)
@@ -2105,18 +2108,30 @@ BUGS
 
 (when (and (= in-game? #f)(= wait-for-ingame #t))
   (+! waiting 1)
-  (when (= waiting 120)
+  (when (= waiting 400)
     (set! in-game? #t)
     (set! waiting 0)
     (set! wait-for-ingame #f)
-    (when (or 
+    (when 
+    (and
+    (= please-reward #t) 
     (!= act-stage 1)
     (!= act-stage 6)
     (!= act-stage 11)
     (!= act-stage 16)
     )
       (set! reward-orbs #t)
+      (set! please-reward #f)
     )
+  )
+)
+
+(when (and (= in-game? #f)(= wait-extra-for-ingame #t))
+  (+! waiting 1)
+  (when (= waiting 800)
+    (set! in-game? #t)
+    (set! waiting 0)
+    (set! wait-extra-for-ingame #f)
   )
 )
 
@@ -2166,6 +2181,198 @@ BUGS
   )
 )
 
+  #|
+  MODULO
+The equation to extract the 0 in the 100's place is (/ (mod 11011 1000) 100) This will return 0.
+Similarly, if we wanted to add a 1 in the 100's place, just do (+ (11011) 100)
+This is the legend for all numbers
+
+This number is taken from (-> *game-info* total-deaths). It is used to save the values of your current items to game-save.
+
+10000000000
+These numbers go down in order from the ids. The first 1 is to save all the 0's
+
+(/ (mod 0000000001 10) 1) = 1's (1st place, Yellow Gun)
+(/ (mod 0000000010 100) 10) = 10's (2rd place, Blue Gun)
+(/ (mod 0000000100 1000) 100) = 100's (3th place, Peacemaker)
+(/ (mod 0000001000 10000) 1000) = 1000's (4th place, Upgrade Red Speed)
+(/ (mod 0000010000 100000) 10000) = 10,000's (5th place, Upgrade Ammo)
+(/ (mod 0000100000 1000000) 100000) = 100,000's (6th place, Upgrade Damage)
+(/ (mod 0001000000 10000000) 1000000) = 1,000,000's (7th place, Buffed Vehicles)
+(/ (mod 0010000000 100000000) 10000000) = 10,000,000's (8th place, Double Shot)
+(/ (mod 0100000000 1000000000) 100000000) = 100,000,000's (9th place, Green, Red, Blue Eco Shard)
+(/ (mod 1000000000 10000000000) 100000000) = 1,000,000,000's (10th place, in-game?) 1=false 2=true
+|#
+
+
+(when 
+(and 
+(!= (-> *game-info* buzzer-total) 0.0)
+(= in-game? #f)
+(= (paused?) #f)
+(= (pause-allowed?) #t)
+*target*
+)
+  (set! item-display? #t)
+  (set! run-in-progress #t)
+  (set! wait-extra-for-ingame #t)
+  (set! display-run #t)
+  (when (!= (the int (-> *game-info* buzzer-total)) act-stage)
+    (set! act-stage (the int (-> *game-info* buzzer-total)))
+    (when 
+    (and 
+    (<= (-> *game-info* buzzer-total) 5)
+    (!= act-act 1)
+    )
+      (set! act-act 1)
+    )
+    (when 
+    (and 
+    (>= (-> *game-info* buzzer-total) 6)
+    (<= (-> *game-info* buzzer-total) 10)
+    (!= act-act 2)
+    )
+      (set! act-act 2)
+    )
+    (when 
+    (and 
+    (>= (-> *game-info* buzzer-total) 11)
+    (<= (-> *game-info* buzzer-total) 15)
+    (!= act-act 3)
+    )
+      (set! act-act 3)
+    )
+    (when 
+    (and 
+    (>= (-> *game-info* buzzer-total) 16)
+    (<= (-> *game-info* buzzer-total) 20)
+    (!= act-act 4)
+    )
+      (set! act-act 4)
+    )
+  )
+
+(when 
+  (and 
+  (= p-yellow-gun #f)
+  (= (/ (mod (-> *game-info* task-deaths) 10) 1) 1)
+  )
+    (set! p-yellow-gun #t)
+    (set! item-tss1 "Yellow Gun")
+    (set! item-update #t)
+  )
+  (when 
+  (and 
+  (= p-blue-gun #f)
+  (= (/ (mod (-> *game-info* task-deaths) 100) 10) 1)
+  )
+    (set! p-blue-gun #t)
+    (set! item-tss1 "Blue Gun")
+    (set! item-update #t)
+  )
+  (when 
+  (and 
+  (= p-dark-gun #f)
+  (= (/ (mod (-> *game-info* task-deaths) 1000) 100) 1)
+  )
+    (set! p-dark-gun #t)
+    (set! item-tss1 "Peacemaker")
+    (set! item-update #t)
+  )
+  (when 
+  (and 
+  (= p-upgrade-red #f)
+  (= (/ (mod (-> *game-info* task-deaths) 10000) 1000) 1)
+  )
+    (set! p-upgrade-red #t)
+    (set! item-tss1 "Scattergun ROF")
+    (set! item-update #t)
+  )
+    (when 
+  (and 
+  (= p-upgrade-red #f)
+  (= (/ (mod (-> *game-info* task-deaths) 100000) 10000) 1)
+  )
+    (set! p-upgrade-red #t)
+    (set! item-tss1 "Scattergun ROF")
+    (set! item-update #t)
+  )
+      (when 
+  (and 
+  (= p-upgrade-ammo #f)
+  (= (/ (mod (-> *game-info* task-deaths) 1000000) 100000) 1)
+  )
+    (set! p-upgrade-ammo #t)
+    (set! item-tss1 "Upgraded Ammo")
+    (set! item-update #t)
+  )
+
+      (when 
+  (and 
+  (= p-upgrade-damage #f)
+  (= (/ (mod (-> *game-info* task-deaths) 10000000) 1000000) 1)
+  )
+    (set! p-upgrade-damage #t)
+    (set! item-tss1 "Upgraded Damage")
+    (set! item-update #t)
+  )
+  (when 
+  (and 
+  (= p-upgrade-vehicles #f)
+  (= (/ (mod (-> *game-info* task-deaths) 100000000) 10000000) 1)
+  )
+    (set! p-upgrade-vehicles #t)
+    (set! item-tss1 "Upgraded Vehicles")
+    (set! item-update #t)
+  )
+  (when 
+  (and 
+  (= p-upgrade-vehicles #f)
+  (= (/ (mod (-> *game-info* task-deaths) 1000000000) 100000000) 1)
+  )
+    (set! p-upgrade-vehicles #t)
+    (set! item-tss1 "Double Shot")
+    (set! item-update #t)
+  )
+  (when 
+  (and 
+  (= p-upgrade-vehicles #f)
+  (= (/ (mod (-> *game-info* task-deaths) 1000000000) 100000000) 1)
+  )
+    (set! p-upgrade-vehicles #t)
+    (set! item-tss1 "Explosive Shot")
+    (set! item-update #t)
+  )
+  (when 
+  (and 
+  (= p-upgrade-vehicles #f)
+  (= (/ (mod (-> *game-info* task-deaths) 10000000000) 1000000000) 2)
+  )
+    (set! (-> *game-info* total-deaths) 2)
+    (set! item-tss1 "Green Eco Shard")
+    (set! item-update #t)
+  )
+  (when 
+  (and 
+  (= p-upgrade-vehicles #f)
+  (= (/ (mod (-> *game-info* task-deaths) 10000000000) 1000000000) 3)
+  )
+    (set! (-> *game-info* total-deaths) 3)
+    (set! item-tss1 "Blue Eco Shard")
+    (set! item-update #t)
+  )
+  (when 
+  (and 
+  (= p-upgrade-vehicles #f)
+  (= (/ (mod (-> *game-info* task-deaths) 10000000000) 1000000000) 4)
+  )
+    (set! (-> *game-info* total-deaths) 4)
+    (set! item-tss1 "Red Eco Shard")
+    (set! item-update #t)
+  )
+)
+
+
 (when 
 (and 
 (= in-hub? #t) 
@@ -2206,7 +2413,7 @@ BUGS
   (set! camera-locked #t)
   (set! vin-talk (rand-vu-int-range 1 4))
 )
-
+#|
 (when 
 (and 
 (= in-game? #f)
@@ -2214,11 +2421,11 @@ BUGS
 (= (pause-allowed?) #t)
 *target*
 (= run-in-progress #f)
-(>= (-> *game-info* task-deaths) 1)
+(>= (-> *game-info* karma) 1.0)
 (not (= (-> (level-get-target-inside *level*) name) 'consiteb))
 )
   (send-event *target* 'continue (get-continue-by-name *game-info* "consite-airlock"))
-)
+)|#
 
 (when (and (= act-act 4)(= in-game? #t)(!= (-> (level-get-target-inside *level*) mood-func)update-mood-nest))
   (set! (-> *overide-mood-color-table* data (logand (-> *time-of-day-context* mode) (time-of-day-palette-id unk0 unk1 unk2)) amb-color x) 1.9921)
@@ -2286,6 +2493,7 @@ BUGS
     (set! display-run #t)
     (set! vin-spawned? #f)
     (set! item-display? #t)
+    (set! autosave-delayed #t)
   )
 )
 (when (= wait-start #t)
@@ -2343,7 +2551,7 @@ BUGS
 
 
 
-(when (and (= waitdie #t)(>= (-> *game-info* task-deaths) 1)(= (pause-allowed?) #t))
+(when (and (= waitdie #t)(>= (-> *game-info* karma) 1.0)(= (pause-allowed?) #t))
   (+! waitdi 1)
   (when (= waitdi 1)
     (set! temp-skullgemamount (-> *game-info* gem))
@@ -2440,7 +2648,10 @@ Here are the shop IDs
 9 Double Shot
 99 Red Eco Shard
 
+
 |#
+
+
 
 (when (= roll-shopitems #t)
   (let (
@@ -2564,15 +2775,15 @@ Here are the shop IDs
     (set! shopitem3 "Double Shot (25 orbs)")
     (set! shopid3 9)
   )
-  (when (and (rand-vu-percent? 0.1) (>= (-> *game-info* task-deaths) 3))
+  (when (and (rand-vu-percent? 0.1) (>= (-> *game-info* karma) 3.0))
     (set! shopitem1 "Explosive Shot (35 orbs)")
     (set! shopid1 10)
   )
-  (when (and (rand-vu-percent? 0.1) (>= (-> *game-info* task-deaths) 3))
+  (when (and (rand-vu-percent? 0.1) (>= (-> *game-info* karma) 3.0))
     (set! shopitem2 "Explosive Shot (35 orbs)")
     (set! shopid2 10)
   )
-  (when (and (rand-vu-percent? 0.1) (>= (-> *game-info* task-deaths) 3))
+  (when (and (rand-vu-percent? 0.1) (>= (-> *game-info* karma) 3.0))
     (set! shopitem3 "Explosive Shot (35 orbs)")
     (set! shopid3 10)
   )
@@ -2717,6 +2928,8 @@ Here are the shop IDs
       (set! shopitem1 "(Out of Stock)")
       (set! item-tss1 "Yellow Gun")
       (set! item-update #t)
+      (set! (-> *game-info* task-deaths) (+ (-> *game-info* task-deaths) 1))
+      (set! autosave-delayed #t)
     )
     (when (and (= menu-slot 1)(not (logtest? (-> *game-info* features) (game-feature gun-yellow)))(>= (-> *game-info* skill) 25.0)(= shopid3 1))
       (set! p-yellow-gun #t)
@@ -2724,6 +2937,8 @@ Here are the shop IDs
       (set! shopitem3 "(Out of Stock)")
       (set! item-tss1 "Yellow Gun")
       (set! item-update #t)
+      (set! (-> *game-info* task-deaths) (+ (-> *game-info* task-deaths) 1))
+      (set! autosave-delayed #t)
     )
     (when (and (= menu-slot 2)(not (logtest? (-> *game-info* features) (game-feature gun-yellow)))(>= (-> *game-info* skill) 25.0)(= shopid2 1))
       (set! p-yellow-gun #t)
@@ -2731,6 +2946,8 @@ Here are the shop IDs
       (set! shopitem2 "(Out of Stock)")
       (set! item-tss1 "Yellow Gun")
       (set! item-update #t)
+      (set! (-> *game-info* task-deaths) (+ (-> *game-info* task-deaths) 1))
+      (set! autosave-delayed #t)
     )
     (when (and (= menu-slot 0)(not (logtest? (-> *game-info* features) (game-feature gun-blue)))(>= (-> *game-info* skill) 32.0)(= shopid1 2))
       (set! p-blue-gun #t)
@@ -2738,6 +2955,8 @@ Here are the shop IDs
       (set! shopitem1 "(Out of Stock)")
       (set! item-tss1 "Blue Gun")
       (set! item-update #t)
+      (set! (-> *game-info* task-deaths) (+ (-> *game-info* task-deaths) 10))
+      (set! autosave-delayed #t)
     )
     (when (and (= menu-slot 1)(not (logtest? (-> *game-info* features) (game-feature gun-blue)))(>= (-> *game-info* skill) 32.0)(= shopid3 2))
       (set! p-blue-gun #t)
@@ -2745,6 +2964,8 @@ Here are the shop IDs
       (set! shopitem3 "(Out of Stock)")
       (set! item-tss1 "Blue Gun")
       (set! item-update #t)
+      (set! (-> *game-info* task-deaths) (+ (-> *game-info* task-deaths) 10))
+      (set! autosave-delayed #t)
     )
     (when (and (= menu-slot 2)(not (logtest? (-> *game-info* features) (game-feature gun-blue)))(>= (-> *game-info* skill) 32.0)(= shopid2 2))
       (set! p-blue-gun #t)
@@ -2752,6 +2973,8 @@ Here are the shop IDs
       (set! shopitem2 "(Out of Stock)")
       (set! item-tss1 "Blue Gun")
       (set! item-update #t)
+      (set! (-> *game-info* task-deaths) (+ (-> *game-info* task-deaths) 10))
+      (set! autosave-delayed #t)
     )
     (when (and (= menu-slot 0)(not (logtest? (-> *game-info* features) (game-feature gun-dark)))(>= (-> *game-info* skill) 40.0)(= shopid1 3))
       (set! p-dark-gun #t)
@@ -2759,6 +2982,8 @@ Here are the shop IDs
       (set! shopitem1 "(Out of Stock)")
       (set! item-tss1 "Peacemaker")
       (set! item-update #t)
+      (set! (-> *game-info* task-deaths) (+ (-> *game-info* task-deaths) 100))
+      (set! autosave-delayed #t)
     )
     (when (and (= menu-slot 1)(not (logtest? (-> *game-info* features) (game-feature gun-dark)))(>= (-> *game-info* skill) 40.0)(= shopid3 3))
       (set! p-dark-gun #t)
@@ -2766,6 +2991,8 @@ Here are the shop IDs
       (set! shopitem3 "(Out of Stock)")
       (set! item-tss1 "Peacemaker")
       (set! item-update #t)
+      (set! (-> *game-info* task-deaths) (+ (-> *game-info* task-deaths) 100))
+      (set! autosave-delayed #t)
     )
     (when (and (= menu-slot 2)(not (logtest? (-> *game-info* features) (game-feature gun-dark)))(>= (-> *game-info* skill) 40.0)(= shopid2 3))
       (set! p-dark-gun #t)
@@ -2773,6 +3000,8 @@ Here are the shop IDs
       (set! shopitem2 "(Out of Stock)")
       (set! item-tss1 "Peacemaker")
       (set! item-update #t)
+      (set! (-> *game-info* task-deaths) (+ (-> *game-info* task-deaths) 100))
+      (set! autosave-delayed #t)
     )
     (when (and (= menu-slot 0)(not (logtest? (-> *game-info* features) (game-feature gun-upgrade-speed)))(>= (-> *game-info* skill) 10.0)(= shopid1 4))
       (set! p-upgrade-red #t)
@@ -2780,6 +3009,7 @@ Here are the shop IDs
       (set! shopitem1 "(Out of Stock)")
       (set! item-tss1 "Scattergun ROF")
       (set! item-update #t)
+      (set! (-> *game-info* task-deaths) (+ (-> *game-info* task-deaths) 1000))
     )
     (when (and (= menu-slot 1)(not (logtest? (-> *game-info* features) (game-feature gun-upgrade-speed)))(>= (-> *game-info* skill) 10.0)(= shopid3 4))
       (set! p-upgrade-red #t)
@@ -2787,6 +3017,7 @@ Here are the shop IDs
       (set! shopitem3 "(Out of Stock)")
       (set! item-tss1 "Scattergun ROF")
       (set! item-update #t)
+      (set! (-> *game-info* task-deaths) (+ (-> *game-info* task-deaths) 1000))
     )
     (when (and (= menu-slot 2)(not (logtest? (-> *game-info* features) (game-feature gun-upgrade-speed)))(>= (-> *game-info* skill) 10.0)(= shopid2 4))
       (set! p-upgrade-red #t)
@@ -2794,6 +3025,7 @@ Here are the shop IDs
       (set! shopitem2 "(Out of Stock)")
       (set! item-tss1 "Scattergun ROF")
       (set! item-update #t)
+      (set! (-> *game-info* task-deaths) (+ (-> *game-info* task-deaths) 1000))
     )
     (when (and (= menu-slot 0)(not (logtest? (-> *game-info* features) (game-feature gun-upgrade-ammo)))(>= (-> *game-info* skill) 15.0)(= shopid1 5))
       (set! p-upgrade-ammo #t)
@@ -2801,6 +3033,7 @@ Here are the shop IDs
       (set! shopitem1 "(Out of Stock)")
       (set! item-tss1 "Upgraded Ammo")
       (set! item-update #t)
+      (set! (-> *game-info* task-deaths) (+ (-> *game-info* task-deaths) 10000))
     )
     (when (and (= menu-slot 1)(not (logtest? (-> *game-info* features) (game-feature gun-upgrade-ammo)))(>= (-> *game-info* skill) 15.0)(= shopid3 5))
       (set! p-upgrade-ammo #t)
@@ -2808,6 +3041,7 @@ Here are the shop IDs
       (set! shopitem3 "(Out of Stock)")
       (set! item-tss1 "Upgraded Ammo")
       (set! item-update #t)
+      (set! (-> *game-info* task-deaths) (+ (-> *game-info* task-deaths) 10000))
     )
     (when (and (= menu-slot 2)(not (logtest? (-> *game-info* features) (game-feature gun-upgrade-ammo)))(>= (-> *game-info* skill) 15.0)(= shopid2 5))
       (set! p-upgrade-ammo #t)
@@ -2815,6 +3049,7 @@ Here are the shop IDs
       (set! shopitem2 "(Out of Stock)")
       (set! item-tss1 "Upgraded Ammo")
       (set! item-update #t)
+      (set! (-> *game-info* task-deaths) (+ (-> *game-info* task-deaths) 10000))
     )
     (when (and (= menu-slot 0)(not (logtest? (-> *game-info* features) (game-feature gun-upgrade-damage)))(>= (-> *game-info* skill) 20.0)(= shopid1 6))
       (set! p-upgrade-damage #t)
@@ -2822,6 +3057,7 @@ Here are the shop IDs
       (set! shopitem1 "(Out of Stock)")
       (set! item-tss1 "Upgraded Damage")
       (set! item-update #t)
+      (set! (-> *game-info* task-deaths) (+ (-> *game-info* task-deaths) 100000))
     )
     (when (and (= menu-slot 1)(not (logtest? (-> *game-info* features) (game-feature gun-upgrade-damage)))(>= (-> *game-info* skill) 20.0)(= shopid3 6))
       (set! p-upgrade-damage #t)
@@ -2829,6 +3065,7 @@ Here are the shop IDs
       (set! shopitem3 "(Out of Stock)")
       (set! item-tss1 "Upgraded Damage")
       (set! item-update #t)
+      (set! (-> *game-info* task-deaths) (+ (-> *game-info* task-deaths) 100000))
     )
     (when (and (= menu-slot 2)(not (logtest? (-> *game-info* features) (game-feature gun-upgrade-damage)))(>= (-> *game-info* skill) 20.0)(= shopid2 6))
       (set! p-upgrade-damage #t)
@@ -2836,6 +3073,7 @@ Here are the shop IDs
       (set! shopitem2 "(Out of Stock)")
       (set! item-tss1 "Upgraded Damage")
       (set! item-update #t)
+      (set! (-> *game-info* task-deaths) (+ (-> *game-info* task-deaths) 100000))
     )
     (when (and (= menu-slot 0)(!= (-> *target* fact health) 8.0)(>= (-> *game-info* skill) 8.0)(= shopid1 7))
       (-! (-> *game-info* skill) 8.0)
@@ -2855,6 +3093,7 @@ Here are the shop IDs
       (set! item-tss1 "Upgraded Vehicles")
       (set! item-update #t)
       (set! p-upgrade-vehicles #t)
+      (set! (-> *game-info* task-deaths) (+ (-> *game-info* task-deaths) 1000000))
     )
     (when (and (= menu-slot 1)(= p-upgrade-vehicles #f)(>= (-> *game-info* skill) 32.0)(= shopid3 8))
       (-! (-> *game-info* skill) 32.0)
@@ -2862,6 +3101,7 @@ Here are the shop IDs
       (set! item-tss1 "Upgraded Vehicles")
       (set! item-update #t)
       (set! p-upgrade-vehicles #t)
+      (set! (-> *game-info* task-deaths) (+ (-> *game-info* task-deaths) 1000000))
     )
     (when (and (= menu-slot 2)(= p-upgrade-vehicles #f)(>= (-> *game-info* skill) 32.0)(= shopid2 8))
       (-! (-> *game-info* skill) 32.0)
@@ -2869,6 +3109,7 @@ Here are the shop IDs
       (set! item-tss1 "Upgraded Vehicles")
       (set! item-update #t)
       (set! p-upgrade-vehicles #t)
+      (set! (-> *game-info* task-deaths) (+ (-> *game-info* task-deaths) 1000000))
     )
     (when (and (= menu-slot 0)(= p-double-shot #f)(>= (-> *game-info* skill) 25.0)(= shopid1 9))
       (-! (-> *game-info* skill) 25.0)
@@ -2876,6 +3117,7 @@ Here are the shop IDs
       (set! item-tss1 "Double Shot")
       (set! item-update #t)
       (set! p-double-shot #t)
+      (set! (-> *game-info* task-deaths) (+ (-> *game-info* task-deaths) 1000000))
     )
     (when (and (= menu-slot 1)(= p-double-shot #f)(>= (-> *game-info* skill) 25.0)(= shopid3 9))
       (-! (-> *game-info* skill) 25.0)
@@ -2883,6 +3125,7 @@ Here are the shop IDs
       (set! item-tss1 "Double Shot")
       (set! item-update #t)
       (set! p-double-shot #t)
+      (set! (-> *game-info* task-deaths) (+ (-> *game-info* task-deaths) 1000000))
     )
     (when (and (= menu-slot 2)(= p-double-shot #f)(>= (-> *game-info* skill) 25.0)(= shopid2 9))
       (-! (-> *game-info* skill) 25.0)
@@ -2890,6 +3133,7 @@ Here are the shop IDs
       (set! item-tss1 "Double Shot")
       (set! item-update #t)
       (set! p-double-shot #t)
+      (set! (-> *game-info* task-deaths) (+ (-> *game-info* task-deaths) 1000000))
     )
     (when (and (= menu-slot 0)(= p-explode-shot #f)(>= (-> *game-info* skill) 35.0)(= shopid1 10))
       (-! (-> *game-info* skill) 35.0)
@@ -2897,6 +3141,7 @@ Here are the shop IDs
       (set! item-tss1 "Shots Explode")
       (set! item-update #t)
       (set! p-double-shot #t)
+      (set! (-> *game-info* task-deaths) (+ (-> *game-info* task-deaths) 10000000))
     )
     (when (and (= menu-slot 1)(= p-explode-shot #f)(>= (-> *game-info* skill) 35.0)(= shopid3 10))
       (-! (-> *game-info* skill) 35.0)
@@ -2904,6 +3149,7 @@ Here are the shop IDs
       (set! item-tss1 "Shots Explode")
       (set! item-update #t)
       (set! p-double-shot #t)
+      (set! (-> *game-info* task-deaths) (+ (-> *game-info* task-deaths) 10000000))
     )
     (when (and (= menu-slot 2)(= p-explode-shot #f)(>= (-> *game-info* skill) 35.0)(= shopid2 10))
       (-! (-> *game-info* skill) 35.0)
@@ -2911,6 +3157,7 @@ Here are the shop IDs
       (set! item-tss1 "Shots Explode")
       (set! item-update #t)
       (set! p-double-shot #t)
+      (set! (-> *game-info* task-deaths) (+ (-> *game-info* task-deaths) 10000000))
     )
     (when (and (= menu-slot 0)(= (-> *game-info* total-deaths) 3)(>= (-> *game-info* skill) 100.0)(= shopid1 99))
       (-! (-> *game-info* skill) 100.0)
@@ -2918,6 +3165,7 @@ Here are the shop IDs
       (set! (-> *game-info* total-deaths) 4)
       (set! item-tss1 "Red Eco Shard")
       (set! item-update #t)
+      (set! (-> *game-info* task-deaths) (+ (-> *game-info* task-deaths) 400000000))
     )
     (when (and (= menu-slot 1)(= (-> *game-info* total-deaths) 3)(>= (-> *game-info* skill) 100.0)(= shopid3 99))
       (-! (-> *game-info* skill) 100.0)
@@ -2925,6 +3173,7 @@ Here are the shop IDs
       (set! (-> *game-info* total-deaths) 4)
       (set! item-tss1 "Red Eco Shard")
       (set! item-update #t)
+      (set! (-> *game-info* task-deaths) (+ (-> *game-info* task-deaths) 400000000))
     )
     (when (and (= menu-slot 2)(= (-> *game-info* total-deaths) 3)(>= (-> *game-info* skill) 100.0)(= shopid2 99))
       (-! (-> *game-info* skill) 100.0)
@@ -2932,6 +3181,7 @@ Here are the shop IDs
       (set! (-> *game-info* total-deaths) 4)
       (set! item-tss1 "Red Eco Shard")
       (set! item-update #t)
+      (set! (-> *game-info* task-deaths) (+ (-> *game-info* task-deaths) 400000000))
     )
     (when (= in-intro? #t)
       (set! shop-tutorial #t)
@@ -3116,7 +3366,7 @@ Here are the shop IDs
 )
 
 ;menu params
-(when (and (= in-menu #t)(= (paused?) #f)(= (-> *game-info* task-deaths) 1)(not (cpad-pressed? 0 x)))
+(when (and (= in-menu #t)(= (paused?) #f)(= (-> *game-info* karma) 1.0)(not (cpad-pressed? 0 x)))
   (clear matt-str)
     (clear *pc-encoded-matt-str*)
     (format matt-str "<COLOR_WHITE>Welcome to<COLOR_RED> Roguelike Jak II (demo)<COLOR_WHITE>!
@@ -3147,7 +3397,7 @@ Here are the shop IDs
         (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
 )
 
-(when (and (= in-menu #t)(= (paused?) #f)(= win-lose #f)(>= (-> *game-info* task-deaths) 2)(not (cpad-pressed? 0 x)))
+(when (and (= in-menu #t)(= (paused?) #f)(= win-lose #f)(>= (-> *game-info* karma) 2.0)(not (cpad-pressed? 0 x)))
   (clear matt-str)
     (clear *pc-encoded-matt-str*)
     (format matt-str "<COLOR_WHITE>Welcome to<COLOR_RED> Roguelike Jak II<COLOR_WHITE>!
@@ -3183,7 +3433,7 @@ Here are the shop IDs
         (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
 )
 
-(when (and (= in-menu #t)(= (paused?) #f)(= win-lose #t)(>= (-> *game-info* task-deaths) 2)(not (cpad-pressed? 0 x)))
+(when (and (= in-menu #t)(= (paused?) #f)(= win-lose #t)(>= (-> *game-info* karma) 2.0)(not (cpad-pressed? 0 x)))
   (clear matt-str)
     (clear *pc-encoded-matt-str*)
     (format matt-str "<COLOR_WHITE>Welcome to<COLOR_RED> Roguelike Jak II<COLOR_WHITE>!
@@ -3242,8 +3492,8 @@ Here are the shop IDs
   (set! item-ts8 "")
   (set! item-ts9 "")
   (set! item-ts10 "")
-  (when (= (-> *game-info* task-deaths) 1)
-    (set! (-> *game-info* task-deaths) 2)
+  (when (= (-> *game-info* karma) 1.0)
+    (set! (-> *game-info* karma) 2.0)
   )
   (set! post-item-display? #f)
 )
@@ -4305,7 +4555,7 @@ Here are the shop IDs
 
 (when (and (cpad-pressed? 0 x)(= intro-sec 4)(= in-dialogue? #t)(= in-intro? #t)) ;teleports you to shop 1st time
   (set! intro-sec 5)
-  (set! (-> *game-info* task-deaths) 1)
+  (set! (-> *game-info* karma) 1.0)
   (set! autosave-delayed #t)
   (set! in-intro? #f)
   (send-event *target* 'continue (get-continue-by-name *game-info* "consite-airlock"))

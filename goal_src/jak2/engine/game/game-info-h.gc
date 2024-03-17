@@ -114,6 +114,8 @@
 (define total-skill 10)
 (define msgi 0)
 
+(define please-reward #t)
+
 (defenum pickup-type
   :bitfield #f
   :type int32
