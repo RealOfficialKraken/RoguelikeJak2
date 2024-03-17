@@ -29,20 +29,22 @@
 #| TODO:
 --------------------------------------------------------------------------------------------------
 
-- Make a settings file for saved runs
-- Make modifiers at the end of boss levels to select from?
-- Make Dark Eco act
-- Make the item search campaign
+- Drill Platform crashes upon TPing out (semi-CRITICAL)
 - Make more purchaseable items to put in runs in the main menu
-- Make different lines vin has for giving you the item quests
+- Make ending for dark eco act
+- Make bosses harder, enemies faster in later stages
+- Edit chance values for item-search campaign
+- Fix hiphog-shop in hub bug
+- Create another value with (-> *game-info* continue-deaths) for saved items
+- Set colored-weather parameters for each act
+- Make stage 4-4 a custom mission stage
+- Make "unstable" enemies. Enemies marked in red, deal x2 damage, and x2 of their current-hp (stages add to this)
+- Make an rng number that either makes the game easier or harder than usual. Like a "coolness" stat.
+
+After most of these, the mod will be completed and I can get on with my life
 
 --------------------------------------------------------------------------------------------------
-BUGS
 
-- Stages will sometimes think you're not in game (maybe because of the teleport shop method?).
-- Drill Platform crashes upon TPing out (CRITICAL)
-
---------------------------------------------------------------------------------------------------
 
 |#
     ;;;;;;;;;;;;;;;;;;;;;;;;;;
