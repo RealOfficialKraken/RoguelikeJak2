@@ -1829,7 +1829,7 @@ After most of these, the mod will be completed and I can get on with my life
           (when (and (= level-pick 1)(and (!= act-before9 1)(!= act-before10 1)))
             (send-event *target* 'continue (get-continue-by-name *game-info* "atoll-battle"))
             (play-task (game-task atoll-battle) 'debug #f)
-            (set! act-before9 1)
+            (set! act-before10 1)
             (set! act4-2 #f)
             (set! waitenter #t)
             
@@ -1837,7 +1837,7 @@ After most of these, the mod will be completed and I can get on with my life
           (when (and (= level-pick 2)(and (!= act-before9 2)(!= act-before10 2)))
             (send-event *target* 'continue (get-continue-by-name *game-info* "ctyslumc-slums"))
             (play-task (game-task city-protect-water-slums) 'debug #f)
-            (set! act-before9 2)
+            (set! act-before10 2)
             (set! act4-2 #f)
             (set! waitenter #t)
             
@@ -1845,7 +1845,7 @@ After most of these, the mod will be completed and I can get on with my life
           (when (and (= level-pick 3)(and (!= act-before9 3)(!= act-before10 3)))
             (send-event *target* 'continue (get-continue-by-name *game-info* "forresca-start"))
             (play-task (game-task fortress-save-friends) 'debug #f)
-            (set! act-before9 3)
+            (set! act-before10 3)
             (set! act4-2 #f)
             (set! waitenter #t)
             
@@ -1854,7 +1854,7 @@ After most of these, the mod will be completed and I can get on with my life
             (send-event *target* 'continue (get-continue-by-name *game-info* "throne-ashelin"))
             (play-task (game-task palace-sneak-in) 'debug #f)
             (task-node-close! (game-task-node palace-sneak-in-meeting))
-            (set! act-before9 4)
+            (set! act-before10 4)
             (set! act4-2 #f)
             (set! waitenter #t)
             
@@ -1879,7 +1879,7 @@ After most of these, the mod will be completed and I can get on with my life
           (when (and (= level-pick 1)(and (!= act-before10 1)(!= act-before11 1)))
             (send-event *target* 'continue (get-continue-by-name *game-info* "atoll-battle"))
             (play-task (game-task atoll-battle) 'debug #f)
-            (set! act-before10 1)
+            (set! act-before11 1)
             (set! act4-3 #f)
             (set! waitenter #t)
             
@@ -1887,7 +1887,7 @@ After most of these, the mod will be completed and I can get on with my life
           (when (and (= level-pick 2)(and (!= act-before10 2)(!= act-before11 2)))
             (send-event *target* 'continue (get-continue-by-name *game-info* "ctyslumc-slums"))
             (play-task (game-task city-protect-water-slums) 'debug #f)
-            (set! act-before10 2)
+            (set! act-before11 2)
             (set! act4-3 #f)
             (set! waitenter #t)
             
@@ -1895,7 +1895,7 @@ After most of these, the mod will be completed and I can get on with my life
           (when (and (= level-pick 3)(and (!= act-before10 3)(!= act-before11 3)))
             (send-event *target* 'continue (get-continue-by-name *game-info* "forresca-start"))
             (play-task (game-task fortress-save-friends) 'debug #f)
-            (set! act-before10 3)
+            (set! act-before11 3)
             (set! act4-3 #f)
             (set! waitenter #t)
             
@@ -1904,7 +1904,7 @@ After most of these, the mod will be completed and I can get on with my life
             (send-event *target* 'continue (get-continue-by-name *game-info* "throne-ashelin"))
             (play-task (game-task palace-sneak-in) 'debug #f)
             (task-node-close! (game-task-node palace-sneak-in-meeting))
-            (set! act-before10 4)
+            (set! act-before11 4)
             (set! act4-3 #f)
             (set! waitenter #t)
             
@@ -1925,7 +1925,7 @@ After most of these, the mod will be completed and I can get on with my life
         (level-pick 1)
         )
           (when (= level-pick 1)
-            (send-event *target* 'continue (get-continue-by-name *game-info* "nestb-start"))
+            (send-event *target* 'continue (get-continue-by-name *game-info* "nest-gun"))
             (play-task (game-task nest-enter) 'debug #f)
           )
         )
@@ -1985,7 +1985,7 @@ After most of these, the mod will be completed and I can get on with my life
   (set! total-skill 10)
   (set! autosave-delayed #t)
 
-  (when (and (= print-stage 4)(= teleport-hiphog #f))
+  (when (and (= print-stage 4)(!= act-act 4)(= teleport-hiphog #f))
     (set! teleport-hiphog #t)
   )
   (when (and (= (-> *game-info* total-deaths) 1)(= act-act 1))
@@ -2115,6 +2115,11 @@ After most of these, the mod will be completed and I can get on with my life
     (!= act-stage 5)
     (!= act-stage 10)
     (!= act-stage 15)
+    (!= act-stage 16)
+    (!= act-stage 17)
+    (!= act-stage 18)
+    (!= act-stage 19)
+    (!= act-stage 20)
     )
       (set! reward-orbs #t)
       (set! please-reward #f)
@@ -2226,7 +2231,7 @@ These numbers go down in order from the ids. The first 1 is to save all the 0's
   (set! ohshit #f)
   (set! wait-tutorial #f)
   (set! tutoriali 0)
-  (when (and (= print-stage 4)(= teleport-hiphog #f))
+  (when (and (= print-stage 4)(!= act-act 4)(= teleport-hiphog #f))
     (set! teleport-hiphog #t)
   )
   (when (and (= (-> *game-info* total-deaths) 1)(= act-act 1))
@@ -2449,7 +2454,7 @@ These numbers go down in order from the ids. The first 1 is to save all the 0's
   (and 
   (!= (-> *game-info* total-deaths) 2)
   (= item-update #f)
-  (= (/ (mod (-> *game-info* continue-deaths) 10000000000) 1000000000) 2)
+  (= (/ (mod (-> *game-info* continue-deaths) 1000000000) 100000000) 2)
   )
     (set! (-> *game-info* total-deaths) 2)
     (set! item-tss1 "Green Eco Shard")
@@ -2459,7 +2464,7 @@ These numbers go down in order from the ids. The first 1 is to save all the 0's
   (and 
   (!= (-> *game-info* total-deaths) 3)
   (= item-update #f)
-  (= (/ (mod (-> *game-info* continue-deaths) 10000000000) 1000000000) 3)
+  (= (/ (mod (-> *game-info* continue-deaths) 1000000000) 100000000) 3)
   )
     (set! (-> *game-info* total-deaths) 3)
     (set! item-tss1 "Blue Eco Shard")
@@ -2469,7 +2474,7 @@ These numbers go down in order from the ids. The first 1 is to save all the 0's
   (and 
   (!= (-> *game-info* total-deaths) 4)
   (= item-update #f)
-  (= (/ (mod (-> *game-info* continue-deaths) 10000000000) 1000000000) 4)
+  (= (/ (mod (-> *game-info* continue-deaths) 1000000000) 100000000) 4)
   )
     (set! (-> *game-info* total-deaths) 4)
     (set! item-tss1 "Red Eco Shard")
@@ -2643,12 +2648,27 @@ These numbers go down in order from the ids. The first 1 is to save all the 0's
 )
 
 
-(when (and (= act-act 4)(= dark-mode #t)(= (pause-allowed?) #t)(= run-in-progress #t)(!= (-> (level-get-target-inside *level*) mood-func)update-mood-nest))
+(when 
+(and 
+(= act-act 4)
+(= dark-mode #t)
+(= (pause-allowed?) #t)
+(= run-in-progress #t)
+(= avoidc-waitb #f)
+*target*
+(not *scene-player*)
+(!= (-> (level-get-target-inside *level*) mood-func)update-mood-nest)
+)
   (set! (-> *overide-mood-color-table* data (logand (-> *time-of-day-context* mode) (time-of-day-palette-id unk0 unk1 unk2)) amb-color x) 1.9921)
   (set! (-> *overide-mood-color-table* data (logand (-> *time-of-day-context* mode) (time-of-day-palette-id unk0 unk1 unk2)) amb-color y) 1.9921)
   (set! (-> *overide-mood-color-table* data (logand (-> *time-of-day-context* mode) (time-of-day-palette-id unk0 unk1 unk2)) amb-color z) 1.9921)
   (set! (-> *overide-mood-color-table* data (logand (-> *time-of-day-context* mode) (time-of-day-palette-id unk0 unk1 unk2)) amb-color w) 2.0)
-  (set! traffic-metalheads? #t)
+  (when (not (task-node-closed? (game-task-node city-whack-post-game)))
+    (set! traffic-metalheads? #t)
+  )
+  (when (task-node-closed? (game-task-node city-whack-post-game))
+    (set! traffic-metalheads? #f)
+  )
   (send-event *traffic-manager* 'set-guard-target-level 100)
   (set! (-> *time-of-day-context* overide-enable) #f)
   (set! (-> *mood-control* overide-weather-flag) #t)
@@ -2709,7 +2729,7 @@ These numbers go down in order from the ids. The first 1 is to save all the 0's
     (set! vin-spawned? #f)
     (set! item-display? #t)
     (set! autosave-delayed #t)
-    (when (and (= print-stage 4)(= teleport-hiphog #f))
+    (when (and (= print-stage 4)(!= act-act 4)(= teleport-hiphog #f))
     (set! teleport-hiphog #t)
   )
   )
@@ -3599,6 +3619,7 @@ Here are the shop IDs
 (= already-teleported? #f)
 (!= (-> (level-get-target-inside *level*) name) 'hiphog)
 (= print-stage 4)
+(!= act-act 4)
 (= in-game? #t)
 )
   (set! teleport-hiphog #t)
@@ -4347,7 +4368,7 @@ Here are the shop IDs
     (format matt-str "<COLOR_WHITE>Vin:~%Remember, we need an item in order to locate the dimension where all the dark eco is concentrated.
     ~%Right now, a <COLOR_GREEN>Green Eco Shard<COLOR_WHITE> can be collected from a <COLOR_RED>Krimzon Guard<COLOR_WHITE>.
     ~%It's in Act 1, if you see it, please get it for me!
-    ~%<COLOR_YELLOW>Getting this item is crucial for our mission!
+    ~%<COLOR_YELLOW>The dimension will glow <COLOR_GREEN>green<COLOR_YELLOW> when you're near!
     ~%
     ~%
     ~%
@@ -4438,11 +4459,10 @@ Here are the shop IDs
   (when (= vin-talk 2)
     (clear matt-str)
     (clear *pc-encoded-matt-str*)
-    (format matt-str "<COLOR_WHITE>Vin:~%It would seem that this item you've collected is one of three we need.
+    (format matt-str "<COLOR_WHITE>Vin:~%This shard you got is incredibly powerful!~%But it would seem that this item you've collected is one of three we need.
     ~%Right now, you're looking for a <COLOR_BLUE>Blue Eco Shard<COLOR_WHITE> in Act 2.
     ~%My radar says <COLOR_PINK>a crate<COLOR_WHITE> could have this item.
-    ~%Please, Jak! This is crucial for finding the source of all this dark eco!
-    ~%
+    ~%<COLOR_YELLOW>The dimension will glow <COLOR_BLUE>blue<COLOR_YELLOW> when you're nearby, so start looking!
     ~%
     ~%
     ~%
@@ -4499,9 +4519,9 @@ Here are the shop IDs
     (clear matt-str)
     (clear *pc-encoded-matt-str*)
     (format matt-str "<COLOR_WHITE>Vin:~%Good job for finding this piece for me.
-    ~%The next item you'll need to look out for is a <COLOR_BLUE>Blue Eco Shard<COLOR_WHITE>.
+    ~%This item is one of three, you'll need to look out for a <COLOR_BLUE>Blue Eco Shard<COLOR_WHITE> this time.
     ~%Somewhere in Act 2, my scans read that <COLOR_PINK>a crate<COLOR_WHITE> could contain this item.
-    ~%If we find this, we can be one step closer to saving everyone, and everything.
+    ~%<COLOR_YELLOW>If we find this, we can be one step closer to saving everyone, and everything.
     ~%
     ~%
     ~%
@@ -4534,7 +4554,7 @@ Here are the shop IDs
     (format matt-str "<COLOR_WHITE>Vin:~%Nice work! We have almost all of the pieces we need!
     ~%Now we just have to find a <COLOR_RED>Red Eco Shard<COLOR_WHITE> from Act 3.
     ~%My scans say that it's in <COLOR_YELLOW>the Hiphog Shop<COLOR_WHITE> selling for 100 orbs.
-    ~%We're so close, Jak! This will be the last piece to locate our original dimension.
+    ~%<COLOR_YELLOW>We're so close, Jak! This will be the last piece to locate our original dimension.
     ~%
     ~%
     ~%
@@ -4564,7 +4584,7 @@ Here are the shop IDs
     (format matt-str "<COLOR_WHITE>Vin:~%Nice work! We have almost all of the pieces we need!
     ~%Now we just have to find a <COLOR_RED>Red Eco Shard<COLOR_WHITE> from Act 3.
     ~%My scans say that it's in <COLOR_YELLOW>the Hiphog Shop<COLOR_WHITE> selling for 100 orbs.
-    ~%We're so close, Jak! This will be the last piece to locate our original dimension.
+    ~%<COLOR_YELLOW>We're so close, Jak! This will be the last piece to locate our original dimension.
     ~%
     ~%
     ~%
@@ -4594,7 +4614,7 @@ Here are the shop IDs
     (format matt-str "<COLOR_WHITE>Vin:~%Nice work! We have almost all of the pieces we need!
     ~%Now we just have to find a <COLOR_RED>Red Eco Shard<COLOR_WHITE> from Act 3.
     ~%My scans say that it's in <COLOR_YELLOW>the Hiphog Shop<COLOR_WHITE> selling for 100 orbs.
-    ~%We're so close, Jak! This will be the last piece to locate our original dimension.
+    ~%<COLOR_YELLOW>We're so close, Jak! This will be the last piece to locate our original dimension.
     ~%
     ~%
     ~%
@@ -4624,7 +4644,7 @@ Here are the shop IDs
     (format matt-str "<COLOR_WHITE>Vin:~%Nice work! We have almost all of the pieces we need!
     ~%Now we just have to find a <COLOR_RED>Red Eco Shard<COLOR_WHITE> from Act 3.
     ~%My scans say that it's in <COLOR_YELLOW>the Hiphog Shop<COLOR_WHITE> selling for 100 orbs.
-    ~%We're so close, Jak! This will be the last piece to locate our original dimension.
+    ~%<COLOR_YELLOW>We're so close, Jak! This will be the last piece to locate our original dimension.
     ~%
     ~%
     ~%
@@ -4661,12 +4681,12 @@ Here are the shop IDs
     (clear *pc-encoded-matt-str*)
     (format matt-str "
     <COLOR_WHITE>Vin:~%Jak! I've successfully triangulated the position of where this <COLOR_PINK>dark eco<COLOR_WHITE> is coming from!
-    ~%Thanks to you, we can finally travel there if you get past <COLOR_YELLOW>Act 3.
-    ~%<COLOR_WHITE>But be warned, as you've noticed, the enemies have gotten stronger with how
-    ~%closer you draw near. The original dimension we were in is completely covered in MORE THAN vast amounts!
-    ~%I-I mean, it's not just a quantifiable amount.. It's virtually infinite amounts of dark eco!
+    ~%Thanks to you, we can finally travel there, you've just got to get past <COLOR_YELLOW>Act 3<COLOR_WHITE>.
+    ~%But be warned, as I'm sure you've noticed, the enemies have gotten stronger with how
+    ~%closer you've drawn near. The original dimension we were in is completely covered in MORE THAN vast amounts!
+    ~%I-I mean, it's not just a quantifiable amount.. It's virtually infinite amounts of <COLOR_PINK>dark eco<COLOR_WHITE>!
     ~%If you're still having trouble, you can always give me <COLOR_YELLOW>Skull Gems<COLOR_WHITE> to get stronger items.
-    ~%We're all counting on you, Jak! <COLOR_GREEN>Save the universes... and everybody in it!
+    ~%We're all counting on you, Jak! <COLOR_GREEN>Beat MetalKor, and fulfill the prophecy again!
     ~%
     ~%<COLOR_WHITE>Current Tokens:
     ~%<COLOR_PINK>~d
