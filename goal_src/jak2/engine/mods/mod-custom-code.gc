@@ -2930,11 +2930,11 @@ These numbers go down in order from the ids. The first 1 is to save all the 0's
   (when (> waits-frame 60)
     (when (= display-death-screen #t)
       (set! in-menu #t)
+      (set! camera-locked #t)
+      (set! pause-menu-blocked? #t)
     )
     (set! wait-start #f)
     (set! waits-frame 0)
-    (set! camera-locked #t)
-    (set! pause-menu-blocked? #t)
     (set! display-run #f)
     (set! in-hub? #t)
   )
@@ -4000,7 +4000,7 @@ Here are the shop IDs
 ~%Orbs will be rewarded for playing well. But if you die, you lose everything!
 ~%Talk to Vin to look at his shop here. You can save up <COLOR_PINK>Tokens<COLOR_WHITE> to purchase items
 ~%to put into your run! <COLOR_PINK>Tokens<COLOR_WHITE> are obtained from collecting skull gems.
-~%
+~%And finally, the only weapon Jak has is the red gun. The rest is purchasable in the HipHog shop.
 ~%You can exit the level to <COLOR_GREEN>start your run<COLOR_WHITE>.
 ~%
 ~%
