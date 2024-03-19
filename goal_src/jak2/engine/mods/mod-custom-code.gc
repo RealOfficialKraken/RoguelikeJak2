@@ -107,7 +107,6 @@ After most of these, the mod will be completed and I can get on with my life
 (define wait-vintalk #f)
 (define wait-vini 0)
 
-(define luck 0.0)
 
 (define vin-spawned? #f)
 (define waitspawn 0)
@@ -3382,10 +3381,6 @@ Here are the shop IDs
       (when (= teleport-back? #f)
         (set! autosave-delayed #t)
       )
-      (when (rand-vu-percent? 0.5)
-        
-        (+! (-> *game-info* continue-deaths) 100000000)
-      )
     )
     (when (and (= menu-slot 1)(not (logtest? (-> *game-info* features) (game-feature gun-yellow)))(>= (-> *game-info* skill) 25.0)(= shopid3 1))
       (set! p-yellow-gun #t)
@@ -3397,9 +3392,6 @@ Here are the shop IDs
       (when (= teleport-back? #f)
         (set! autosave-delayed #t)
       )
-      (when (rand-vu-percent? 0.5)
-        
-        (+! (-> *game-info* continue-deaths) 100000000)      )
     )
     (when (and (= menu-slot 2)(not (logtest? (-> *game-info* features) (game-feature gun-yellow)))(>= (-> *game-info* skill) 25.0)(= shopid2 1))
       (set! p-yellow-gun #t)
@@ -3411,10 +3403,6 @@ Here are the shop IDs
       (when (= teleport-back? #f)
         (set! autosave-delayed #t)
       )
-      (when (rand-vu-percent? 0.5)
-        
-        (+! (-> *game-info* continue-deaths) 100000000)
-              )
     )
     (when (and (= menu-slot 0)(not (logtest? (-> *game-info* features) (game-feature gun-blue)))(>= (-> *game-info* skill) 32.0)(= shopid1 2))
       (set! p-blue-gun #t)
@@ -3426,10 +3414,6 @@ Here are the shop IDs
       (when (= teleport-back? #f)
         (set! autosave-delayed #t)
       )
-      (when (rand-vu-percent? 0.5)
-        
-        (+! (-> *game-info* continue-deaths) 100000000)
-              )
     )
     (when (and (= menu-slot 1)(not (logtest? (-> *game-info* features) (game-feature gun-blue)))(>= (-> *game-info* skill) 32.0)(= shopid3 2))
       (set! p-blue-gun #t)
@@ -3441,10 +3425,6 @@ Here are the shop IDs
       (when (= teleport-back? #f)
         (set! autosave-delayed #t)
       )
-      (when (rand-vu-percent? 0.5)
-        
-        (+! (-> *game-info* continue-deaths) 100000000)
-              )
     )
     (when (and (= menu-slot 2)(not (logtest? (-> *game-info* features) (game-feature gun-blue)))(>= (-> *game-info* skill) 32.0)(= shopid2 2))
       (set! p-blue-gun #t)
@@ -3456,9 +3436,6 @@ Here are the shop IDs
       (when (= teleport-back? #f)
         (set! autosave-delayed #t)
       )
-      (when (rand-vu-percent? 0.5)
-        
-        (+! (-> *game-info* continue-deaths) 100000000)      )
     )
     (when (and (= menu-slot 0)(not (logtest? (-> *game-info* features) (game-feature gun-dark)))(>= (-> *game-info* skill) 40.0)(= shopid1 3))
       (set! p-dark-gun #t)
@@ -3470,9 +3447,6 @@ Here are the shop IDs
       (when (= teleport-back? #f)
         (set! autosave-delayed #t)
       )
-      (when (rand-vu-percent? 0.5)
-        
-        (+! (-> *game-info* continue-deaths) 100000000)      )
     )
     (when (and (= menu-slot 1)(not (logtest? (-> *game-info* features) (game-feature gun-dark)))(>= (-> *game-info* skill) 40.0)(= shopid3 3))
       (set! p-dark-gun #t)
@@ -3484,9 +3458,6 @@ Here are the shop IDs
       (when (= teleport-back? #f)
         (set! autosave-delayed #t)
       )
-      (when (rand-vu-percent? 0.5)
-        
-        (+! (-> *game-info* continue-deaths) 100000000)      )
     )
     (when (and (= menu-slot 2)(not (logtest? (-> *game-info* features) (game-feature gun-dark)))(>= (-> *game-info* skill) 40.0)(= shopid2 3))
       (set! p-dark-gun #t)
@@ -3498,9 +3469,6 @@ Here are the shop IDs
       (when (= teleport-back? #f)
         (set! autosave-delayed #t)
       )
-      (when (rand-vu-percent? 0.5)
-        
-        (+! (-> *game-info* continue-deaths) 100000000)      )
     )
     (when (and (= menu-slot 0)(not (logtest? (-> *game-info* features) (game-feature gun-upgrade-speed)))(>= (-> *game-info* skill) 10.0)(= shopid1 4))
       (set! p-upgrade-red #t)
@@ -3512,9 +3480,6 @@ Here are the shop IDs
       (when (= teleport-back? #f)
         (set! autosave-delayed #t)
       )
-      (when (rand-vu-percent? 0.5)
-        
-        (+! (-> *game-info* continue-deaths) 100000000)      )
     )
     (when (and (= menu-slot 1)(not (logtest? (-> *game-info* features) (game-feature gun-upgrade-speed)))(>= (-> *game-info* skill) 10.0)(= shopid3 4))
       (set! p-upgrade-red #t)
@@ -3526,9 +3491,6 @@ Here are the shop IDs
       (when (= teleport-back? #f)
         (set! autosave-delayed #t)
       )
-      (when (rand-vu-percent? 0.5)
-        
-        (+! (-> *game-info* continue-deaths) 100000000)      )
     )
     (when (and (= menu-slot 2)(not (logtest? (-> *game-info* features) (game-feature gun-upgrade-speed)))(>= (-> *game-info* skill) 10.0)(= shopid2 4))
       (set! p-upgrade-red #t)
@@ -3540,9 +3502,6 @@ Here are the shop IDs
       (when (= teleport-back? #f)
         (set! autosave-delayed #t)
       )
-      (when (rand-vu-percent? 0.5)
-        
-        (+! (-> *game-info* continue-deaths) 100000000)      )
     )
     (when (and (= menu-slot 0)(not (logtest? (-> *game-info* features) (game-feature gun-upgrade-ammo)))(>= (-> *game-info* skill) 15.0)(= shopid1 5))
       (set! p-upgrade-ammo #t)
@@ -3554,9 +3513,6 @@ Here are the shop IDs
       (when (= teleport-back? #f)
         (set! autosave-delayed #t)
       )
-      (when (rand-vu-percent? 0.5)
-        
-        (+! (-> *game-info* continue-deaths) 100000000)      )
     )
     (when (and (= menu-slot 1)(not (logtest? (-> *game-info* features) (game-feature gun-upgrade-ammo)))(>= (-> *game-info* skill) 15.0)(= shopid3 5))
       (set! p-upgrade-ammo #t)
@@ -3568,9 +3524,6 @@ Here are the shop IDs
       (when (= teleport-back? #f)
         (set! autosave-delayed #t)
       )
-      (when (rand-vu-percent? 0.5)
-        
-                (+! (-> *game-info* continue-deaths) 100000000)      )
     )
     (when (and (= menu-slot 2)(not (logtest? (-> *game-info* features) (game-feature gun-upgrade-ammo)))(>= (-> *game-info* skill) 15.0)(= shopid2 5))
       (set! p-upgrade-ammo #t)
@@ -3582,9 +3535,6 @@ Here are the shop IDs
       (when (= teleport-back? #f)
         (set! autosave-delayed #t)
       )
-      (when (rand-vu-percent? 0.5)
-        
-        (+! (-> *game-info* continue-deaths) 100000000)      )
     )
     (when (and (= menu-slot 0)(not (logtest? (-> *game-info* features) (game-feature gun-upgrade-damage)))(>= (-> *game-info* skill) 20.0)(= shopid1 6))
       (set! p-upgrade-damage #t)
@@ -3596,9 +3546,6 @@ Here are the shop IDs
       (when (= teleport-back? #f)
         (set! autosave-delayed #t)
       )
-      (when (rand-vu-percent? 0.5)
-        
-        (+! (-> *game-info* continue-deaths) 100000000)      )
     )
     (when (and (= menu-slot 1)(not (logtest? (-> *game-info* features) (game-feature gun-upgrade-damage)))(>= (-> *game-info* skill) 20.0)(= shopid3 6))
       (set! p-upgrade-damage #t)
@@ -3610,9 +3557,6 @@ Here are the shop IDs
       (when (= teleport-back? #f)
         (set! autosave-delayed #t)
       )
-      (when (rand-vu-percent? 0.5)
-        
-        (+! (-> *game-info* continue-deaths) 100000000)      )
     )
     (when (and (= menu-slot 2)(not (logtest? (-> *game-info* features) (game-feature gun-upgrade-damage)))(>= (-> *game-info* skill) 20.0)(= shopid2 6))
       (set! p-upgrade-damage #t)
@@ -3624,9 +3568,6 @@ Here are the shop IDs
       (when (= teleport-back? #f)
         (set! autosave-delayed #t)
       )
-      (when (rand-vu-percent? 0.5)
-        
-        (+! (-> *game-info* continue-deaths) 100000000)      )
     )
     (when (and (= menu-slot 0)(!= (-> *target* fact health) 8.0)(>= (-> *game-info* skill) 8.0)(= shopid1 7))
       (-! (-> *game-info* skill) 8.0)
@@ -3634,9 +3575,7 @@ Here are the shop IDs
       (when (= teleport-back? #f)
         (set! autosave-delayed #t)
       )
-      (when (rand-vu-percent? 0.5)
-        
-        (+! (-> *game-info* continue-deaths) 100000000)      )
+      (+! (-> *game-info* continue-deaths) 100000000)
     )
     (when (and (= menu-slot 1)(!= (-> *target* fact health) 8.0)(>= (-> *game-info* skill) 8.0)(= shopid3 7))
       (-! (-> *game-info* skill) 8.0)
@@ -3644,9 +3583,7 @@ Here are the shop IDs
       (when (= teleport-back? #f)
         (set! autosave-delayed #t)
       )
-      (when (rand-vu-percent? 0.5)
-        
-        (+! (-> *game-info* continue-deaths) 100000000)      )
+      (+! (-> *game-info* continue-deaths) 100000000)
     )
     (when (and (= menu-slot 2)(!= (-> *target* fact health) 8.0)(>= (-> *game-info* skill) 8.0)(= shopid2 7))
       (-! (-> *game-info* skill) 8.0)
@@ -3654,9 +3591,7 @@ Here are the shop IDs
       (when (= teleport-back? #f)
         (set! autosave-delayed #t)
       )
-      (when (rand-vu-percent? 0.5)
-        
-        (+! (-> *game-info* continue-deaths) 100000000)      )
+      (+! (-> *game-info* continue-deaths) 100000000)
     )
     (when (and (= menu-slot 0)(= p-upgrade-vehicles #f)(>= (-> *game-info* skill) 32.0)(= shopid1 8))
       (-! (-> *game-info* skill) 32.0)
@@ -3667,10 +3602,8 @@ Here are the shop IDs
       (set! (-> *game-info* task-deaths) (+ (-> *game-info* task-deaths) 1000000))
       (when (= teleport-back? #f)
         (set! autosave-delayed #t)
-      )
-      (when (rand-vu-percent? 0.5)
-        
-        (+! (-> *game-info* continue-deaths) 100000000)      )
+      ) 
+      (+! (-> *game-info* continue-deaths) 100000000)
     )
     (when (and (= menu-slot 1)(= p-upgrade-vehicles #f)(>= (-> *game-info* skill) 32.0)(= shopid3 8))
       (-! (-> *game-info* skill) 32.0)
@@ -3681,10 +3614,8 @@ Here are the shop IDs
       (set! (-> *game-info* task-deaths) (+ (-> *game-info* task-deaths) 1000000))
       (when (= teleport-back? #f)
         (set! autosave-delayed #t)
-      )
-      (when (rand-vu-percent? 0.5)
-        
-        (+! (-> *game-info* continue-deaths) 100000000)      )
+      ) 
+      (+! (-> *game-info* continue-deaths) 100000000)
     )
     (when (and (= menu-slot 2)(= p-upgrade-vehicles #f)(>= (-> *game-info* skill) 32.0)(= shopid2 8))
       (-! (-> *game-info* skill) 32.0)
@@ -3696,9 +3627,7 @@ Here are the shop IDs
       (when (= teleport-back? #f)
         (set! autosave-delayed #t)
       )
-      (when (rand-vu-percent? 0.5)
-        
-        (+! (-> *game-info* continue-deaths) 100000000)      )
+      (+! (-> *game-info* continue-deaths) 100000000)
     )
     (when (and (= menu-slot 0)(= p-double-shot #f)(>= (-> *game-info* skill) 25.0)(= shopid1 9))
       (-! (-> *game-info* skill) 25.0)
@@ -3710,9 +3639,7 @@ Here are the shop IDs
       (when (= teleport-back? #f)
         (set! autosave-delayed #t)
       )
-      (when (rand-vu-percent? 0.5)
-        
-        (+! (-> *game-info* continue-deaths) 100000000)      )
+      (+! (-> *game-info* continue-deaths) 100000000)
     )
     (when (and (= menu-slot 1)(= p-double-shot #f)(>= (-> *game-info* skill) 25.0)(= shopid3 9))
       (-! (-> *game-info* skill) 25.0)
@@ -3724,9 +3651,7 @@ Here are the shop IDs
       (when (= teleport-back? #f)
         (set! autosave-delayed #t)
       )
-      (when (rand-vu-percent? 0.5)
-        
-        (+! (-> *game-info* continue-deaths) 100000000)      )
+      (+! (-> *game-info* continue-deaths) 100000000)
     )
     (when (and (= menu-slot 2)(= p-double-shot #f)(>= (-> *game-info* skill) 25.0)(= shopid2 9))
       (-! (-> *game-info* skill) 25.0)
@@ -3738,9 +3663,7 @@ Here are the shop IDs
       (when (= teleport-back? #f)
         (set! autosave-delayed #t)
       )
-      (when (rand-vu-percent? 0.5)
-        
-        (+! (-> *game-info* continue-deaths) 100000000)      )
+      (+! (-> *game-info* continue-deaths) 100000000)
     )
     (when (and (= menu-slot 0)(= p-explode-shot #f)(>= (-> *game-info* skill) 35.0)(= shopid1 10))
       (-! (-> *game-info* skill) 35.0)
@@ -3752,9 +3675,7 @@ Here are the shop IDs
       (when (= teleport-back? #f)
         (set! autosave-delayed #t)
       )
-      (when (rand-vu-percent? 0.5)
-        
-        (+! (-> *game-info* continue-deaths) 100000000)      )
+      (+! (-> *game-info* continue-deaths) 100000000)
     )
     (when (and (= menu-slot 1)(= p-explode-shot #f)(>= (-> *game-info* skill) 35.0)(= shopid3 10))
       (-! (-> *game-info* skill) 35.0)
@@ -3766,10 +3687,7 @@ Here are the shop IDs
       (when (= teleport-back? #f)
         (set! autosave-delayed #t)
       )
-      (when (rand-vu-percent? 0.5)
-        
-        (+! (-> *game-info* continue-deaths) 100000000)
-      )
+      (+! (-> *game-info* continue-deaths) 100000000)
     )
     (when (and (= menu-slot 2)(= p-explode-shot #f)(>= (-> *game-info* skill) 35.0)(= shopid2 10))
       (-! (-> *game-info* skill) 35.0)
@@ -3781,9 +3699,7 @@ Here are the shop IDs
       (when (= teleport-back? #f)
         (set! autosave-delayed #t)
       )
-      (when (rand-vu-percent? 0.5)
-        
-        (+! (-> *game-info* continue-deaths) 100000000)      )
+      (+! (-> *game-info* continue-deaths) 100000000)
     )
     (when (and (= menu-slot 0)(= (-> *game-info* total-deaths) 3)(>= (-> *game-info* skill) 100.0)(= shopid1 99))
       (-! (-> *game-info* skill) 100.0)
@@ -4221,6 +4137,248 @@ Here are the shop IDs
   (set! post-item-display? #f)
 )
 
+#| All of these are set to IDs
+
+Here are the shop IDs
+1 Yellow Gun (25 orbs)
+2 Blue Gun (32 orbs)
+3 Peacemaker (40 orbs)
+4 Upgrade Red speed (10 orbs)
+5 Upgrade Ammo (15 orbs)
+6 Upgrade Damage (20 orbs)
+7 Full HP (7 orbs)
+8 Buffed Vehicles
+9 Double Shot
+99 Red Eco Shard
+
+
+|#
+
+(when (and 
+(= in-menu2 #t)
+(= p-yellow-gun #f)
+(or
+(and (= shopid1 1) (= menu-slot 0))
+(and (= shopid2 1) (= menu-slot 2))
+(and (= shopid3 1) (= menu-slot 1))
+)
+)
+(clear matt-str)
+    (clear *pc-encoded-matt-str*)
+    (format matt-str "<COLOR_ORANGE>Unlocks the Yellow Gun"
+    )
+    (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+    (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+      ;; reset bucket settings prior to drawing - font won't do self for us, and
+      ;; draw-raw-image can sometimes mess them up. (intro sequence)
+      (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+      (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 250 245 0.0 (font-color default) (font-flags middle shadow kerning large))))
+        (set! (-> font-ctx scale) 0.325)
+        (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+)
+
+(when (and 
+(= in-menu2 #t)
+(= p-blue-gun #f)
+(or
+(and (= shopid1 2) (= menu-slot 0))
+(and (= shopid2 2) (= menu-slot 2))
+(and (= shopid3 2) (= menu-slot 1))
+)
+)
+(clear matt-str)
+    (clear *pc-encoded-matt-str*)
+    (format matt-str "<COLOR_ORANGE>Unlocks the Blue Gun"
+    )
+    (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+    (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+      ;; reset bucket settings prior to drawing - font won't do self for us, and
+      ;; draw-raw-image can sometimes mess them up. (intro sequence)
+      (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+      (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 250 245 0.0 (font-color default) (font-flags middle shadow kerning large))))
+        (set! (-> font-ctx scale) 0.325)
+        (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+)
+
+(when (and 
+(= in-menu2 #t)
+(= p-dark-gun #f)
+(or
+(and (= shopid1 3) (= menu-slot 0))
+(and (= shopid2 3) (= menu-slot 2))
+(and (= shopid3 3) (= menu-slot 1))
+)
+)
+(clear matt-str)
+    (clear *pc-encoded-matt-str*)
+    (format matt-str "<COLOR_ORANGE>Unlocks the Peacemaker"
+    )
+    (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+    (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+      ;; reset bucket settings prior to drawing - font won't do self for us, and
+      ;; draw-raw-image can sometimes mess them up. (intro sequence)
+      (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+      (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 250 245 0.0 (font-color default) (font-flags middle shadow kerning large))))
+        (set! (-> font-ctx scale) 0.325)
+        (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+)
+(when (and 
+(= in-menu2 #t)
+(= p-upgrade-red #f)
+(or
+(and (= shopid1 4) (= menu-slot 0))
+(and (= shopid2 4) (= menu-slot 2))
+(and (= shopid3 4) (= menu-slot 1))
+)
+)
+(clear matt-str)
+    (clear *pc-encoded-matt-str*)
+    (format matt-str "<COLOR_ORANGE>Rate of fire increased on the Scattergun"
+    )
+    (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+    (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+      ;; reset bucket settings prior to drawing - font won't do self for us, and
+      ;; draw-raw-image can sometimes mess them up. (intro sequence)
+      (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+      (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 250 245 0.0 (font-color default) (font-flags middle shadow kerning large))))
+        (set! (-> font-ctx scale) 0.325)
+        (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+)
+
+(when (and 
+(= in-menu2 #t)
+(= p-upgrade-ammo #f)
+(or
+(and (= shopid1 5) (= menu-slot 0))
+(and (= shopid2 5) (= menu-slot 2))
+(and (= shopid3 5) (= menu-slot 1))
+)
+)
+(clear matt-str)
+    (clear *pc-encoded-matt-str*)
+    (format matt-str "<COLOR_ORANGE>x2 on ammo for all guns"
+    )
+    (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+    (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+      ;; reset bucket settings prior to drawing - font won't do self for us, and
+      ;; draw-raw-image can sometimes mess them up. (intro sequence)
+      (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+      (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 250 245 0.0 (font-color default) (font-flags middle shadow kerning large))))
+        (set! (-> font-ctx scale) 0.325)
+        (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+)
+
+(when (and 
+(= in-menu2 #t)
+(= p-upgrade-damage #f)
+(or
+(and (= shopid1 6) (= menu-slot 0))
+(and (= shopid2 6) (= menu-slot 2))
+(and (= shopid3 6) (= menu-slot 1))
+)
+)
+(clear matt-str)
+    (clear *pc-encoded-matt-str*)
+    (format matt-str "<COLOR_ORANGE>x2 damage increase for all weapons"
+    )
+    (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+    (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+      ;; reset bucket settings prior to drawing - font won't do self for us, and
+      ;; draw-raw-image can sometimes mess them up. (intro sequence)
+      (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+      (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 250 245 0.0 (font-color default) (font-flags middle shadow kerning large))))
+        (set! (-> font-ctx scale) 0.325)
+        (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+)
+(when (and 
+(= in-menu2 #t)
+(or
+(and (= shopid1 7) (= menu-slot 0))
+(and (= shopid2 7) (= menu-slot 2))
+(and (= shopid3 7) (= menu-slot 1))
+)
+)
+(clear matt-str)
+    (clear *pc-encoded-matt-str*)
+    (format matt-str "<COLOR_PINK>Refills your HP to maximum"
+    )
+    (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+    (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+      ;; reset bucket settings prior to drawing - font won't do self for us, and
+      ;; draw-raw-image can sometimes mess them up. (intro sequence)
+      (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+      (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 250 245 0.0 (font-color default) (font-flags middle shadow kerning large))))
+        (set! (-> font-ctx scale) 0.325)
+        (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+)
+(when (and 
+(= in-menu2 #t)
+(= p-upgrade-vehicles #f)
+(or
+(and (= shopid1 8) (= menu-slot 0))
+(and (= shopid2 8) (= menu-slot 2))
+(and (= shopid3 8) (= menu-slot 1))
+)
+)
+(clear matt-str)
+    (clear *pc-encoded-matt-str*)
+    (format matt-str "<COLOR_PINK>x3 HP, and x3 speed for all vehicles~%(excluding guard vehicles)"
+    )
+    (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+    (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+      ;; reset bucket settings prior to drawing - font won't do self for us, and
+      ;; draw-raw-image can sometimes mess them up. (intro sequence)
+      (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+      (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 250 245 0.0 (font-color default) (font-flags middle shadow kerning large))))
+        (set! (-> font-ctx scale) 0.325)
+        (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+)
+(when (and 
+(= in-menu2 #t)
+(= p-double-shot #f)
+(or
+(and (= shopid1 9) (= menu-slot 0))
+(and (= shopid2 9) (= menu-slot 2))
+(and (= shopid3 9) (= menu-slot 1))
+)
+)
+(clear matt-str)
+    (clear *pc-encoded-matt-str*)
+    (format matt-str "<COLOR_PINK>Every projectile fires twice"
+    )
+    (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+    (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+      ;; reset bucket settings prior to drawing - font won't do self for us, and
+      ;; draw-raw-image can sometimes mess them up. (intro sequence)
+      (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+      (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 250 245 0.0 (font-color default) (font-flags middle shadow kerning large))))
+        (set! (-> font-ctx scale) 0.325)
+        (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+)
+(when (and 
+(= in-menu2 #t)
+(= p-explode-shot #f)
+(or
+(and (= shopid1 10) (= menu-slot 0))
+(and (= shopid2 10) (= menu-slot 2))
+(and (= shopid3 10) (= menu-slot 1))
+)
+)
+(clear matt-str)
+    (clear *pc-encoded-matt-str*)
+    (format matt-str "<COLOR_PINK>Every projectile spawns a grenade on impact"
+    )
+    (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+    (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+      ;; reset bucket settings prior to drawing - font won't do self for us, and
+      ;; draw-raw-image can sometimes mess them up. (intro sequence)
+      (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+      (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 250 245 0.0 (font-color default) (font-flags middle shadow kerning large))))
+        (set! (-> font-ctx scale) 0.325)
+        (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+)
+
+
 (when (and (= start-stage #t)(not (cpad-hold? 0 r3)))
    (clear matt-str)
     (clear *pc-encoded-matt-str*)
@@ -4638,7 +4796,7 @@ Here are the shop IDs
     (format matt-str "<COLOR_WHITE>Vin:~%Listen, if we want to get out of here, we should think about getting certain items across dimensions.
     ~%If you happen to see a <COLOR_GREEN>Green Eco Shard<COLOR_WHITE> that a <COLOR_RED>Krimzon Guard<COLOR_WHITE> has,
     ~%don't hesitate to go and grab it. My radar indicates it's located in Act 1.
-    ~%We need this item in order to locate the source of all this dark eco!
+    ~%<COLOR_RED>Krimzon Guards<COLOR_YELLOW> can also drop orbs! High risk, high reward.
     ~%
     ~%
     ~%
@@ -4698,7 +4856,7 @@ Here are the shop IDs
     (format matt-str "<COLOR_WHITE>Vin:~%Alright, here's the deal...
     ~%Right now, a <COLOR_GREEN>Green Eco Shard<COLOR_WHITE> can be collected from a <COLOR_RED>Krimzon Guard<COLOR_WHITE> in Act 1.
     ~%This item is very useful, and could help us locate the original dimension.
-    ~%<COLOR_YELLOW>If you don't take damage between stages, your chances increase on finding it.
+    ~%<COLOR_YELLOW>If you cross dimensions with 8HP, your chances increase on finding it.
     ~%This is because of a luck stat I found attached to you. No damage, More luck!
     ~%
     ~%
@@ -4733,8 +4891,8 @@ Here are the shop IDs
     (format matt-str "<COLOR_WHITE>Vin:~%Amazing! This shard you collected is 1 of 3 pieces we need to locate the original dimension!
     ~%The next item you'll need to look out for is a <COLOR_BLUE>Blue Eco Shard<COLOR_WHITE>.
     ~%Somewhere in Act 2, <COLOR_PINK>a crate<COLOR_WHITE> contains the piece we need.
-    ~%<COLOR_YELLOW>Each time you buy something from the shop, I insert it in your inventory. Unfortunately,
-    ~%that makes the dimension unstable--And an unstable game means unstable metalheads!
+    ~%
+    ~%
     ~%
     ~%
     ~%
@@ -4763,8 +4921,8 @@ Here are the shop IDs
     (format matt-str "<COLOR_WHITE>Vin:~%This shard you got is incredibly powerful!~%But it would seem that this item you've collected is one of three we need.
     ~%Right now, you're looking for a <COLOR_BLUE>Blue Eco Shard<COLOR_WHITE> in Act 2.
     ~%My radar says <COLOR_PINK>a crate<COLOR_WHITE> could have this item.
-    ~%<COLOR_YELLOW>The dimension will glow <COLOR_BLUE>blue<COLOR_YELLOW> when you're nearby, so start looking!
-    ~%
+    ~%<COLOR_YELLOW>The dimension will glow <COLOR_BLUE>blue<COLOR_YELLOW> when you're in the right place, 
+    ~%so start looking!
     ~%
     ~%
     ~%<COLOR_WHITE>Current Tokens:
@@ -4792,8 +4950,8 @@ Here are the shop IDs
     (format matt-str "<COLOR_WHITE>Vin:~%You've found the <COLOR_GREEN>Green Eco Shard<COLOR_WHITE>! Good work!
     ~%Next you'll need a <COLOR_BLUE>Blue Eco Shard<COLOR_WHITE> from <COLOR_PINK>a crate<COLOR_WHITE> that contains it.
     ~%This item can be found in Act 2, so keep looking!
-    ~%
-    ~%
+    ~%<COLOR_YELLOW>If you cross dimensions with 8HP, your chances increase on finding it.
+    ~%This is because of a luck stat I found attached to you. No damage, More luck!
     ~%
     ~%
     ~%
@@ -4983,8 +5141,8 @@ Here are the shop IDs
     (format matt-str "
     <COLOR_WHITE>Vin:~%Jak! I've successfully triangulated the position of where this <COLOR_PINK>dark eco<COLOR_WHITE> is coming from!
     ~%Thanks to you, we can finally travel there, you've just got to get past <COLOR_YELLOW>Act 3<COLOR_WHITE>.
-    ~%But be warned, as I'm sure you've noticed, the enemies have gotten stronger with how
-    ~%closer you've drawn near. The original dimension we were in is completely covered in MORE THAN vast amounts!
+    ~%But be warned, as I'm sure you've noticed, the enemies have gotten stronger with how close you've
+    ~%drawn near. The original dimension we were in is completely covered in MORE THAN vast amounts!
     ~%I-I mean, it's not just a quantifiable amount.. It's virtually infinite amounts of <COLOR_PINK>dark eco<COLOR_WHITE>!
     ~%If you're still having trouble, you can always give me <COLOR_YELLOW>Skull Gems<COLOR_WHITE> to get stronger items.
     ~%We're all counting on you, Jak! <COLOR_GREEN>Beat MetalKor, and fulfill the prophecy again!
@@ -5009,6 +5167,8 @@ Here are the shop IDs
         (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
   )
 )
+
+
 
 (when 
 (and 
@@ -5425,7 +5585,7 @@ Here are the shop IDs
   (when (and (= in-hub? #f)(= in-intro? #t)(> curse-level 0)(= wait-tutorial #f)(= ohshit #f))
     (clear matt-str)
       (clear *pc-encoded-matt-str*)
-      (format matt-str "<COLOR_ORANGE>This stat makes your dimension spawn Unstable Enemies.~%They are faster, and harder to kill. Caps at level 9"
+      (format matt-str "<COLOR_ORANGE>This stat makes your dimension spawn Unstable Enemies.~%While colored purple, they are faster, and harder to kill. Caps at level 9"
       
       )
       (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)

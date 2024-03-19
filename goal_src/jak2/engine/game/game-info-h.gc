@@ -122,6 +122,7 @@
 (define please-reward #t)
 (define wait-kill #f)
 (define wait-killi 0)
+(define luck 0.0)
 
 (defenum pickup-type
   :bitfield #f
