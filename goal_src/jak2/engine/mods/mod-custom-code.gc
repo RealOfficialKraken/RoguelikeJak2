@@ -107,7 +107,7 @@ After most of these, the mod will be completed and I can get on with my life
 (define wait-vintalk #f)
 (define wait-vini 0)
 
-
+(define display-death-screen #f)
 (define vin-spawned? #f)
 (define waitspawn 0)
 (define wait-vinspawn #f)
@@ -2270,7 +2270,7 @@ These numbers go down in order from the ids. The first 1 is to save all the 0's
 |#
 
 
-(when 
+(when                     ;When loading back into your run
 (and 
 (!= (-> *game-info* buzzer-total) 0.0)
 (and 
@@ -2290,6 +2290,7 @@ These numbers go down in order from the ids. The first 1 is to save all the 0's
   (set! ohshit #f)
   (set! wait-tutorial #f)
   (set! tutoriali 0)
+  (set! display-death-screen #t)
   (when (and (= print-stage 4)(!= act-act 4)(= teleport-hiphog #f))
     (set! teleport-hiphog #t)
   )
@@ -2895,6 +2896,7 @@ These numbers go down in order from the ids. The first 1 is to save all the 0's
     (set! waite-frame 0)
     (set! act-stage 0)
     (set! (-> *game-info* buzzer-total) 0.0)
+    (set! display-death-screen #t)
     (set! print-stage 0)
     (set! level-completed? #t)
     (set! display-run #t)
@@ -2926,7 +2928,9 @@ These numbers go down in order from the ids. The first 1 is to save all the 0's
     (set! tutorial-completed? #t)
   )
   (when (> waits-frame 60)
-    (set! in-menu #t)
+    (when (= display-death-screen #t)
+      (set! in-menu #t)
+    )
     (set! wait-start #f)
     (set! waits-frame 0)
     (set! camera-locked #t)
@@ -3984,8 +3988,8 @@ Here are the shop IDs
 (when (and (= in-menu #t)(= (paused?) #f)(= (-> *game-info* karma) 1.0)(not (cpad-pressed? 0 x)))
   (clear matt-str)
     (clear *pc-encoded-matt-str*)
-    (format matt-str "<COLOR_WHITE>Welcome to<COLOR_RED> Roguelike Jak II (demo)<COLOR_WHITE>!
-~%<COLOR_BLUE>  Made by Kraken
+    (format matt-str "<COLOR_WHITE>Welcome to<COLOR_RED> Roguelike Jak II<COLOR_WHITE>
+~%<COLOR_BLUE>Made by Kraken
 ~%
 ~%<COLOR_WHITE>When you <COLOR_GREEN>start your run<COLOR_WHITE>,
 ~%you will be transported to the dimensions where Jak
@@ -4016,7 +4020,7 @@ Here are the shop IDs
   (clear matt-str)
     (clear *pc-encoded-matt-str*)
     (format matt-str "<COLOR_WHITE>Welcome to<COLOR_RED> Roguelike Jak II<COLOR_WHITE>!
-~%<COLOR_BLUE>  Made by Kraken
+~%<COLOR_BLUE>Made by Kraken
 ~%
 ~%
 <COLOR_RED>~%You Died!
@@ -4102,6 +4106,7 @@ Here are the shop IDs
   (set! camera-unlocked #t)
   (set! pause-menu-blocked? #f)
   (set! in-menu #f)
+  (set! display-death-screen #f)
   (set! win-lose #f)
   (set! item-ts1 "")
   (set! item-ts2 "")
@@ -5705,6 +5710,7 @@ Here are the shop IDs
     (set! in-intro? #t)
     (set! intro-sec 1)
     (set! item-display? #t)
+    (set! display-death-screen #t)
   )
 )
 
