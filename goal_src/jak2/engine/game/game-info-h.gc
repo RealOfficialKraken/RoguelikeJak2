@@ -14,6 +14,8 @@
 (define tin-game-wait #f)
 (define tin-wait 0)
 (define level-completed? #f)
+(define curse 0.0)
+(define cursed? #f)
 
 (define start-stage #f)
 

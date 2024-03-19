@@ -104,11 +104,8 @@
          (set! (-> gp-0 object-type-info-array 17 level) #f)
          (set! (-> gp-0 object-type-info-array 18 level) #f) ;hellbike
          (set! (-> gp-0 object-type-info-array 19 level) #f) ;hellcat
-         (logior! (-> gp-0 alert-state flags) (traffic-alert-flag target-jak))
-         (set! *traffic-alert-level-force* #f)
-         (logclear! (-> gp-0 alert-state flags) (traffic-alert-flag target-jak))
          (set-alert-level gp-0 3)
-         (logior! (-> gp-0 alert-state flags) (traffic-alert-flag guard-multi-focus))
+         (logior! (-> gp-0 alert-state flags) (traffic-alert-flag target-jak))
          (set-alert-duration gp-0 (seconds 6048000))
          (set! *traffic-alert-level-force* #t)
          )

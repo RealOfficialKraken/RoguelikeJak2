@@ -1168,7 +1168,7 @@ This commonly includes things such as:
   (set! (-> this fact)
         (new 'process 'fact-info-crate this (pickup-type eco-pill-random) (-> *FACT-bank* default-eco-pill-green-inc))
         )
-          (when (and (= act-act 2)(= (-> *game-info* total-deaths) 2)(rand-vu-percent? 0.008))
+          (when (and (= act-act 2)(= (-> *game-info* total-deaths) 2)(rand-vu-percent? (- luck 1.0)))
       (set! (-> this fact pickup-type) (pickup-type board))
       (print "
       

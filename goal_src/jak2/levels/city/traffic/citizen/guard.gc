@@ -3794,12 +3794,14 @@
   (logior! (-> this mask) (process-mask guard))
   (set! (-> this fact pickup-type) (pickup-type ammo-random))
   (set! (-> this fact pickup-amount) 10.0)
-  (when (and (rand-vu-percent? 0.5)(> total-skill 0))
+  (when (and (rand-vu-percent? (- luck 0.04)))
     (set! (-> this fact pickup-type) (pickup-type skill))
     (set! (-> this fact pickup-amount) 3.0)
-    (-! total-skill 4)
+    (print "
+spawned-orb-guard
+")
   )
-  (when (and (= act-act 1) (= (-> *game-info* total-deaths) 1)(rand-vu-percent? 0.04))
+  (when (and (= act-act 1) (= (-> *game-info* total-deaths) 1)(rand-vu-percent? (- luck 0.0999)))
     (set! (-> this fact pickup-type) (pickup-type board))
     (print "
       
