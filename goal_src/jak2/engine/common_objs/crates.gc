@@ -1168,8 +1168,9 @@ This commonly includes things such as:
   (set! (-> this fact)
         (new 'process 'fact-info-crate this (pickup-type eco-pill-random) (-> *FACT-bank* default-eco-pill-green-inc))
         )
-          (when (and (= act-act 2)(= (-> *game-info* total-deaths) 2)(rand-vu-percent? (- luck 1.0)))
-      (set! (-> this fact pickup-type) (pickup-type board))
+          (when (and (= act-act 2)(= (-> *game-info* total-deaths) 2)(rand-vu-percent? (- luck 0.1)))
+      (set! (-> this fact pickup-type) (pickup-type eco-blue))
+      (set! color-floor #t)
       (print "
       
 Eco Shard spawned in a crate nearby!
@@ -1211,8 +1212,9 @@ Eco Shard spawned in a crate nearby!
   (set! (-> this carry max-pull) 3686.4)
   (set! (-> this carry carry-radius) 3276.8)
   (set! (-> this target) (the-as handle #f))
-    (when (and (= act-act 2)(= (-> *game-info* total-deaths) 2)(rand-vu-percent? 0.008))
-      (set! (-> this fact pickup-type) (pickup-type board))
+    (when (and (= act-act 2)(= (-> *game-info* total-deaths) 2)(rand-vu-percent? (- luck 0.1)))
+      (set! (-> this fact pickup-type) (pickup-type eco-blue))
+      (set! color-floor #t)
       (print "
 
 Eco Shard spawned in a crate nearby!

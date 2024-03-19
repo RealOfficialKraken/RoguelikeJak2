@@ -3801,8 +3801,10 @@
 spawned-orb-guard
 ")
   )
-  (when (and (= act-act 1) (= (-> *game-info* total-deaths) 1)(rand-vu-percent? (- luck 0.0999)))
-    (set! (-> this fact pickup-type) (pickup-type board))
+  (when (and (= act-act 1) (= (-> *game-info* total-deaths) 1)(rand-vu-percent? (- luck 0.0899)))
+    (set! (-> this fact pickup-type) (pickup-type eco-green))
+    (set! (-> this fact pickup-amount) 1.0)
+    (set! color-floor #t)
     (print "
       
 Eco Shard spawned in a Krimzon Guard nearby!
