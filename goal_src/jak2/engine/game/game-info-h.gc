@@ -125,6 +125,10 @@
 (define wait-kill #f)
 (define wait-killi 0)
 (define luck 0.0)
+(define rngspeed (meters 5))
+(define rngspeed2 (meters 5))
+(define rngspeed3 (meters 5))
+(define rngspeed4 (meters 5))
 
 (defenum pickup-type
   :bitfield #f

@@ -30,10 +30,17 @@
 --------------------------------------------------------------------------------------------------
 
 - Make more purchaseable items to put in runs in the main menu
-- Make ending for dark eco act
-- Make cursed bosses
-- Make stage 4-4 a custom mission stage (nest area, but you have to eliminate 60 metalheads before your task proceeds. Disable cutscene trigger for opening nest)
+- Can refresh shop for free, but curse will tick up by one
 - Finish explosive shot
+- color-floor makes the level completely dark in retail-mode
+- Make stage 4-4 a custom mission stage (nest area, but you have to eliminate 60 metalheads before your task proceeds. Disable cutscene trigger for opening nest)
+- Make ending for dark eco act
+- Make more rng elements in missions alone, like teleporting entities. This will be important to not cause burnout
+vv--optional--vv
+- Make cursed bosses, alongside making vanilla bosses harder
+- Level 9 curse will shoot guard projectiles from all directions towards jak, at rng chance.
+- Put timer modifiers on certain missions that arent time based already. It'll say something like "dimensional destruction imminent, evacuate immediately"
+
 
 After most of these, the mod will be completed and I can get on with my life
 
@@ -117,6 +124,7 @@ ITEM IDEAS (7 items left, all cursed items)
 (define vin-spawned? #f)
 (define waitspawn 0)
 (define wait-vinspawn #f)
+(define rnginfo #f)
 
 (define save-slot 0)
 (define curse-save 100000000)
@@ -325,6 +333,11 @@ ITEM IDEAS (7 items left, all cursed items)
   (set! teleport-wait #f)
   (set! traffic-metalheads? #f)
   (set! boss-cursed #f)
+  (set! please-reward #f)
+  (set! rngspeed (meters 5))
+  (set! rngspeed2 (meters 5))
+  (set! rngspeed3 (meters 5))
+  (set! rngspeed4 (meters 5))
   (set! (-> *game-info* buzzer-total) 0.0)
   (set! (-> *mood-control* overide-weather-flag) #f)
   (set! (-> *time-of-day-context* overide-enable) #f)
@@ -2187,6 +2200,12 @@ ITEM IDEAS (7 items left, all cursed items)
     (set! in-game? #t)
     (set! waiting 0)
     (set! wait-for-ingame #f)
+    (when (= p-upgrade-ammo #t)
+      (send-event *target* 'get-pickup (pickup-type ammo-yellow) 1000.0)
+      (send-event *target* 'get-pickup (pickup-type ammo-red) 1000.0)
+      (send-event *target* 'get-pickup (pickup-type ammo-blue) 1000.0)
+      (send-event *target* 'get-pickup (pickup-type ammo-dark) 1000.0)
+    )
     (when 
     (and
     (= please-reward #t) 
@@ -2212,6 +2231,12 @@ ITEM IDEAS (7 items left, all cursed items)
     (set! in-game? #t)
     (set! waiting 0)
     (set! wait-extra-for-ingame #f)
+    (when (= p-upgrade-ammo #t)
+      (send-event *target* 'get-pickup (pickup-type ammo-yellow) 1000.0)
+      (send-event *target* 'get-pickup (pickup-type ammo-red) 1000.0)
+      (send-event *target* 'get-pickup (pickup-type ammo-blue) 1000.0)
+      (send-event *target* 'get-pickup (pickup-type ammo-dark) 1000.0)
+    )
   )
 )
 
@@ -2312,6 +2337,7 @@ These numbers go down in order from the ids. The first 1 is to save all the 0's
   (set! wait-tutorial #f)
   (set! tutoriali 0)
   (set! display-death-screen #t)
+  (set! rnginfo #t)
   (when 
 (and
 (task-node-closed? (game-task-node palace-boss-introduction))
@@ -2832,7 +2858,7 @@ These numbers go down in order from the ids. The first 1 is to save all the 0's
 )
   (send-event *target* 'continue (get-continue-by-name *game-info* "consite-airlock"))
 )|#
-
+#|
 (when 
 (and
  (or 
@@ -2877,7 +2903,7 @@ These numbers go down in order from the ids. The first 1 is to save all the 0's
     (set! (-> *time-of-day-context* times (-> *time-of-day-context* overide-palette) z) 0.4921)
   )
 )
-
+|#
 
 (when 
 (and 
@@ -2960,6 +2986,7 @@ These numbers go down in order from the ids. The first 1 is to save all the 0's
     (set! vin-spawned? #f)
     (set! item-display? #t)
     (set! autosave-delayed #t)
+    (set! rnginfo #t)
     (let ((roll-luck (rand-vu-int-range 1 4)))
     (when (= roll-luck 1)
     (+! (-> *game-info* continue-deaths) 10000000)
@@ -3088,6 +3115,14 @@ These numbers go down in order from the ids. The first 1 is to save all the 0's
     (set! waitdi 0)
     (set! waitdie #f)
   )
+)
+
+(when (= rnginfo #t)
+  (set! rngspeed (rand-vu-float-range 40960.0 100000.0))
+  (set! rngspeed2 (rand-vu-float-range 60960.0 120000.0))
+  (set! rngspeed3 (rand-vu-float-range 100960.0 140000.0))
+  (set! rngspeed4 (rand-vu-float-range 300960.0 2200000.0))
+  (set! rnginfo #f)
 )
 
 ;buy shop GUNS
@@ -3711,9 +3746,8 @@ Here are the shop IDs
     (when (and (= menu-slot 0)(= p-explode-shot #f)(>= (-> *game-info* skill) 35.0)(= shopid1 10))
       (-! (-> *game-info* skill) 35.0)
       (set! shopitem1 "(Out of Stock)")
-      (set! item-tss1 "Shots Explode")
+      (set! item-tss1 "Explosive Shot")
       (set! item-update #t)
-      (set! p-double-shot #t)
       (set! (-> *game-info* task-deaths) (+ (-> *game-info* continue-deaths) 1))
       (when (= teleport-back? #f)
         (set! autosave-delayed #t)
@@ -3723,9 +3757,8 @@ Here are the shop IDs
     (when (and (= menu-slot 1)(= p-explode-shot #f)(>= (-> *game-info* skill) 35.0)(= shopid3 10))
       (-! (-> *game-info* skill) 35.0)
       (set! shopitem3 "(Out of Stock)")
-      (set! item-tss1 "Shots Explode")
+      (set! item-tss1 "Explosive Shot")
       (set! item-update #t)
-      (set! p-double-shot #t)
       (set! (-> *game-info* task-deaths) (+ (-> *game-info* continue-deaths) 1))
       (when (= teleport-back? #f)
         (set! autosave-delayed #t)
@@ -3735,9 +3768,8 @@ Here are the shop IDs
     (when (and (= menu-slot 2)(= p-explode-shot #f)(>= (-> *game-info* skill) 35.0)(= shopid2 10))
       (-! (-> *game-info* skill) 35.0)
       (set! shopitem2 "(Out of Stock)")
-      (set! item-tss1 "Shots Explode")
+      (set! item-tss1 "Explosive Shot")
       (set! item-update #t)
-      (set! p-double-shot #t)
       (set! (-> *game-info* task-deaths) (+ (-> *game-info* continue-deaths) 1))
       (when (= teleport-back? #f)
         (set! autosave-delayed #t)
@@ -4461,7 +4493,7 @@ Here are the shop IDs
 (when (and (= act-act 1)(= (-> *game-info* buzzer-total) 1.0)(= display-run #t))
     (clear matt-str)
     (clear *pc-encoded-matt-str*)
-    (format matt-str "<COLOR_GREEN><<COLOR_WHITE>---<---<---<---(BOSS)"
+    (format matt-str "<COLOR_YELLOW><<COLOR_WHITE>---<---<---<---(BOSS)"
     )
     (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
     (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
@@ -4475,7 +4507,7 @@ Here are the shop IDs
 (when (and (= act-act 1)(= (-> *game-info* buzzer-total) 2.0)(= display-run #t))
     (clear matt-str)
     (clear *pc-encoded-matt-str*)
-    (format matt-str "<COLOR_GREEN><---<<COLOR_WHITE>---<---<---(BOSS)"
+    (format matt-str "<COLOR_YELLOW><---<<COLOR_WHITE>---<---<---(BOSS)"
     )
     (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
     (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
@@ -4489,7 +4521,7 @@ Here are the shop IDs
 (when (and (= act-act 1)(= (-> *game-info* buzzer-total) 3.0)(= display-run #t))
     (clear matt-str)
     (clear *pc-encoded-matt-str*)
-    (format matt-str "<COLOR_GREEN><---<---<<COLOR_WHITE>---<---(BOSS)"
+    (format matt-str "<COLOR_YELLOW><---<---<<COLOR_WHITE>---<---(BOSS)"
     )
     (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
     (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
@@ -4503,7 +4535,7 @@ Here are the shop IDs
 (when (and (= act-act 1)(= (-> *game-info* buzzer-total) 4.0)(= display-run #t))
     (clear matt-str)
     (clear *pc-encoded-matt-str*)
-    (format matt-str "<COLOR_GREEN><---<---<---<<COLOR_WHITE>---(BOSS)"
+    (format matt-str "<COLOR_YELLOW><---<---<---<<COLOR_WHITE>---(BOSS)"
     )
     (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
     (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
@@ -4517,7 +4549,7 @@ Here are the shop IDs
 (when (and (= act-act 1)(= (-> *game-info* buzzer-total) 5.0)(= display-run #t))
     (clear matt-str)
     (clear *pc-encoded-matt-str*)
-    (format matt-str "<COLOR_GREEN><---<---<---<---<COLOR_RED>(BOSS)"
+    (format matt-str "<COLOR_YELLOW><---<---<---<---<COLOR_RED>(BOSS)"
     )
     (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
     (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
@@ -4749,7 +4781,7 @@ Here are the shop IDs
   (+! msgi 1)
   (clear matt-str)
     (clear *pc-encoded-matt-str*)
-    (format matt-str "<COLOR_WHITE>INFO~%<COLOR_GREEN>Green Eco Shard collected!"
+    (format matt-str "<COLOR_WHITE>INFO~%<COLOR_YELLOW>Yellow Eco Shard collected!"
     )
     (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
     (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
@@ -4807,11 +4839,11 @@ Here are the shop IDs
     (when (= vin-talk 1)
       (clear matt-str)
     (clear *pc-encoded-matt-str*)
-    (format matt-str "<COLOR_WHITE>Vin:~%Jak! I've found something that might be of interest to us.
-    ~%There's a <COLOR_GREEN>Green Eco Shard<COLOR_WHITE> that a <COLOR_RED>Krimzon Guard<COLOR_WHITE> has.
-    ~%It's somewhere in Act 1, if you see it, please grab it!
-    ~%This item could be part of our ticket out of here!
-    ~%
+    (format matt-str "<COLOR_WHITE>Vin:~%Jak! I've found something that will be of high interest to us.
+    ~%There's a <COLOR_YELLOW>Yellow Eco Shard<COLOR_WHITE> that a <COLOR_RED>Krimzon Guard<COLOR_WHITE> has.
+    ~%I need you to go into the <COLOR_YELLOW>Yellow Eco Stage<COLOR_WHITE> and find the guard that has it.
+    ~%This eco is part of our ticket out of here. I'll get it the second you collect it.
+    ~%So please, don't worry about dying. You've got me to pull you back every time!
     ~%
     ~%
     ~%
@@ -4838,7 +4870,7 @@ Here are the shop IDs
       (clear matt-str)
     (clear *pc-encoded-matt-str*)
     (format matt-str "<COLOR_WHITE>Vin:~%Listen, if we want to get out of here, we should think about getting certain items across dimensions.
-    ~%If you happen to see a <COLOR_GREEN>Green Eco Shard<COLOR_WHITE> that a <COLOR_RED>Krimzon Guard<COLOR_WHITE> has,
+    ~%If you happen to see a <COLOR_YELLOW>Yellow Eco Shard<COLOR_WHITE> that a <COLOR_RED>Krimzon Guard<COLOR_WHITE> has,
     ~%don't hesitate to go and grab it. My radar indicates it's located in Act 1.
     ~%<COLOR_RED>Krimzon Guards<COLOR_YELLOW> can also drop orbs! High risk, high reward.
     ~%
@@ -4868,9 +4900,9 @@ Here are the shop IDs
       (clear matt-str)
     (clear *pc-encoded-matt-str*)
     (format matt-str "<COLOR_WHITE>Vin:~%Remember, we need an item in order to locate the dimension where all the dark eco is concentrated.
-    ~%Right now, a <COLOR_GREEN>Green Eco Shard<COLOR_WHITE> can be collected from a <COLOR_RED>Krimzon Guard<COLOR_WHITE>.
+    ~%Right now, a <COLOR_YELLOW>Yellow Eco Shard<COLOR_WHITE> can be collected from a <COLOR_RED>Krimzon Guard<COLOR_WHITE>.
     ~%It's in Act 1, if you see it, please get it for me!
-    ~%<COLOR_YELLOW>The dimension will glow <COLOR_GREEN>green<COLOR_YELLOW> when you're in the right place!
+    ~%
     ~%
     ~%
     ~%
@@ -4898,7 +4930,7 @@ Here are the shop IDs
       (clear matt-str)
     (clear *pc-encoded-matt-str*)
     (format matt-str "<COLOR_WHITE>Vin:~%Alright, here's the deal...
-    ~%Right now, a <COLOR_GREEN>Green Eco Shard<COLOR_WHITE> can be collected from a <COLOR_RED>Krimzon Guard<COLOR_WHITE> in Act 1.
+    ~%Right now, a <COLOR_YELLOW>Yellow Eco Shard<COLOR_WHITE> can be collected from a <COLOR_RED>Krimzon Guard<COLOR_WHITE> in Act 1.
     ~%This item is very useful, and could help us locate the original dimension.
     ~%<COLOR_YELLOW>If you cross dimensions with 8HP, your chances increase on finding it.
     ~%This is because of a luck stat I found attached to you. No damage, More luck!
@@ -4965,8 +4997,8 @@ Here are the shop IDs
     (format matt-str "<COLOR_WHITE>Vin:~%This shard you got is incredibly powerful!~%But it would seem that this item you've collected is one of three we need.
     ~%Right now, you're looking for a <COLOR_BLUE>Blue Eco Shard<COLOR_WHITE> in Act 2.
     ~%My radar says <COLOR_PINK>a crate<COLOR_WHITE> could have this item.
-    ~%<COLOR_YELLOW>The dimension will glow <COLOR_BLUE>blue<COLOR_YELLOW> when you're in the right place, 
-    ~%so start looking!
+    ~%
+    ~%
     ~%
     ~%
     ~%<COLOR_WHITE>Current Tokens:
@@ -4991,7 +5023,7 @@ Here are the shop IDs
   (when (= vin-talk 3)
     (clear matt-str)
     (clear *pc-encoded-matt-str*)
-    (format matt-str "<COLOR_WHITE>Vin:~%You've found the <COLOR_GREEN>Green Eco Shard<COLOR_WHITE>! Good work!
+    (format matt-str "<COLOR_WHITE>Vin:~%You've found the <COLOR_YELLOW>Yellow Eco Shard<COLOR_WHITE>! Good work!
     ~%Next you'll need a <COLOR_BLUE>Blue Eco Shard<COLOR_WHITE> from <COLOR_PINK>a crate<COLOR_WHITE> that contains it.
     ~%This item can be found in Act 2, so keep looking!
     ~%<COLOR_YELLOW>If you cross dimensions with 8HP, your chances increase on finding it.

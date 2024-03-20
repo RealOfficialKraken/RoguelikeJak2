@@ -1095,7 +1095,7 @@
        )
      (set! (-> this eco-type) (the-as int arg0))
      (let ((f0-49 (-> this eco-level)))
-       (set! (-> this eco-level) 1.0)
+       (set! (-> this eco-level) 0.0)
        (when (and (= f0-49 0.0) (< 0.0 (-> this eco-level)))
          (set! (-> this eco-pickup-time) (-> *display* game-clock frame-counter))
          (send-event (-> this process) 'reset-collide)
@@ -1105,10 +1105,10 @@
            (the-as
              time-frame
              (min
-               (+ (-> this eco-timeout) (* (the-as int (-> *FACT-bank* eco-single-timeout)) (the int arg1)))
+               (- (-> this eco-timeout) (* (the-as int (-> *FACT-bank* eco-single-timeout)) (the int arg1)))
                (the-as
                  time-frame
-                 (+ (-> *FACT-bank* eco-full-timeout) (- (-> *display* game-clock frame-counter) (-> this eco-pickup-time)))
+                 (- (-> *FACT-bank* eco-full-timeout) (- (-> *display* game-clock frame-counter) (-> this eco-pickup-time)))
                  )
                )
              )
@@ -1116,7 +1116,7 @@
      (if (>= (- (-> this eco-timeout) (- (-> *display* game-clock frame-counter) (-> this eco-pickup-time)))
              (the-as time-frame (-> *FACT-bank* eco-full-timeout))
              )
-         (set! (-> this eco-level) 2.0)
+         (set! (-> this eco-level) 0.0)
          )
      (when (not (and (= (handle->process arg2) (handle->process (-> this eco-source)))
                      (< (- (-> *display* game-clock frame-counter) (-> this eco-source-time)) (seconds 0.5))
