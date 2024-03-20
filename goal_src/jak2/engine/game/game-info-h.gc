@@ -16,6 +16,8 @@
 (define level-completed? #f)
 (define curse 0.0)
 (define cursed? #f)
+(define boss-cursed #f)
+(define color-floor #f)
 
 (define start-stage #f)
 

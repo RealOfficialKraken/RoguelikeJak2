@@ -1170,6 +1170,7 @@ This commonly includes things such as:
         )
           (when (and (= act-act 2)(= (-> *game-info* total-deaths) 2)(rand-vu-percent? (- luck 0.1)))
       (set! (-> this fact pickup-type) (pickup-type eco-blue))
+      (set! (-> this fact pickup-amount) 1.0)
       (set! color-floor #t)
       (print "
       

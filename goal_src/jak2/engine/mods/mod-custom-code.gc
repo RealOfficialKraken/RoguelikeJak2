@@ -29,22 +29,28 @@
 #| TODO:
 --------------------------------------------------------------------------------------------------
 
-- Drill Platform crashes upon TPing out (semi-CRITICAL)
 - Make more purchaseable items to put in runs in the main menu
 - Make ending for dark eco act
-- Make bosses harder, enemies faster in later stages
-- Edit chance values for item-search campaign
-- Fix hiphog-shop in hub bug
-- Create another value with (-> *game-info* continue-deaths) for saved items
-- Set colored-weather parameters for each act
-- Make stage 4-4 a custom mission stage
-- Make "unstable" enemies. Enemies marked in red, deal x2 damage, and x2 of their current-hp (stages add to this)
-- Make an rng number that either makes the game easier or harder than usual. Like a "coolness" stat.
+- Make cursed bosses
+- Make stage 4-4 a custom mission stage (nest area, but you have to eliminate 60 metalheads before your task proceeds. Disable cutscene trigger for opening nest)
+- Finish explosive shot
 
 After most of these, the mod will be completed and I can get on with my life
 
 --------------------------------------------------------------------------------------------------
 
+ITEM IDEAS (7 items left, all cursed items)
+
+- 4 Leaf Clover (ticks up luck stat by 2, chance to evade attack with i-frames)
+- Big Bomb (On cooldown, proj impacts create 30 grenades at set vectors with 0 timer)
+- Big Punch (Jaks punches futher, and knocks back enemies tenfold)
+- Drinkable Green Eco (Heal 3 hp per stage)
+- Bounce Shot
+- Yellow Sage Shot (Fires yellow shots rain down-forward from above jak)
+- Red Sage Shot (works as a barrier, in front of jak a bunch of red shots come out in one direction.)
+- Blue Sage Shot (Bunch of blue shot facing upwards shoot from underneath jak)
+
+--------------------------------------------------------------------------------------------------
 
 |#
     ;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -160,6 +166,9 @@ After most of these, the mod will be completed and I can get on with my life
 (define popup-intro #f)
 (define wait-pulloutgun #f)
 (define wait-pi 0)
+(define grab-method #f)
+(define wait-cb #f)
+(define w-cb 0)
 
 (define vin-shop-s "")
 
@@ -172,7 +181,6 @@ After most of these, the mod will be completed and I can get on with my life
 (define waitdie-tutorial #f)
 (define waitdiei 0)
 (define dark-mode #f)
-(define color-floor #f)
 
 (define intro-wait #f)
 (define intro-waiti 0)
@@ -316,6 +324,7 @@ After most of these, the mod will be completed and I can get on with my life
   (set! teleport-w 0)
   (set! teleport-wait #f)
   (set! traffic-metalheads? #f)
+  (set! boss-cursed #f)
   (set! (-> *game-info* buzzer-total) 0.0)
   (set! (-> *mood-control* overide-weather-flag) #f)
   (set! (-> *time-of-day-context* overide-enable) #f)
@@ -2079,6 +2088,9 @@ After most of these, the mod will be completed and I can get on with my life
     (when (and (= (-> *game-info* buzzer-total) 4.0)(= level-completed? #t))
       (set! act1-4 #t)
       (set! level-completed? #f)
+      (when (rand-vu-percent? curse)
+        (set! boss-cursed #t)
+      )
     )
     (when (and (= (-> *game-info* buzzer-total) 5.0)(= level-completed? #t))
       (set! act1-5 #t)
@@ -2099,6 +2111,9 @@ After most of these, the mod will be completed and I can get on with my life
     (when (and (= (-> *game-info* buzzer-total) 9.0)(= level-completed? #t))
       (set! act2-4 #t)
       (set! level-completed? #f)
+      (when (rand-vu-percent? curse)
+        (set! boss-cursed #t)
+      )
     )
     (when (and (= (-> *game-info* buzzer-total) 10.0)(= level-completed? #t))
       (set! act2-5 #t)
@@ -2119,6 +2134,9 @@ After most of these, the mod will be completed and I can get on with my life
     (when (and (= (-> *game-info* buzzer-total) 14.0)(= level-completed? #t))
       (set! act3-4 #t)
       (set! level-completed? #f)
+      (when (rand-vu-percent? curse)
+        (set! boss-cursed #t)
+      )
     )
     (when (and (= (-> *game-info* buzzer-total) 15.0)(= level-completed? #t))
       (set! act3-5 #t)
@@ -2149,6 +2167,9 @@ After most of these, the mod will be completed and I can get on with my life
     (when (and (>= (-> *game-info* total-deaths) 4)(= (-> *game-info* buzzer-total) 19.0)(= level-completed? #t))
       (set! act4-4 #t)
       (set! level-completed? #f)
+      (when (rand-vu-percent? curse)
+        (set! boss-cursed #t)
+      )
     )
     (when (and (>= (-> *game-info* total-deaths) 4)(= (-> *game-info* buzzer-total) 20.0)(= level-completed? #t))
       (set! act4-5 #t)
@@ -2291,6 +2312,18 @@ These numbers go down in order from the ids. The first 1 is to save all the 0's
   (set! wait-tutorial #f)
   (set! tutoriali 0)
   (set! display-death-screen #t)
+  (when 
+(and
+(task-node-closed? (game-task-node palace-boss-introduction))
+(not (task-node-closed? (game-task-node palace-boss-resolution)))
+(= grab-method #f)
+)
+  (set! grab-method #t)
+  (when (rand-vu-percent? curse)
+        (set! boss-cursed #t)
+        (set! wait-cb #t)
+      )
+)
   (when (and (= print-stage 4)(!= act-act 4)(= teleport-hiphog #f))
     (set! teleport-hiphog #t)
   )
@@ -2312,7 +2345,18 @@ These numbers go down in order from the ids. The first 1 is to save all the 0's
   )
     (set! (-> (level-get-target-inside *level*) mood-func)update-mood-default)
   )|#
-
+#|
+(when 
+(and
+(task-node-closed? (game-task-node palace-boss-introduction))
+(not (task-node-closed? (game-task-node palace-boss-resolution)))
+(= grab-method #f)
+)
+  (set! grab-method #t)
+  (when (rand-vu-percent? curse)
+        (set! boss-cursed #t)
+      )
+)|#
     
 
   (when (!= (the int (-> *game-info* buzzer-total)) act-stage)
@@ -2408,6 +2452,19 @@ These numbers go down in order from the ids. The first 1 is to save all the 0's
     (when (and (= (-> *game-info* buzzer-total) 20.0)(!= print-stage 5))
       (set! print-stage 5)
     )
+  )
+)
+
+
+(when (= wait-cb #t)
+    (+! w-cb 1)
+  (when (= w-cb 30)
+    (send-event *target* 'continue (get-continue-by-name *game-info* "ruins-start"))
+  )
+  (when (= w-cb 60)
+    (send-event *target* 'continue (get-continue-by-name *game-info* "palroof-boss"))
+    (set! w-cb 0)
+    (set! wait-cb #f)
   )
 )
 
@@ -5185,6 +5242,7 @@ Here are the shop IDs
 (= vin-shop #f) 
 (= (paused?) #f)
 (= (pause-allowed?) #t)
+(not *scene-player*)
 (= in-menu #t) 
 (= post-item-display? #t)
 (= in-hub? #t)
@@ -5213,6 +5271,7 @@ Here are the shop IDs
 (and 
 (= (paused?) #f)
 (= (pause-allowed?) #t)
+(not *scene-player*)
 (= in-menu #f) 
 (= item-display? #t)
 (= in-hub? #f)
@@ -5240,6 +5299,7 @@ Here are the shop IDs
 (and 
 (= (paused?) #f)
 (= (pause-allowed?) #t)
+(not *scene-player*)
 (= in-menu #f) 
 (= item-display? #t)
 (= in-hub? #f)
@@ -5268,6 +5328,7 @@ Here are the shop IDs
 (and 
 (= (paused?) #f)
 (= (pause-allowed?) #t)
+(not *scene-player*)
 (= in-menu #t) 
 (= post-item-display? #t)
 (= in-hub? #t)
@@ -5554,7 +5615,7 @@ Here are the shop IDs
 
 )
 
-(when (and (= in-hub? #f)(> curse-level 0)(= wait-tutorial #f)(= ohshit #f))
+(when (and (= in-hub? #f)(not *scene-player*)(> curse-level 0)(= wait-tutorial #f)(= ohshit #f))
     (clear matt-str)
       (clear *pc-encoded-matt-str*)
       (format matt-str "<COLOR_PINK>Instability Level: <COLOR_RED>~d"
@@ -5569,10 +5630,10 @@ Here are the shop IDs
           (set! (-> font-ctx scale) 0.325)
           (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
   )
-  (when (and (= in-hub? #f)(= in-intro? #t)(> curse-level 0)(= wait-tutorial #f)(= ohshit #f))
+  (when (and (= in-hub? #f)(not *scene-player*)(= in-intro? #t)(> curse-level 0)(= wait-tutorial #f)(= ohshit #f))
     (clear matt-str)
       (clear *pc-encoded-matt-str*)
-      (format matt-str "<COLOR_ORANGE>This stat makes your dimension spawn Unstable Enemies.~%While colored purple, they are faster, and harder to kill. Caps at level 9"
+      (format matt-str "<COLOR_ORANGE>This stat makes your dimension spawn Unstable Enemies.~%While colored purple, they are faster, and harder to kill. Caps at level 9~%Only city peds and guards are exempt from this, but not bosses!"
       
       )
       (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
