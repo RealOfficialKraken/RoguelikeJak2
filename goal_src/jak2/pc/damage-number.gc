@@ -71,7 +71,6 @@
   
   :post (behavior ()
     (when (and (-> self on-screen?) ;; text is onscreen
-               (pc-cheats? (-> *pc-settings* cheats) health-bars) ;; cheat enabled
                )
       (print-game-text (string-format "~D" (-> self damage)) (-> self font) #f 44 (bucket-id debug-no-zbuf1)))
     )
@@ -131,8 +130,7 @@
   :post (behavior ()
     (if *debug-segment*
         (add-debug-x #t (bucket-id debug-no-zbuf2) (-> self trans) *color-cyan*))
-    (when (and (-> self on-screen?) ;; text is onscreen
-               (pc-cheats? (-> *pc-settings* cheats) health-bars) ;; cheat enabled
+    (when (and (-> self on-screen?) ;; text is onscreen ;; cheat enabled
                )
       (let ((dmg-display *temp-string*))
       (set! dmg-display
@@ -366,8 +364,7 @@
     )
   
   :post (behavior ()
-    (when (and (-> self on-screen?) ;; text is onscreen
-               (pc-cheats? (-> *pc-settings* cheats) health-bars) ;; cheat enabled
+    (when (and (-> self on-screen?) ;; text is onscreen ;; cheat enabled
                (> (meters 160) (vector-vector-distance (-> (the process-drawable (handle->process (-> self owner))) root trans) (math-camera-pos))))
       (draw-health-bar (the int (-> self font origin x)) (the int (-> self font origin y))
                        (the int (-> self width)) (the int (-> self height))
