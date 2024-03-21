@@ -77,6 +77,13 @@
 (define p-upgrade-vehicles #f)
 (define p-double-shot #f)
 (define p-explode-shot #f)
+(define p-clover #f)
+(define p-drinkable #f)
+(define p-big-punch #f)
+(define p-sage-yellow #f)
+(define p-sage-blue #f)
+(define p-sage-red #f)
+(define p-sage-dark #f)
 
 (define dshotwait-r #f)
 (define dshotcount-r 0)
@@ -129,6 +136,7 @@
 (define rngspeed2 (meters 5))
 (define rngspeed3 (meters 5))
 (define rngspeed4 (meters 5))
+(define-extern e-vec vector)
 
 (defenum pickup-type
   :bitfield #f

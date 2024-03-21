@@ -2584,7 +2584,7 @@ These numbers go down in order from the ids. The first 1 is to save all the 0's
   (= (/ (mod (-> *game-info* task-deaths) 1000000000) 100000000) 1)
   )
     (set! p-explode-shot #t)
-    (set! item-tss1 "Explosive Shot")
+    (set! item-tss1 "Explosive Yellow Shot")
     (set! item-update #t)
   )
   (when 
@@ -2737,7 +2737,57 @@ These numbers go down in order from the ids. The first 1 is to save all the 0's
   )
     (set! luck 0.6)
   )
-  
+
+  (when 
+  (and 
+  (= p-clover #f)
+  (= (/ (mod (-> *game-info* continue-deaths) 10) 1) 1)
+  )
+    (set! p-clover #t)
+  )
+
+  (when 
+  (and 
+  (= p-drinkable #f)
+  (= (/ (mod (-> *game-info* continue-deaths) 100) 10) 1)
+  )
+    (set! p-drinkable #t)
+  )
+  (when 
+  (and 
+  (= p-big-punch #f)
+  (= (/ (mod (-> *game-info* continue-deaths) 1000) 100) 1)
+  )
+    (set! p-big-punch #t)
+  )
+    (when 
+  (and 
+  (= p-sage-yellow #f)
+  (= (/ (mod (-> *game-info* continue-deaths) 10000) 1000) 1)
+  )
+    (set! p-sage-yellow #t)
+  )
+  (when 
+  (and 
+  (= p-sage-blue #f)
+  (= (/ (mod (-> *game-info* continue-deaths) 100000) 10000) 1)
+  )
+    (set! p-sage-blue #t)
+  )
+  (when 
+  (and 
+  (= p-sage-red #f)
+  (= (/ (mod (-> *game-info* continue-deaths) 1000000) 100000) 1)
+  )
+    (set! p-sage-red #t)
+  )
+  (when 
+  (and 
+  (= p-sage-dark #f)
+  (= (/ (mod (-> *game-info* continue-deaths) 10000000) 1000000) 1)
+  )
+    (set! p-sage-dark #t)
+  )
 
   
 (when 
@@ -3336,15 +3386,15 @@ Here are the shop IDs
     (set! shopid3 9)
   )
   (when (and (rand-vu-percent? 0.1) (>= (-> *game-info* karma) 3.0))
-    (set! shopitem1 "Explosive Shot (35 orbs)")
+    (set! shopitem1 "Explosive Yellow Shot (35 orbs)")
     (set! shopid1 10)
   )
   (when (and (rand-vu-percent? 0.1) (>= (-> *game-info* karma) 3.0))
-    (set! shopitem2 "Explosive Shot (35 orbs)")
+    (set! shopitem2 "Explosive Yellow Shot (35 orbs)")
     (set! shopid2 10)
   )
   (when (and (rand-vu-percent? 0.1) (>= (-> *game-info* karma) 3.0))
-    (set! shopitem3 "Explosive Shot (35 orbs)")
+    (set! shopitem3 "Explosive Yellow Shot (35 orbs)")
     (set! shopid3 10)
   )
   (when 
@@ -3746,7 +3796,7 @@ Here are the shop IDs
     (when (and (= menu-slot 0)(= p-explode-shot #f)(>= (-> *game-info* skill) 35.0)(= shopid1 10))
       (-! (-> *game-info* skill) 35.0)
       (set! shopitem1 "(Out of Stock)")
-      (set! item-tss1 "Explosive Shot")
+      (set! item-tss1 "Explosive Yellow Shot")
       (set! item-update #t)
       (set! (-> *game-info* task-deaths) (+ (-> *game-info* continue-deaths) 1))
       (when (= teleport-back? #f)
@@ -3757,7 +3807,7 @@ Here are the shop IDs
     (when (and (= menu-slot 1)(= p-explode-shot #f)(>= (-> *game-info* skill) 35.0)(= shopid3 10))
       (-! (-> *game-info* skill) 35.0)
       (set! shopitem3 "(Out of Stock)")
-      (set! item-tss1 "Explosive Shot")
+      (set! item-tss1 "Explosive Yellow Shot")
       (set! item-update #t)
       (set! (-> *game-info* task-deaths) (+ (-> *game-info* continue-deaths) 1))
       (when (= teleport-back? #f)
@@ -3768,7 +3818,7 @@ Here are the shop IDs
     (when (and (= menu-slot 2)(= p-explode-shot #f)(>= (-> *game-info* skill) 35.0)(= shopid2 10))
       (-! (-> *game-info* skill) 35.0)
       (set! shopitem2 "(Out of Stock)")
-      (set! item-tss1 "Explosive Shot")
+      (set! item-tss1 "Explosive Yellow Shot")
       (set! item-update #t)
       (set! (-> *game-info* task-deaths) (+ (-> *game-info* continue-deaths) 1))
       (when (= teleport-back? #f)
@@ -4162,7 +4212,7 @@ Here are the shop IDs
 ~%<COLOR_PINK>~d
 ~%
 ~%
-~%<COLOR_ORANGE>Explosive Shot unlocked in shops across all dimensions!
+~%<COLOR_ORANGE>Explosive Yellow Shot unlocked in shops across all dimensions!
 ~%<COLOR_RED>The Time Loop remains broken.
 ~%<COLOR_ORANGE>Hint: Try to collect important items for Vin!
 ~%

@@ -69,6 +69,9 @@
       (set-vector! (-> v1-7 local-sphere) 0.0 0.0 0.0 819.2)
       (set! (-> s5-0 total-prims) (the-as uint 1))
       (set! (-> s5-0 root-prim) v1-7)
+      (set! (-> v1-7 prim-core collide-with)
+            (collide-spec backgnd bot crate civilian enemy obstacle vehicle-sphere hit-by-others-list player-list pusher)
+            )
       )
     (set! (-> s5-0 nav-radius) (* 0.75 (-> s5-0 root-prim local-sphere w)))
     (let ((v1-10 (-> s5-0 root-prim)))
@@ -90,24 +93,7 @@
   (none)
   )
 
-(defmethod init-proj-settings! vehicle-grenade ((this vehicle-grenade))
-  "Init relevant settings for the [[projectile]] such as gravity, speed, timeout, etc"
-  (set! (-> this attack-mode) 'eco-dark)
-  (initialize-skeleton
-    this
-    (the-as skeleton-group (art-group-get-by-name *level* "skel-vehicle-grenade" (the-as (pointer uint32) #f)))
-    (the-as pair 0)
-    )
-  (let ((t9-2 (method-of-type projectile-bounce init-proj-settings!)))
-    (t9-2 this)
-    )
-  (set! (-> this part) (create-launch-control (-> *part-group-id-table* 138) this))
-  (set! (-> this blast-radius) 16384.0)
-  (set! (-> this max-speed) 90112.0)
-  (set! (-> this timeout) (seconds 4))
-  0
-  (none)
-  )
+
 
 (defmethod spawn-impact-particles vehicle-grenade ((this vehicle-grenade))
   "Spawns associated particles with the projectile if applicable"
@@ -134,7 +120,7 @@
         (vector-float*! (-> a2-0 transv) (-> a2-0 transv) 0.2)
         )
     (when (and (logtest? v1-0 (collide-status impact-surface))
-               (time-elapsed? (-> this played-bounce-time) (seconds 0.3))
+               (time-elapsed? (-> this played-bounce-time) (seconds 0.0))
                )
       (set-time! (-> this played-bounce-time))
       (sound-play "grenade-bounce")
@@ -183,7 +169,7 @@
   (let ((a1-9 (new 'stack-no-clear 'projectile-init-by-other-params)))
           (set! (-> a1-9 ent) (-> arg0 entity))
           (set! (-> a1-9 charge) 1.0)
-          (set! (-> a1-9 options) (projectile-options account-for-target-velocity proj-options-8000))
+          (set! (-> a1-9 options) (projectile-options deal-damage account-for-target-velocity proj-options-8000))
           (set! (-> a1-9 pos quad) (-> arg1 quad))
           (set! (-> a1-9 notify-handle) (the-as handle #f))
           (set! (-> a1-9 owner-handle) (the-as handle #f))
@@ -194,7 +180,7 @@
             (set! (-> v1-24 attack-id) a0-23)
             (set! (-> a1-9 attack-id) a0-23)
             )
-          (set! (-> a1-9 timeout) (seconds 4))
+          (set! (-> a1-9 timeout) (seconds 0))
           (vector-normalize-copy! (-> a1-9 vel) arg2 819200.0)
           (spawn-projectile vehicle-grenade a1-9 arg0 *default-dead-pool*)
           )
