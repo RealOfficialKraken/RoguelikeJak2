@@ -29,17 +29,14 @@
 #| TODO:
 --------------------------------------------------------------------------------------------------
 
-- Krew fight is impossible due to the clones going lightning speeds
 - Make more purchaseable items to put in runs in the main menu
 - Can refresh shop for free, but curse will tick up by one
 - Make stage 4-4 a custom mission stage (nest area, but you have to eliminate 60 metalheads before your task proceeds. Disable cutscene trigger for opening nest)
 - Make ending for dark eco act
-- Make more rng elements in missions alone, like teleporting entities. This will be important to not cause burnout
 vv--optional--vv
+- Make more rng elements in missions alone, like teleporting entities. This will be important to not cause burnout
 - Make cursed bosses, alongside making vanilla bosses harder
 - Level 9 curse will shoot guard projectiles from all directions towards jak, at rng chance.
-- Put timer modifiers on certain missions that arent time based already. It'll say something like "dimensional destruction imminent, evacuate immediately"
-
 
 After most of these, the mod will be completed and I can get on with my life
 
@@ -335,6 +332,7 @@ ITEM IDEAS (7 items left, all cursed items)
   (set! traffic-metalheads? #f)
   (set! boss-cursed #f)
   (set! please-reward #f)
+  (set! roll-randomitem #f)
   (set! rngspeed (meters 5))
   (set! rngspeed2 (meters 5))
   (set! rngspeed3 (meters 5))
@@ -2249,7 +2247,9 @@ ITEM IDEAS (7 items left, all cursed items)
 (when (= reward-orbs #t) ;reward for completing floor with certain health range
   (when (= (-> *target* fact health) 8.0)
       (+! (-> *game-info* skill) (rand-vu-float-range 10.0 15.0))
-      (+! (-> *game-info* continue-deaths) 10000000)
+      (when (<= (/ (mod (-> *game-info* continue-deaths) 100000000) 10000000) 9)
+        (+! (-> *game-info* continue-deaths) 10000000)
+      )
     )
     (when (= (-> *target* fact health) 7.0)
       (+! (-> *game-info* skill) (rand-vu-float-range 7.0 15.0))
@@ -2273,6 +2273,85 @@ ITEM IDEAS (7 items left, all cursed items)
       (+! (-> *game-info* skill) (rand-vu-float-range 1.0 4.0))
     )
     (set! reward-orbs #f)
+)
+
+(when (= roll-randomitem #t) ;Get random item from board-drop
+  (let (
+    (random-int (rand-vu-int-range 1 (-> *game-info* total-trys)))
+    )
+    (when 
+    (and
+     (= random-int 1)
+     (!= (/ (mod (-> *game-info* task-deaths) 10) 1) 1)
+     )
+     (+! (-> *game-info* task-deaths) 1)
+     (set! roll-randomitem #f)
+    )
+    (when 
+    (and
+     (= random-int 2)
+     (!= (/ (mod (-> *game-info* task-deaths) 100) 10) 1)
+     )
+     (+! (-> *game-info* task-deaths) 10)
+     (set! roll-randomitem #f)
+    )
+    (when 
+    (and
+     (= random-int 3)
+     (!= (/ (mod (-> *game-info* task-deaths) 1000) 100) 1)
+     )
+     (+! (-> *game-info* task-deaths) 100)
+     (set! roll-randomitem #f)
+    )
+    (when 
+    (and
+     (= random-int 4)
+     (!= (/ (mod (-> *game-info* task-deaths) 10000) 1000) 1)
+     )
+     (+! (-> *game-info* task-deaths) 1000)
+     (set! roll-randomitem #f)
+    )
+    (when 
+    (and
+     (= random-int 5)
+     (!= (/ (mod (-> *game-info* task-deaths) 100000) 10000) 1)
+     )
+     (+! (-> *game-info* task-deaths) 10000)
+     (set! roll-randomitem #f)
+    )
+    (when 
+    (and
+     (= random-int 6)
+     (!= (/ (mod (-> *game-info* task-deaths) 1000000) 100000) 1)
+     )
+     (+! (-> *game-info* task-deaths) 100000)
+     (set! roll-randomitem #f)
+    )
+    (when 
+    (and
+     (= random-int 7)
+     (!= (/ (mod (-> *game-info* task-deaths) 10000000) 1000000) 1)
+     )
+     (+! (-> *game-info* task-deaths) 1000000)
+     (set! roll-randomitem #f)
+    )
+    (when 
+    (and
+     (= random-int 8)
+     (!= (/ (mod (-> *game-info* task-deaths) 100000000) 10000000) 1)
+     )
+     (+! (-> *game-info* task-deaths) 10000000)
+     (set! roll-randomitem #f)
+    )
+    (when 
+    (and
+     (= random-int 9)
+     (!= (/ (mod (-> *game-info* task-deaths) 100000000) 10000000) 1)
+     )
+     (+! (-> *game-info* task-deaths) 10000000)
+     (set! roll-randomitem #f)
+    )
+  )
 )
 
 (when 

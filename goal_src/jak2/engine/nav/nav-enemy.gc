@@ -1316,6 +1316,13 @@
                          (-> *FACT-bank* default-eco-pill-green-inc)
                          )
         )
+        (when (and (rand-vu-percent? (- luck 0.04)))
+    (set! (-> this fact pickup-type) (pickup-type skill))
+    (set! (-> this fact pickup-amount) 3.0)
+    (print "
+spawned-orb-entity
+")
+  )
   (let ((a1-9 (if (logtest? (enemy-option multi-focus) (-> this fact enemy-options))
                   1030
                   1026

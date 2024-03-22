@@ -128,6 +128,8 @@
 (define total-skill 10)
 (define msgi 0)
 
+(define roll-randomitem #f)
+
 (define please-reward #t)
 (define wait-kill #f)
 (define wait-killi 0)

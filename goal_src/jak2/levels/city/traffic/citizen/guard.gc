@@ -3798,7 +3798,7 @@
     (set! (-> this fact pickup-type) (pickup-type skill))
     (set! (-> this fact pickup-amount) 3.0)
     (print "
-spawned-orb-guard
+spawned-orb-entity
 ")
   )
   (when (and (= act-act 1) (= (-> *game-info* total-deaths) 1)(rand-vu-percent? (- luck 0.0899)))
