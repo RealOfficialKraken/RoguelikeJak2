@@ -5011,7 +5011,7 @@ Here are the shop IDs
     (format matt-str "<COLOR_WHITE>Vin:~%Listen, if we want to get out of here, we should think about getting certain items across dimensions.
     ~%If you happen to see a <COLOR_YELLOW>Yellow Eco Shard<COLOR_WHITE> that a <COLOR_RED>Krimzon Guard<COLOR_WHITE> has,
     ~%don't hesitate to go and grab it. My radar indicates it's located in Act 1.
-    ~%<COLOR_RED>Krimzon Guards<COLOR_YELLOW> can also drop orbs! High risk, high reward.
+    ~%<COLOR_YELLOW>Any enemy can drop orbs via chance, this could help with purchasing items!
     ~%
     ~%
     ~%
@@ -5041,8 +5041,8 @@ Here are the shop IDs
     (format matt-str "<COLOR_WHITE>Vin:~%Remember, we need an item in order to locate the dimension where all the dark eco is concentrated.
     ~%Right now, a <COLOR_YELLOW>Yellow Eco Shard<COLOR_WHITE> can be collected from a <COLOR_RED>Krimzon Guard<COLOR_WHITE>.
     ~%It's in Act 1, if you see it, please get it for me!
-    ~%
-    ~%
+    ~%<COLOR_YELLOW>Crates have a very low chance in dropping a random item for you. So, if you see
+    ~%a jetboard pop out of a crate, it's an item!
     ~%
     ~%
     ~%
@@ -5354,8 +5354,8 @@ Here are the shop IDs
     (clear matt-str)
     (clear *pc-encoded-matt-str*)
     (format matt-str "
-    <COLOR_WHITE>Vin:~%Jak! I've successfully triangulated the position of where this <COLOR_PINK>dark eco<COLOR_WHITE> is coming from!
-    ~%Thanks to you, we can finally travel there, you've just got to get past <COLOR_YELLOW>Act 3<COLOR_WHITE>.
+    <COLOR_WHITE>Vin:~%You did it! I've now triangulated the position of where this <COLOR_PINK>dark eco<COLOR_WHITE> is coming from!
+    ~%Thanks to you, we can finally travel there, you've just got to get past <COLOR_RED>Act 3<COLOR_WHITE>.
     ~%But be warned, as I'm sure you've noticed, the enemies have gotten stronger with how close you've
     ~%drawn near. The original dimension we were in is completely covered in MORE THAN vast amounts!
     ~%I-I mean, it's not just a quantifiable amount.. It's virtually infinite amounts of <COLOR_PINK>dark eco<COLOR_WHITE>!
