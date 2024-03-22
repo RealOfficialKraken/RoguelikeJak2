@@ -2289,6 +2289,7 @@ ITEM IDEAS (7 items left, all cursed items)
     (set! avoidc-wait 0)
     (set! level-completed? #t)
     (set! pause-menu-blocked? #f)
+    (set! please-reward #t)
   )
 )
 
@@ -5435,6 +5436,37 @@ Here are the shop IDs
         (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
 )
 
+(when (and (= in-hub? #f)(not *scene-player*)(> curse-level 0)(= wait-tutorial #f)(= ohshit #f))
+    (clear matt-str)
+      (clear *pc-encoded-matt-str*)
+      (format matt-str "<COLOR_PINK>Instability Level: <COLOR_RED>~d"
+      curse-level
+      )
+      (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+      (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+        ;; reset bucket settings prior to drawing - font won't do self for us, and
+        ;; draw-raw-image can sometimes mess them up. (intro sequence)
+        (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+        (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 250 10 0.0 (font-color default) (font-flags middle shadow kerning large))))
+          (set! (-> font-ctx scale) 0.325)
+          (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+  )
+  (when (and (= in-hub? #f)(not *scene-player*)(= in-intro? #t)(> curse-level 0)(= wait-tutorial #f)(= ohshit #f))
+    (clear matt-str)
+      (clear *pc-encoded-matt-str*)
+      (format matt-str "<COLOR_ORANGE>This stat makes your dimension spawn Unstable Enemies.~%While colored purple, they are faster, and harder to kill. Caps at level 9~%Only city peds and guards are exempt from this, but not bosses!"
+      
+      )
+      (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+      (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+        ;; reset bucket settings prior to drawing - font won't do self for us, and
+        ;; draw-raw-image can sometimes mess them up. (intro sequence)
+        (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+        (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 250 20 0.0 (font-color default) (font-flags middle shadow kerning large))))
+          (set! (-> font-ctx scale) 0.325)
+          (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+  )
+
 ;---------------------vvvTHIS IS TO DEBUG THE VARSvvv--------------------
 (when *debug-segment*
   (when (= in-game? #t)
@@ -5696,38 +5728,9 @@ Here are the shop IDs
 
 
 )
-
-(when (and (= in-hub? #f)(not *scene-player*)(> curse-level 0)(= wait-tutorial #f)(= ohshit #f))
-    (clear matt-str)
-      (clear *pc-encoded-matt-str*)
-      (format matt-str "<COLOR_PINK>Instability Level: <COLOR_RED>~d"
-      curse-level
-      )
-      (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
-      (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
-        ;; reset bucket settings prior to drawing - font won't do self for us, and
-        ;; draw-raw-image can sometimes mess them up. (intro sequence)
-        (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
-        (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 250 10 0.0 (font-color default) (font-flags middle shadow kerning large))))
-          (set! (-> font-ctx scale) 0.325)
-          (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
-  )
-  (when (and (= in-hub? #f)(not *scene-player*)(= in-intro? #t)(> curse-level 0)(= wait-tutorial #f)(= ohshit #f))
-    (clear matt-str)
-      (clear *pc-encoded-matt-str*)
-      (format matt-str "<COLOR_ORANGE>This stat makes your dimension spawn Unstable Enemies.~%While colored purple, they are faster, and harder to kill. Caps at level 9~%Only city peds and guards are exempt from this, but not bosses!"
-      
-      )
-      (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
-      (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
-        ;; reset bucket settings prior to drawing - font won't do self for us, and
-        ;; draw-raw-image can sometimes mess them up. (intro sequence)
-        (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
-        (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 250 20 0.0 (font-color default) (font-flags middle shadow kerning large))))
-          (set! (-> font-ctx scale) 0.325)
-          (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
-  )
 ;---------------------^^^THIS IS TO DEBUG THE VARS^^^--------------------
+
+
 
 
 ;<<<<<<<<<<<<<<<<<<<<<<<<<<<<self area is meant for fixes with specific missions<<<<<<<<<<<<<<<<<<<<<<<<<<<<<

@@ -1233,9 +1233,9 @@
     (set! (-> this hit-points) (+ (-> this enemy-info default-hit-points) 19.0))
   )
   (when (rand-vu-percent? curse)
-    (set-vector! (-> this draw color-mult) 1.0 0.2 0.7 1.0)
+    (set-vector! (-> this draw color-mult) 2.0 0.2 1.7 1.0)
     (set! (-> this hit-points) (* (-> this hit-points) 2))
-    (set! cursed? #t)
+    (set! (-> this nav target-speed) rngspeed3)
 
   )
   (let* ((v1-71 *game-info*)
