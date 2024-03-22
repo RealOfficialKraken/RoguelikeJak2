@@ -44,7 +44,7 @@ After most of these, the mod will be completed and I can get on with my life
 
 ITEM IDEAS (7 items left, all cursed items)
 
-- 4 Leaf Clover (ticks up luck stat by 2, chance to evade attack with i-frames)
+- 4 Leaf Clover (ticks up luck stat by 1, chance to evade attack with i-frames)
 - Big Bomb (On cooldown, proj impacts create 30 grenades at set vectors with 0 timer)
 - Big Punch (Jaks punches futher, and knocks back enemies tenfold)
 - Drinkable Green Eco (Heal 3 hp per stage)
@@ -2189,6 +2189,9 @@ ITEM IDEAS (7 items left, all cursed items)
     )
   (set! level-completed? #f)
   (set! act-stage (the int (-> *game-info* buzzer-total)))
+  (when (= blue-eco-spawned? #t)
+    (set! blue-eco-spawned? #f)
+  )
 )
 
 ;wait for the in-game to not get the infinite complete mission glitch

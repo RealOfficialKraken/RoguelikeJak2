@@ -1168,10 +1168,10 @@ This commonly includes things such as:
   (set! (-> this fact)
         (new 'process 'fact-info-crate this (pickup-type eco-pill-random) (-> *FACT-bank* default-eco-pill-green-inc))
         )
-          (when (and (= act-act 2)(= (-> *game-info* total-deaths) 2)(rand-vu-percent? (- luck 0.1)))
+          (when (and (= blue-eco-spawned? #f)(= act-act 2)(= (-> *game-info* total-deaths) 2)(rand-vu-percent? (/ luck 16)))
       (set! (-> this fact pickup-type) (pickup-type eco-blue))
       (set! (-> this fact pickup-amount) 1.0)
-      (set! color-floor #t)
+      (set! blue-eco-spawned? #t)
       (print "
       
 Eco Shard spawned in a crate nearby!

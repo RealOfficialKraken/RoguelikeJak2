@@ -130,6 +130,8 @@
 
 (define roll-randomitem #f)
 
+(define blue-eco-spawned? #f)
+
 (define please-reward #t)
 (define wait-kill #f)
 (define wait-killi 0)
