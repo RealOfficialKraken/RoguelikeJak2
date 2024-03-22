@@ -3520,19 +3520,19 @@ Here are the shop IDs
 )
 
 
-(when (and (cpad-pressed? 0 r3)(= in-menu2 #f)(= (-> (level-get-target-inside *level*) name) 'hiphog))
+(when (and (cpad-pressed? 0 r3)(= avoidc-waitb #f)(= in-menu2 #f)(= (-> (level-get-target-inside *level*) name) 'hiphog))
   (set! in-menu2wait #t)
 )
 
-(when (and (cpad-pressed? 0 r3)(= in-menu2 #t)(= (-> (level-get-target-inside *level*) name) 'hiphog))
+(when (and (cpad-pressed? 0 r3)(= avoidc-waitb #f)(= in-menu2 #t)(= (-> (level-get-target-inside *level*) name) 'hiphog))
   (set! in-menu2wait2 #t)
 )
 
-(when (and (= in-menu2 #f)(= (-> (level-get-target-inside *level*) name) 'hiphog))
+(when (and (= in-menu2 #f)(= avoidc-waitb #f)(= (-> (level-get-target-inside *level*) name) 'hiphog))
   (set! popup-shop #t)
 )
 
-(when (!= (-> (level-get-target-inside *level*) name) 'hiphog)
+(when (and (= avoidc-waitb #t)(!= (-> (level-get-target-inside *level*) name) 'hiphog))
   (set! popup-shop #f)
 )
 
@@ -4026,7 +4026,7 @@ Here are the shop IDs
 )
 (when (not *scene-player*)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(when (and (= popup-shop #t)(= (paused?) #f)(= in-menu2 #f)(not *scene-player*))
+(when (and (= popup-shop #t)(= avoidc-waitb #f)(= (paused?) #f)(= in-menu2 #f)(not *scene-player*))
   (clear matt-str)
     (clear *pc-encoded-matt-str*)
     (format matt-str "<COLOR_RED>R3<COLOR_WHITE>:<COLOR_GREEN> Access Shop"
@@ -4056,13 +4056,14 @@ Here are the shop IDs
 (and 
 (= teleport-hiphog #t)
 (!= (-> (level-get-target-inside *level*) name) 'hiphog)
+(= avoidc-waitb #f)
 (!= print-stage 4)
 )
   (set! teleport-hiphog #f)
   (set! teleport-back? #f)
 )
 
-(when (and (= teleport-hiphog #t)(= already-teleported? #f)(cpad-pressed? 0 r3))
+(when (and (= teleport-hiphog #t)(= avoidc-waitb #f)(= already-teleported? #f)(cpad-pressed? 0 r3))
   (send-event *target* 'continue (get-continue-by-name *game-info* "hiphog-start"))
   (set! already-teleported? #t)
   (set! teleport-hiphog #f)
