@@ -29,10 +29,9 @@
 #| TODO:
 --------------------------------------------------------------------------------------------------
 
+- Krew fight is impossible due to the clones going lightning speeds
 - Make more purchaseable items to put in runs in the main menu
 - Can refresh shop for free, but curse will tick up by one
-- Finish explosive shot
-- color-floor makes the level completely dark in retail-mode
 - Make stage 4-4 a custom mission stage (nest area, but you have to eliminate 60 metalheads before your task proceeds. Disable cutscene trigger for opening nest)
 - Make ending for dark eco act
 - Make more rng elements in missions alone, like teleporting entities. This will be important to not cause burnout
@@ -119,6 +118,8 @@ ITEM IDEAS (7 items left, all cursed items)
 (define waiting 0)
 (define wait-vintalk #f)
 (define wait-vini 0)
+(define wait-procws #f)
+(define wait-proci 0)
 
 (define display-death-screen #f)
 (define vin-spawned? #f)
@@ -1812,7 +1813,7 @@ ITEM IDEAS (7 items left, all cursed items)
           )
           (when (and (= level-pick 2)(and (!= act-before9 2)(!= act-before9 2)))
             (send-event *target* 'continue (get-continue-by-name *game-info* "ctyslumc-slums"))
-            (play-task (game-task city-protect-water-slums) 'debug #f)
+            (set! wait-procws #t)
             (set! act-before9 2)
             (set! act4-1 #f)
             (set! waitenter #t)
@@ -1863,7 +1864,7 @@ ITEM IDEAS (7 items left, all cursed items)
           )
           (when (and (= level-pick 2)(and (!= act-before9 2)(!= act-before10 2)))
             (send-event *target* 'continue (get-continue-by-name *game-info* "ctyslumc-slums"))
-            (play-task (game-task city-protect-water-slums) 'debug #f)
+            (set! wait-procws #t)
             (set! act-before10 2)
             (set! act4-2 #f)
             (set! waitenter #t)
@@ -1913,7 +1914,7 @@ ITEM IDEAS (7 items left, all cursed items)
           )
           (when (and (= level-pick 2)(and (!= act-before10 2)(!= act-before9 2)))
             (send-event *target* 'continue (get-continue-by-name *game-info* "ctyslumc-slums"))
-            (play-task (game-task city-protect-water-slums) 'debug #f)
+            (set! wait-procws #t)
             (set! act-before11 2)
             (set! act4-3 #f)
             (set! waitenter #t)
@@ -2960,7 +2961,6 @@ These numbers go down in order from the ids. The first 1 is to save all the 0's
 (and 
 (= act-act 4)
 (= (pause-allowed?) #t)
-(= in-game? #t)
 (= avoidc-waitb #f)
 *target*
 (not *scene-player*)
@@ -3072,6 +3072,15 @@ These numbers go down in order from the ids. The first 1 is to save all the 0's
     (set! waits-frame 0)
     (set! display-run #f)
     (set! in-hub? #t)
+  )
+)
+
+(when (= wait-procws #t)
+  (+! wait-proci 1)
+  (when (= wait-proci 300)
+    (play-task (game-task city-protect-water-slums) 'debug #f)
+    (set! wait-proci 0)
+    (set! wait-procws #f)
   )
 )
 
@@ -3351,15 +3360,15 @@ Here are the shop IDs
     (set! shopid3 6)
   )
   (when (= shoproll1 4)
-    (set! shopitem1 "Full HP (8 orbs)")
+    (set! shopitem1 "Full HP (4 orbs)")
     (set! shopid1 7)
   )
   (when (= shoproll2 4)
-    (set! shopitem2 "Full HP (8 orbs)")
+    (set! shopitem2 "Full HP (4 orbs)")
     (set! shopid2 7)
   )
   (when (= shoproll3 4)
-    (set! shopitem3 "Full HP (8 orbs)")
+    (set! shopitem3 "Full HP (4 orbs)")
     (set! shopid3 7)
   )
   (when (= shoproll1 8)
@@ -3698,7 +3707,7 @@ Here are the shop IDs
         (set! autosave-delayed #t)
       )
     )
-    (when (and (= menu-slot 0)(!= (-> *target* fact health) 8.0)(>= (-> *game-info* skill) 8.0)(= shopid1 7))
+    (when (and (= menu-slot 0)(!= (-> *target* fact health) 8.0)(>= (-> *game-info* skill) 4.0)(= shopid1 7))
       (-! (-> *game-info* skill) 8.0)
       (set! (-> *target* fact health) 8.0)
       (when (= teleport-back? #f)
@@ -3706,7 +3715,7 @@ Here are the shop IDs
       )
       (+! (-> *game-info* continue-deaths) 100000000)
     )
-    (when (and (= menu-slot 1)(!= (-> *target* fact health) 8.0)(>= (-> *game-info* skill) 8.0)(= shopid3 7))
+    (when (and (= menu-slot 1)(!= (-> *target* fact health) 8.0)(>= (-> *game-info* skill) 4.0)(= shopid3 7))
       (-! (-> *game-info* skill) 8.0)
       (set! (-> *target* fact health) 8.0)
       (when (= teleport-back? #f)
@@ -3714,7 +3723,7 @@ Here are the shop IDs
       )
       (+! (-> *game-info* continue-deaths) 100000000)
     )
-    (when (and (= menu-slot 2)(!= (-> *target* fact health) 8.0)(>= (-> *game-info* skill) 8.0)(= shopid2 7))
+    (when (and (= menu-slot 2)(!= (-> *target* fact health) 8.0)(>= (-> *game-info* skill) 4.0)(= shopid2 7))
       (-! (-> *game-info* skill) 8.0)
       (set! (-> *target* fact health) 8.0)
       (when (= teleport-back? #f)
@@ -3933,7 +3942,7 @@ Here are the shop IDs
   (set! p-explode-shot #f)
   (set! item-refresh #f)
 )
-
+(when (not *scene-player*)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (when (and (= popup-shop #t)(= (paused?) #f)(= in-menu2 #f)(not *scene-player*))
   (clear matt-str)
@@ -4123,7 +4132,7 @@ Here are the shop IDs
         (set! (-> font-ctx scale) 0.325)
         (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
 )
-
+)
 ;menu params
 (when (and (= in-menu #t)(= (paused?) #f)(= (-> *game-info* karma) 1.0)(not (cpad-pressed? 0 x)))
   (clear matt-str)
@@ -4280,7 +4289,7 @@ Here are the shop IDs
 
 
 |#
-
+(when (not *scene-player*)
 (when (and 
 (= in-menu2 #t)
 (= p-yellow-gun #f)
@@ -4427,7 +4436,7 @@ Here are the shop IDs
 )
 (clear matt-str)
     (clear *pc-encoded-matt-str*)
-    (format matt-str "<COLOR_PINK>Refills your HP to maximum"
+    (format matt-str "<COLOR_PINK>Refills your HP to maximum,~%but makes the dimension unstable"
     )
     (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
     (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
@@ -4535,7 +4544,7 @@ Here are the shop IDs
         (set! (-> font-ctx scale) 0.325)
         (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
 )
-
+)
 #| shop
 (when (and (= in-menu #t)(cpad-hold? 0 r1))
 
