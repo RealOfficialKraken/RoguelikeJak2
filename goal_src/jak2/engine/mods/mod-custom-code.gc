@@ -30,13 +30,14 @@
 --------------------------------------------------------------------------------------------------
 
 - Make more purchaseable items to put in runs in the main menu
-- Can refresh shop for free, but curse will tick up by one
+- Make it so the load screen sets master mode to 'game if (= in-game? #t), to prevent loading a saved run to replay mission.
 - Make stage 4-4 a custom mission stage (nest area, but you have to eliminate 60 metalheads before your task proceeds. Disable cutscene trigger for opening nest)
 - Make ending for dark eco act
 vv--optional--vv
 - Make more rng elements in missions alone, like teleporting entities. This will be important to not cause burnout
 - Make cursed bosses, alongside making vanilla bosses harder
 - Level 9 curse will shoot guard projectiles from all directions towards jak, at rng chance.
+- Maybe after you beat the game, you unlock consite to enter into as the (black market) area, buying cursed items only.
 
 After most of these, the mod will be completed and I can get on with my life
 
@@ -45,9 +46,9 @@ After most of these, the mod will be completed and I can get on with my life
 ITEM IDEAS (7 items left, all cursed items)
 
 - 4 Leaf Clover (ticks up luck stat by 1, chance to evade attack with i-frames)
-- Big Bomb (On cooldown, proj impacts create 30 grenades at set vectors with 0 timer)
+- Big Bomb (On chance (luck stat), proj impacts create 30 grenades at set vectors with 0 timer)
 - Big Punch (Jaks punches futher, and knocks back enemies tenfold)
-- Drinkable Green Eco (Heal 3 hp per stage)
+- Peacemaker Crits (chance off luck stat to spawn a peacemaker shot at impact vector)
 - Bounce Shot
 - Yellow Sage Shot (Fires yellow shots rain down-forward from above jak)
 - Red Sage Shot (works as a barrier, in front of jak a bunch of red shots come out in one direction.)
@@ -4378,6 +4379,58 @@ Here are the shop IDs
 
 
 |#
+(when (and 
+(= popup-load #t)
+(not *scene-player*)
+(= (paused?) #f)
+(= (pause-allowed?) #t)
+)
+  (+! wait-l 1)
+  (when (= wait-l 600)
+    (set! wait-l 0)
+    (set! popup-load #f)
+  )
+
+(clear matt-str)
+    (clear *pc-encoded-matt-str*)
+    (format matt-str "<COLOR_WHITE>INFO:~%<COLOR_ORANGE>You cannot <COLOR_YELLOW>load<COLOR_ORANGE> a save while in a run!"
+    )
+    (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+    (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+      ;; reset bucket settings prior to drawing - font won't do self for us, and
+      ;; draw-raw-image can sometimes mess them up. (intro sequence)
+      (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+      (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 255 330 0.0 (font-color default) (font-flags middle shadow kerning large))))
+        (set! (-> font-ctx scale) 0.325)
+        (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+)
+
+(when (and 
+(= popup-load2 #t)
+(not *scene-player*)
+(= (paused?) #f)
+(= (pause-allowed?) #t)
+)
+  (+! wait-l2 1)
+  (when (= wait-l2 600)
+    (set! wait-l2 0)
+    (set! popup-load2 #f)
+  )
+
+(clear matt-str)
+    (clear *pc-encoded-matt-str*)
+    (format matt-str "<COLOR_WHITE>INFO:~%<COLOR_ORANGE>Please restart the game, then load the save from the main menu."
+    )
+    (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+    (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+      ;; reset bucket settings prior to drawing - font won't do self for us, and
+      ;; draw-raw-image can sometimes mess them up. (intro sequence)
+      (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+      (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 255 330 0.0 (font-color default) (font-flags middle shadow kerning large))))
+        (set! (-> font-ctx scale) 0.325)
+        (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+)
+
 (when (not *scene-player*)
 (when (and 
 (= in-menu2 #t)

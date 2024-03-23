@@ -2246,9 +2246,22 @@
          (set! (-> *progress-state* which-slot) (-> arg0 option-index))
          (cond
            ((= (-> arg0 current) 'select-load)
-            (when (= (-> *progress-save-info* file (-> arg0 option-index) present) 1)
+            (when 
+            (and 
+            (= (-> *progress-save-info* file (-> arg0 option-index) present) 1)
+            (= in-game? #f)
+            (= in-hub? #f)            
+            )
               (set! s5-0 #t)
               (set-next-state arg0 'loading 0)
+              )
+              (when (= in-game? #t)
+                (set-master-mode 'game)
+                (set! popup-load #t)
+              )
+              (when (= in-hub? #t)
+                (set-master-mode 'game)
+                (set! popup-load2 #t)
               )
             )
            ((= (-> *progress-save-info* file (-> *progress-state* which-slot) present) 1)

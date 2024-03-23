@@ -23,6 +23,10 @@
 
 (define avoidc-waitb #f);this is to avoid glitches when completing missions while still in vehicles or turrets
 (define avoidc-wait 0) ;this is to avoid glitches when completing missions while still in vehicles or turrets
+(define popup-load #f)
+(define wait-l 0)
+(define popup-load2 #f)
+(define wait-l2 0)
 
 (define act-stage 0)
 (define act-task 0)
