@@ -4223,21 +4223,24 @@ Here are the shop IDs
 (when (and (= in-menu #t)(= (paused?) #f)(= (-> *game-info* karma) 1.0)(not (cpad-pressed? 0 x)))
   (clear matt-str)
     (clear *pc-encoded-matt-str*)
-    (format matt-str "<COLOR_WHITE>Welcome to<COLOR_RED> Roguelike Jak II<COLOR_WHITE>
+    (format matt-str "<COLOR_WHITE>Welcome to<COLOR_RED> Roguelike <COLOR_ORANGE>Jak II<COLOR_WHITE>
 ~%<COLOR_BLUE>Made by Kraken
 ~%
 ~%<COLOR_WHITE>When you <COLOR_GREEN>start your run<COLOR_WHITE>,
 ~%you will be transported to the dimensions where Jak
 ~%no longer exists, and you must take his place
 ~%by completing missions, and fulfilling the prophecy.
-~% 
+~%
 ~%Jak dying means <COLOR_RED>Perma-Death<COLOR_WHITE>!
 ~%Orbs will be rewarded for playing well. But if you die, you lose everything!
 ~%Talk to Vin to look at his shop here. You can save up <COLOR_PINK>Tokens<COLOR_WHITE> to purchase items
-~%to put into your run! <COLOR_PINK>Tokens<COLOR_WHITE> are obtained from collecting skull gems.
-~%And finally, the only weapon Jak has is the red gun. The rest is purchasable in the HipHog shop.
-~%You can exit the level to <COLOR_GREEN>start your run<COLOR_WHITE>.
+~%to put into your run. <COLOR_PINK>Tokens<COLOR_WHITE> are obtained from collecting skull gems.
 ~%
+~%Everything is <COLOR_GREEN>a roll of the dice.
+~%<COLOR_WHITE>Things like city guard counts, enemy speed, and so many more, are completely random!
+~%And finally, Jak always starts off every run with the Red Gun.
+~%Every other weapon, buff, or upgrade can be purchased or found.
+~%You can exit the level to <COLOR_GREEN>start your run<COLOR_WHITE>.
 ~%
 ~%<COLOR_BLUE>X<COLOR_GREEN> Continue"
     )
@@ -4246,7 +4249,7 @@ Here are the shop IDs
       ;; reset bucket settings prior to drawing - font won't do self for us, and
       ;; draw-raw-image can sometimes mess them up. (intro sequence)
       (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
-      (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 250 55 0.0 (font-color default) (font-flags middle shadow kerning large))))
+      (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 250 15 0.0 (font-color default) (font-flags middle shadow kerning large))))
         (set! (-> font-ctx scale) 0.325)
         (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
 )
@@ -6014,13 +6017,7 @@ Here are the shop IDs
     )
 )
 
-(when 
-(and 
-(not (logtest? (-> *game-info* features) (game-feature gun gun-red)))
-(= intro-sec 4)
-)
-  (logior! (-> *game-info* features) (game-feature gun gun-red))
-)
+
 
 (when (and (cpad-pressed? 0 x)(= intro-sec 4)(= in-dialogue? #t)(= in-intro? #t)) ;teleports you to shop 1st time
   (set! intro-sec 5)
@@ -6071,7 +6068,13 @@ Here are the shop IDs
   )
 )
 
-
+(when 
+(and 
+(= intro-sec 4)
+(not (logtest? (-> *game-info* features) (game-feature gun-red)))
+)
+      (logior! (-> *game-info* features) (game-feature gun-red))
+    )
 #|
 
     (set! traffic-metalheads? #t) ;turns on traffic lwideb'

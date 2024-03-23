@@ -1869,7 +1869,7 @@
             :borrow '((ctywide 0 lpackage display) (hiphog 0 lguard special))
             :open? #f
             :on-close #f
-            :add (game-task-node-command add-gun-red)
+            :add (game-task-node-command none)
             :description (text-id progress-missions-city-krew-delivery)
             )
           (new 'static 'game-task-node-info
