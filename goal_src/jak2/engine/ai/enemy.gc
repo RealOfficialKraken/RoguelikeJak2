@@ -1138,6 +1138,17 @@
 spawned-orb-entity
 ")
   )
+  (when 
+  (and 
+  (rand-vu-percent? (- luck 0.086))
+  (!= (-> *target* fact health) 8.0)
+  )
+    (set! (-> this fact pickup-type) (pickup-type health))
+    (set! (-> this fact pickup-amount) 2.0)
+    (print "
+spawned-health-entity
+")
+  )
   (let ((a1-5 (if (logtest? (enemy-option multi-focus) (-> this fact enemy-options))
                   #x400406
                   #x400402
