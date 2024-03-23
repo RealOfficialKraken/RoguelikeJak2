@@ -30,7 +30,6 @@
 --------------------------------------------------------------------------------------------------
 
 - Make more purchaseable items to put in runs in the main menu
-- Make it so the load screen sets master mode to 'game if (= in-game? #t), to prevent loading a saved run to replay mission.
 - Make stage 4-4 a custom mission stage (nest area, but you have to eliminate 60 metalheads before your task proceeds. Disable cutscene trigger for opening nest)
 - Make ending for dark eco act
 vv--optional--vv

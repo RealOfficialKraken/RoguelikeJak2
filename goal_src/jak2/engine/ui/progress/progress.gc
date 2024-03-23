@@ -2249,13 +2249,13 @@
             (when 
             (and 
             (= (-> *progress-save-info* file (-> arg0 option-index) present) 1)
-            (= in-game? #f)
+            (= run-in-progress #f)
             (= in-hub? #f)            
             )
               (set! s5-0 #t)
               (set-next-state arg0 'loading 0)
               )
-              (when (= in-game? #t)
+              (when (= run-in-progress #t)
                 (set-master-mode 'game)
                 (set! popup-load #t)
               )
