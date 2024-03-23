@@ -2325,7 +2325,7 @@ Process is recycled and moved to reserved, if it deactivates."
 (define *alert-level-settings* (new 'static 'inline-array traffic-alert-state-settings 5
                                  (new 'static 'traffic-alert-state-settings
                                    :ped-tazer (new 'static 'traffic-guard-type-settings
-                                     :target-count 5
+                                     :target-count 40
                                      :inaccuracy 0.5
                                      :acquire-delay (seconds 1)
                                      :shot-delay (seconds 0.25)
@@ -2333,6 +2333,7 @@ Process is recycled and moved to reserved, if it deactivates."
                                      :shot-count 1
                                      )
                                    :ped-rifle (new 'static 'traffic-guard-type-settings
+                                     :target-count 40
                                      :inaccuracy 0.5
                                      :acquire-delay (seconds 1)
                                      :shot-delay (seconds 0.25)
@@ -2375,7 +2376,7 @@ Process is recycled and moved to reserved, if it deactivates."
                                    )
                                  (new 'static 'traffic-alert-state-settings
                                    :ped-tazer (new 'static 'traffic-guard-type-settings
-                                     :target-count 5
+                                     :target-count 40
                                      :inaccuracy 0.5
                                      :acquire-delay (seconds 1)
                                      :shot-delay (seconds 0.25)
@@ -2383,6 +2384,7 @@ Process is recycled and moved to reserved, if it deactivates."
                                      :shot-count 1
                                      )
                                    :ped-rifle (new 'static 'traffic-guard-type-settings
+                                     :target-count 40
                                      :inaccuracy 0.5
                                      :acquire-delay (seconds 1)
                                      :shot-delay (seconds 0.25)
@@ -2423,7 +2425,7 @@ Process is recycled and moved to reserved, if it deactivates."
                                    )
                                  (new 'static 'traffic-alert-state-settings
                                    :ped-tazer (new 'static 'traffic-guard-type-settings
-                                     :target-count 3
+                                     :target-count 12
                                      :inaccuracy 0.5
                                      :acquire-delay (seconds 1)
                                      :shot-delay (seconds 0.25)
@@ -2431,7 +2433,7 @@ Process is recycled and moved to reserved, if it deactivates."
                                      :shot-count 1
                                      )
                                    :ped-rifle (new 'static 'traffic-guard-type-settings
-                                     :target-count 4
+                                     :target-count 40
                                      :inaccuracy 0.5
                                      :acquire-delay (seconds 1)
                                      :shot-delay (seconds 0.25)
@@ -2473,7 +2475,7 @@ Process is recycled and moved to reserved, if it deactivates."
                                    )
                                  (new 'static 'traffic-alert-state-settings
                                    :ped-tazer (new 'static 'traffic-guard-type-settings
-                                     :target-count 2
+                                     :target-count 6
                                      :inaccuracy 0.5
                                      :acquire-delay (seconds 1)
                                      :shot-delay (seconds 0.25)
@@ -2481,7 +2483,7 @@ Process is recycled and moved to reserved, if it deactivates."
                                      :shot-count 1
                                      )
                                    :ped-rifle (new 'static 'traffic-guard-type-settings
-                                     :target-count 7
+                                     :target-count 40
                                      :inaccuracy 0.25
                                      :acquire-delay (seconds 1)
                                      :shot-delay (seconds 0.25)
@@ -2524,7 +2526,7 @@ Process is recycled and moved to reserved, if it deactivates."
                                    )
                                  (new 'static 'traffic-alert-state-settings
                                    :ped-tazer (new 'static 'traffic-guard-type-settings
-                                     :target-count 2
+                                     :target-count 0
                                      :inaccuracy 0.125
                                      :acquire-delay (seconds 0.5)
                                      :shot-delay (seconds 0.25)
@@ -2532,7 +2534,7 @@ Process is recycled and moved to reserved, if it deactivates."
                                      :shot-count 1
                                      )
                                    :ped-rifle (new 'static 'traffic-guard-type-settings
-                                     :target-count 7
+                                     :target-count 40
                                      :inaccuracy 0.125
                                      :acquire-delay (seconds 0.5)
                                      :shot-delay (seconds 0.15)

@@ -3532,7 +3532,7 @@ Here are the shop IDs
   (set! popup-shop #t)
 )
 
-(when (and (= avoidc-waitb #t)(!= (-> (level-get-target-inside *level*) name) 'hiphog))
+(when (or (= avoidc-waitb #t)(!= (-> (level-get-target-inside *level*) name) 'hiphog))
   (set! popup-shop #f)
 )
 
@@ -4026,7 +4026,7 @@ Here are the shop IDs
 )
 (when (not *scene-player*)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(when (and (= popup-shop #t)(= avoidc-waitb #f)(= (paused?) #f)(= in-menu2 #f)(not *scene-player*))
+(when (and (= popup-shop #t)(= (paused?) #f)(= in-menu2 #f)(not *scene-player*))
   (clear matt-str)
     (clear *pc-encoded-matt-str*)
     (format matt-str "<COLOR_RED>R3<COLOR_WHITE>:<COLOR_GREEN> Access Shop"
