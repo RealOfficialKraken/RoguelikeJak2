@@ -2352,6 +2352,15 @@ ITEM IDEAS (7 items left, all cursed items)
      (+! (-> *game-info* task-deaths) 10000000)
      (set! roll-randomitem #f)
     )
+    (when 
+    (and 
+    (>= (-> *game-info* karma) 3.0)
+    (= roll-randomitem #f)
+    (!= (/ (mod (-> *game-info* task-deaths) 1000000000) 100000000) 1)
+    (rand-vu-percent? luck)
+    )
+      (+! (-> *game-info* task-deaths) 100000000)
+    )
   )
 )
 
