@@ -120,6 +120,12 @@
 (define item-ts10 "")
 (define item-ts11 "")
 (define item-ts12 "")
+(define item-ts13 "")
+(define item-ts14 "")
+(define item-ts15 "")
+(define item-ts16 "")
+(define item-ts17 "")
+(define item-ts18 "")
 (define item-tss1 "")
 
 (define in-hub? #f)

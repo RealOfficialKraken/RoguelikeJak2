@@ -2336,8 +2336,8 @@ Process is recycled and moved to reserved, if it deactivates."
                                      :target-count 40
                                      :inaccuracy 0.5
                                      :acquire-delay (seconds 1)
-                                     :shot-delay (seconds 0.25)
-                                     :burst-delay (seconds 2)
+                                     :shot-delay (seconds 0.4)
+                                     :burst-delay (seconds 4)
                                      :shot-count 2
                                      :rand-shot-count 1
                                      )
@@ -2387,8 +2387,8 @@ Process is recycled and moved to reserved, if it deactivates."
                                      :target-count 40
                                      :inaccuracy 0.5
                                      :acquire-delay (seconds 1)
-                                     :shot-delay (seconds 0.25)
-                                     :burst-delay (seconds 2)
+                                     :shot-delay (seconds 0.4)
+                                     :burst-delay (seconds 4)
                                      :shot-count 2
                                      :rand-shot-count 1
                                      )
@@ -2436,8 +2436,8 @@ Process is recycled and moved to reserved, if it deactivates."
                                      :target-count 40
                                      :inaccuracy 0.5
                                      :acquire-delay (seconds 1)
-                                     :shot-delay (seconds 0.25)
-                                     :burst-delay (seconds 2)
+                                     :shot-delay (seconds 0.4)
+                                     :burst-delay (seconds 4)
                                      :shot-count 2
                                      :rand-shot-count 1
                                      )
@@ -2445,7 +2445,7 @@ Process is recycled and moved to reserved, if it deactivates."
                                      :inaccuracy 0.5
                                      :acquire-delay (seconds 1)
                                      :shot-delay (seconds 0.25)
-                                     :burst-delay (seconds 2)
+                                     :burst-delay (seconds 4)
                                      :shot-count 1
                                      )
                                    :ped-roboguard (new 'static 'traffic-guard-type-settings
@@ -2484,9 +2484,9 @@ Process is recycled and moved to reserved, if it deactivates."
                                      )
                                    :ped-rifle (new 'static 'traffic-guard-type-settings
                                      :target-count 40
-                                     :inaccuracy 0.25
+                                     :inaccuracy 0.5
                                      :acquire-delay (seconds 1)
-                                     :shot-delay (seconds 0.25)
+                                     :shot-delay (seconds 0.4)
                                      :burst-delay (seconds 2)
                                      :shot-count 2
                                      :rand-shot-count 1
@@ -2507,16 +2507,16 @@ Process is recycled and moved to reserved, if it deactivates."
                                      )
                                    :bike-turret (new 'static 'traffic-guard-type-settings
                                      :target-count 3
-                                     :inaccuracy 0.25
+                                     :inaccuracy 0.5
                                      :acquire-delay (seconds 0.75)
-                                     :shot-delay (seconds 0.25)
+                                     :shot-delay (seconds 0.4)
                                      :burst-delay (seconds 4)
                                      :shot-count 2
                                      :rand-shot-count 1
                                      )
                                    :hellcat-turret (new 'static 'traffic-guard-type-settings
                                      :target-count 2
-                                     :inaccuracy 0.25
+                                     :inaccuracy 0.5
                                      :acquire-delay (seconds 0.75)
                                      :shot-delay (seconds 0.25)
                                      :burst-delay (seconds 4)
@@ -2527,7 +2527,7 @@ Process is recycled and moved to reserved, if it deactivates."
                                  (new 'static 'traffic-alert-state-settings
                                    :ped-tazer (new 'static 'traffic-guard-type-settings
                                      :target-count 0
-                                     :inaccuracy 0.125
+                                     :inaccuracy 0.45
                                      :acquire-delay (seconds 0.5)
                                      :shot-delay (seconds 0.25)
                                      :burst-delay (seconds 2)
@@ -2535,15 +2535,15 @@ Process is recycled and moved to reserved, if it deactivates."
                                      )
                                    :ped-rifle (new 'static 'traffic-guard-type-settings
                                      :target-count 40
-                                     :inaccuracy 0.125
+                                     :inaccuracy 0.5
                                      :acquire-delay (seconds 0.5)
                                      :shot-delay (seconds 0.15)
-                                     :burst-delay (seconds 2)
+                                     :burst-delay (seconds 4)
                                      :shot-count 2
                                      :rand-shot-count 2
                                      )
                                    :ped-grenade (new 'static 'traffic-guard-type-settings
-                                     :inaccuracy 0.125
+                                     :inaccuracy 0.5
                                      :acquire-delay (seconds 1)
                                      :shot-delay (seconds 0.25)
                                      :burst-delay (seconds 3)
@@ -2558,7 +2558,7 @@ Process is recycled and moved to reserved, if it deactivates."
                                      )
                                    :bike-turret (new 'static 'traffic-guard-type-settings
                                      :target-count 3
-                                     :inaccuracy 0.125
+                                     :inaccuracy 0.5
                                      :acquire-delay (seconds 0.5)
                                      :shot-delay (seconds 0.25)
                                      :burst-delay (seconds 3)
@@ -2567,7 +2567,7 @@ Process is recycled and moved to reserved, if it deactivates."
                                      )
                                    :hellcat-turret (new 'static 'traffic-guard-type-settings
                                      :target-count 2
-                                     :inaccuracy 0.125
+                                     :inaccuracy 0.5
                                      :acquire-delay (seconds 0.5)
                                      :shot-delay (seconds 0.25)
                                      :burst-delay (seconds 3)

@@ -347,21 +347,29 @@ ITEM IDEAS (7 items left, all cursed items)
   )
   (when (= (-> *game-info* total-trys) 5)
     (set! menu-value 60.0)
-    (set! mod-s "Upgrade Ammo")
+    (set! mod-s "Upgrade Ammo (x2)")
   )
   (when (= (-> *game-info* total-trys) 6)
     (set! menu-value 120.0)
-    (set! mod-s "Upgrade Damage")
+    (set! mod-s "Upgrade Damage (x2)")
   )
   (when (= (-> *game-info* total-trys) 7)
     (set! menu-value 150.0)
     (set! mod-s "Upgraded Vehicles and Speed")
   )
   (when (= (-> *game-info* total-trys) 8)
-    (set! menu-value 250.0)
+    (set! menu-value 200.0)
     (set! mod-s "Double Shot")
   )
   (when (= (-> *game-info* total-trys) 9)
+    (set! menu-value 300.0)
+    (set! mod-s "Four-Leaf Clover")
+  )
+  (when (= (-> *game-info* total-trys) 10)
+    (set! menu-value 350.0)
+    (set! mod-s "+2HP Every Level")
+  )
+  (when (= (-> *game-info* total-trys) 11)
     (set! menu-value 999999.0)
     (set! mod-s "(More coming soon!)")
   )
@@ -369,10 +377,22 @@ ITEM IDEAS (7 items left, all cursed items)
 
 (when (and (>= (-> *game-info* fuel) menu-value)(= vin-shop #t)(cpad-pressed? 0 r1))
   (-! (-> *game-info* fuel) menu-value)
-  (when (= (-> *game-info* total-trys) 8)
-    (set! (-> *game-info* total-trys) 9)
+  (when (= (-> *game-info* total-trys) 10)
+    (set! (-> *game-info* total-trys) 11)
     (set! menu-value 999999.0)
     (set! mod-s "(More coming soon)")
+    (set! autosave-delayed #t)
+  )
+  (when (= (-> *game-info* total-trys) 9)
+    (set! (-> *game-info* total-trys) 10)
+    (set! menu-value 350.0)
+    (set! mod-s "+2HP Every Level")
+    (set! autosave-delayed #t)
+  )
+  (when (= (-> *game-info* total-trys) 8)
+    (set! (-> *game-info* total-trys) 9)
+    (set! menu-value 300.0)
+    (set! mod-s "Four-Leaf Clover")
     (set! autosave-delayed #t)
   )
   (when (= (-> *game-info* total-trys) 7)
@@ -396,7 +416,7 @@ ITEM IDEAS (7 items left, all cursed items)
   (when (= (-> *game-info* total-trys) 4)
     (set! (-> *game-info* total-trys) 5)
     (set! menu-value 60.0)
-    (set! mod-s "Upgrade Ammo")
+    (set! mod-s "Upgrade Ammo (x2)")
     (set! autosave-delayed #t)
   )
 )
@@ -2680,6 +2700,194 @@ These numbers go down in order from the ids. The first 1 is to save all the 0's
   )
   (when 
   (and 
+  (= p-clover #f)
+  (= item-update #f)
+  (= (/ (mod (-> *game-info* continue-deaths) 10) 1) 1)
+  )
+    (set! p-clover #t)
+    (set! item-tss1 "Four-Leaf Clover")
+    (set! item-update #t)
+  )
+  (when 
+  (and 
+  (= p-drinkable #f)
+  (= item-update #f)
+  (= (/ (mod (-> *game-info* continue-deaths) 100) 10) 1)
+  )
+    (set! p-drinkable #t)
+    (set! item-tss1 "+2HP Every Level")
+    (set! item-update #t)
+  )
+  (when 
+  (and 
+  (= p-big-punch #f)
+  (= item-update #f)
+  (= (/ (mod (-> *game-info* continue-deaths) 1000) 100) 1)
+  )
+    (set! p-big-punch #t)
+    (set! item-tss1 "Big Punch")
+    (set! item-update #t)
+  )
+  (when 
+  (and 
+  (= p-sage-yellow #f)
+  (= item-update #f)
+  (= (/ (mod (-> *game-info* continue-deaths) 10000) 1000) 1)
+  )
+    (set! p-sage-yellow #t)
+    (set! item-tss1 "Yellow Sage's Blessing")
+    (set! item-update #t)
+  )
+  (when 
+  (and 
+  (= p-sage-blue #f)
+  (= item-update #f)
+  (= (/ (mod (-> *game-info* continue-deaths) 100000) 10000) 1)
+  )
+    (set! p-sage-blue #t)
+    (set! item-tss1 "Blue Sage's Blessing")
+    (set! item-update #t)
+  )
+  (when 
+  (and 
+  (= p-sage-red #f)
+  (= item-update #f)
+  (= (/ (mod (-> *game-info* continue-deaths) 1000000) 100000) 1)
+  )
+    (set! p-sage-red #t)
+    (set! item-tss1 "Red Sage's Blessing")
+    (set! item-update #t)
+  )
+  (when 
+  (and 
+  (= p-sage-dark #f)
+  (= item-update #f)
+  (= (/ (mod (-> *game-info* continue-deaths) 10000000) 1000000) 1)
+  )
+    (set! p-sage-dark #t)
+    (set! item-tss1 "Gol's Unbeknowngst")
+    (set! item-update #t)
+  )
+  
+(when 
+  (and 
+  (= p-yellow-gun #t)
+  (!= (/ (mod (-> *game-info* task-deaths) 10) 1) 1)
+  )
+    (set! p-yellow-gun #f)
+  )
+  (when 
+  (and 
+  (= p-blue-gun #t)
+  (!= (/ (mod (-> *game-info* task-deaths) 100) 10) 1)
+  )
+    (set! p-blue-gun #f)
+  )
+  (when 
+  (and 
+  (= p-dark-gun #t)
+  (!= (/ (mod (-> *game-info* task-deaths) 1000) 100) 1)
+  )
+    (set! p-dark-gun #f)
+  )
+  (when 
+  (and 
+  (= p-upgrade-red #t)
+  (!= (/ (mod (-> *game-info* task-deaths) 10000) 1000) 1)
+  )
+    (set! p-upgrade-red #f)
+  )
+      (when 
+  (and 
+  (= p-upgrade-ammo #t)
+  (!= (/ (mod (-> *game-info* task-deaths) 100000) 10000) 1)
+  )
+    (set! p-upgrade-ammo #f)
+  )
+
+      (when 
+  (and 
+  (= p-upgrade-damage #t)
+  (!= (/ (mod (-> *game-info* task-deaths) 1000000) 100000) 1)
+  )
+    (set! p-upgrade-damage #f)
+  )
+  (when 
+  (and 
+  (= p-upgrade-vehicles #t)
+  (!= (/ (mod (-> *game-info* task-deaths) 10000000) 1000000) 1)
+  )
+    (set! p-upgrade-vehicles #f)
+  )
+  (when 
+  (and 
+  (= p-double-shot #t)
+  (!= (/ (mod (-> *game-info* task-deaths) 100000000) 10000000) 1)
+  )
+    (set! p-double-shot #f)
+  )
+  (when 
+  (and 
+  (= p-explode-shot #t)
+  (!= (/ (mod (-> *game-info* task-deaths) 1000000000) 100000000) 1)
+  )
+    (set! p-explode-shot #f)
+  )
+
+(when 
+  (and 
+  (= p-clover #t)
+  (!= (/ (mod (-> *game-info* continue-deaths) 10) 1) 1)
+  )
+    (set! p-clover #f)
+  )
+
+  (when 
+  (and 
+  (= p-drinkable #t)
+  (!= (/ (mod (-> *game-info* continue-deaths) 100) 10) 1)
+  )
+    (set! p-drinkable #f)
+  )
+  (when 
+  (and 
+  (= p-big-punch #t)
+  (!= (/ (mod (-> *game-info* continue-deaths) 1000) 100) 1)
+  )
+    (set! p-big-punch #f)
+  )
+    (when 
+  (and 
+  (= p-sage-yellow #t)
+  (!= (/ (mod (-> *game-info* continue-deaths) 10000) 1000) 1)
+  )
+    (set! p-sage-yellow #f)
+  )
+  (when 
+  (and 
+  (= p-sage-blue #t)
+  (!= (/ (mod (-> *game-info* continue-deaths) 100000) 10000) 1)
+  )
+    (set! p-sage-blue #f)
+  )
+  (when 
+  (and 
+  (= p-sage-red #t)
+  (!= (/ (mod (-> *game-info* continue-deaths) 1000000) 100000) 1)
+  )
+    (set! p-sage-red #f)
+  )
+  (when 
+  (and 
+  (= p-sage-dark #t)
+  (!= (/ (mod (-> *game-info* continue-deaths) 10000000) 1000000) 1)
+  )
+    (set! p-sage-dark #f)
+  )
+
+
+  (when 
+  (and 
   (!= curse 0.0)
   (= (/ (mod (-> *game-info* continue-deaths) 1000000000) 100000000) 0)
   )
@@ -2829,122 +3037,6 @@ These numbers go down in order from the ids. The first 1 is to save all the 0's
     (set! luck 0.6)
   )
 
-  (when 
-  (and 
-  (= p-clover #f)
-  (= (/ (mod (-> *game-info* continue-deaths) 10) 1) 1)
-  )
-    (set! p-clover #t)
-  )
-
-  (when 
-  (and 
-  (= p-drinkable #f)
-  (= (/ (mod (-> *game-info* continue-deaths) 100) 10) 1)
-  )
-    (set! p-drinkable #t)
-  )
-  (when 
-  (and 
-  (= p-big-punch #f)
-  (= (/ (mod (-> *game-info* continue-deaths) 1000) 100) 1)
-  )
-    (set! p-big-punch #t)
-  )
-    (when 
-  (and 
-  (= p-sage-yellow #f)
-  (= (/ (mod (-> *game-info* continue-deaths) 10000) 1000) 1)
-  )
-    (set! p-sage-yellow #t)
-  )
-  (when 
-  (and 
-  (= p-sage-blue #f)
-  (= (/ (mod (-> *game-info* continue-deaths) 100000) 10000) 1)
-  )
-    (set! p-sage-blue #t)
-  )
-  (when 
-  (and 
-  (= p-sage-red #f)
-  (= (/ (mod (-> *game-info* continue-deaths) 1000000) 100000) 1)
-  )
-    (set! p-sage-red #t)
-  )
-  (when 
-  (and 
-  (= p-sage-dark #f)
-  (= (/ (mod (-> *game-info* continue-deaths) 10000000) 1000000) 1)
-  )
-    (set! p-sage-dark #t)
-  )
-
-  
-(when 
-  (and 
-  (= p-yellow-gun #t)
-  (!= (/ (mod (-> *game-info* task-deaths) 10) 1) 1)
-  )
-    (set! p-yellow-gun #f)
-  )
-  (when 
-  (and 
-  (= p-blue-gun #t)
-  (!= (/ (mod (-> *game-info* task-deaths) 100) 10) 1)
-  )
-    (set! p-blue-gun #f)
-  )
-  (when 
-  (and 
-  (= p-dark-gun #t)
-  (!= (/ (mod (-> *game-info* task-deaths) 1000) 100) 1)
-  )
-    (set! p-dark-gun #f)
-  )
-  (when 
-  (and 
-  (= p-upgrade-red #t)
-  (!= (/ (mod (-> *game-info* task-deaths) 10000) 1000) 1)
-  )
-    (set! p-upgrade-red #f)
-  )
-      (when 
-  (and 
-  (= p-upgrade-ammo #t)
-  (!= (/ (mod (-> *game-info* task-deaths) 100000) 10000) 1)
-  )
-    (set! p-upgrade-ammo #f)
-  )
-
-      (when 
-  (and 
-  (= p-upgrade-damage #t)
-  (!= (/ (mod (-> *game-info* task-deaths) 1000000) 100000) 1)
-  )
-    (set! p-upgrade-damage #f)
-  )
-  (when 
-  (and 
-  (= p-upgrade-vehicles #t)
-  (!= (/ (mod (-> *game-info* task-deaths) 10000000) 1000000) 1)
-  )
-    (set! p-upgrade-vehicles #f)
-  )
-  (when 
-  (and 
-  (= p-double-shot #t)
-  (!= (/ (mod (-> *game-info* task-deaths) 100000000) 10000000) 1)
-  )
-    (set! p-double-shot #f)
-  )
-  (when 
-  (and 
-  (= p-explode-shot #t)
-  (!= (/ (mod (-> *game-info* task-deaths) 1000000000) 100000000) 1)
-  )
-    (set! p-explode-shot #f)
-  )
 
 
 (when 
@@ -3356,8 +3448,9 @@ Here are the shop IDs
 7 Full HP (7 orbs)
 8 Buffed Vehicles
 9 Double Shot
+10 Four-Leaf Clover
 99 Red Eco Shard
-
+999 Explosive Shot
 
 |#
 
@@ -3484,17 +3577,41 @@ Here are the shop IDs
     (set! shopitem3 "Double Shot (25 orbs)")
     (set! shopid3 9)
   )
+  (when (= shoproll1 10)
+    (set! shopitem1 "Four-Leaf Clover (40 orbs)")
+    (set! shopid1 10)
+  )
+  (when (= shoproll2 10)
+    (set! shopitem2 "Four-Leaf Clover (40 orbs)")
+    (set! shopid2 10)
+  )
+  (when (= shoproll3 10)
+    (set! shopitem3 "Four-Leaf Clover (40 orbs)")
+    (set! shopid3 10)
+  )
+  (when (= shoproll1 11)
+    (set! shopitem1 "+2HP Every Level (25 orbs)")
+    (set! shopid1 11)
+  )
+  (when (= shoproll2 11)
+    (set! shopitem2 "+2HP Every Level (25 orbs)")
+    (set! shopid2 11)
+  )
+  (when (= shoproll3 11)
+    (set! shopitem3 "+2HP Every Level (25 orbs)")
+    (set! shopid3 11)
+  )
   (when (and (rand-vu-percent? 0.1) (>= (-> *game-info* karma) 3.0))
     (set! shopitem1 "Explosive Yellow Shot (35 orbs)")
-    (set! shopid1 10)
+    (set! shopid1 999)
   )
   (when (and (rand-vu-percent? 0.1) (>= (-> *game-info* karma) 3.0))
     (set! shopitem2 "Explosive Yellow Shot (35 orbs)")
-    (set! shopid2 10)
+    (set! shopid2 999)
   )
   (when (and (rand-vu-percent? 0.1) (>= (-> *game-info* karma) 3.0))
     (set! shopitem3 "Explosive Yellow Shot (35 orbs)")
-    (set! shopid3 10)
+    (set! shopid3 999)
   )
   (when 
   (and 
@@ -3892,42 +4009,114 @@ Here are the shop IDs
       )
       (+! (-> *game-info* continue-deaths) 100000000)
     )
-    (when (and (= menu-slot 0)(= p-explode-shot #f)(>= (-> *game-info* skill) 35.0)(= shopid1 10))
+    (when (and (= menu-slot 0)(= p-explode-shot #f)(>= (-> *game-info* skill) 35.0)(= shopid1 999))
       (-! (-> *game-info* skill) 35.0)
       (set! shopitem1 "(Out of Stock)")
       (set! item-tss1 "Explosive Yellow Shot")
       (set! item-update #t)
       (set! p-explode-shot #t)
-      (set! (-> *game-info* task-deaths) (+ (-> *game-info* continue-deaths) 1))
+      (set! (-> *game-info* task-deaths) (+ (-> *game-info* task-deaths) 100000000))
       (when (= already-teleported? #f)
         (set! autosave-delayed #t)
       )
       (+! (-> *game-info* continue-deaths) 100000000)
     )
-    (when (and (= menu-slot 1)(= p-explode-shot #f)(>= (-> *game-info* skill) 35.0)(= shopid3 10))
+    (when (and (= menu-slot 1)(= p-explode-shot #f)(>= (-> *game-info* skill) 35.0)(= shopid3 999))
       (-! (-> *game-info* skill) 35.0)
       (set! shopitem3 "(Out of Stock)")
       (set! item-tss1 "Explosive Yellow Shot")
       (set! p-explode-shot #t)
       (set! item-update #t)
-      (set! (-> *game-info* task-deaths) (+ (-> *game-info* continue-deaths) 1))
+      (set! (-> *game-info* task-deaths) (+ (-> *game-info* task-deaths) 100000000))
       (when (= already-teleported? #f)
         (set! autosave-delayed #t)
       )
       (+! (-> *game-info* continue-deaths) 100000000)
     )
-    (when (and (= menu-slot 2)(= p-explode-shot #f)(>= (-> *game-info* skill) 35.0)(= shopid2 10))
+    (when (and (= menu-slot 2)(= p-explode-shot #f)(>= (-> *game-info* skill) 35.0)(= shopid2 999))
       (-! (-> *game-info* skill) 35.0)
       (set! shopitem2 "(Out of Stock)")
       (set! item-tss1 "Explosive Yellow Shot")
       (set! p-explode-shot #t)
       (set! item-update #t)
-      (set! (-> *game-info* task-deaths) (+ (-> *game-info* continue-deaths) 1))
+      (set! (-> *game-info* task-deaths) (+ (-> *game-info* task-deaths) 100000000))
       (when (= already-teleported? #f)
         (set! autosave-delayed #t)
       )
       (+! (-> *game-info* continue-deaths) 100000000)
     )
+    (when (and (= menu-slot 0)(= p-clover #f)(>= (-> *game-info* skill) 40.0)(= shopid1 10))
+      (-! (-> *game-info* skill) 40.0)
+      (set! shopitem1 "(Out of Stock)")
+      (set! item-tss1 "Four-Leaf Clover")
+      (set! p-clover #t)
+      (set! item-update #t)
+      (set! (-> *game-info* continue-deaths) (+ (-> *game-info* continue-deaths) 1))
+      (when (= already-teleported? #f)
+        (set! autosave-delayed #t)
+      )
+      (+! (-> *game-info* continue-deaths) 100000000)
+    )
+    (when (and (= menu-slot 1)(= p-clover #f)(>= (-> *game-info* skill) 40.0)(= shopid3 10))
+      (-! (-> *game-info* skill) 40.0)
+      (set! shopitem3 "(Out of Stock)")
+      (set! item-tss1 "Four-Leaf Clover")
+      (set! p-clover #t)
+      (set! item-update #t)
+      (set! (-> *game-info* continue-deaths) (+ (-> *game-info* continue-deaths) 1))
+      (when (= already-teleported? #f)
+        (set! autosave-delayed #t)
+      )
+      (+! (-> *game-info* continue-deaths) 100000000)
+    )
+    (when (and (= menu-slot 2)(= p-drinkable #f)(>= (-> *game-info* skill) 25.0)(= shopid2 11))
+      (-! (-> *game-info* skill) 25.0)
+      (set! shopitem2 "(Out of Stock)")
+      (set! item-tss1 "+2HP Every Level")
+      (set! p-drinkable #t)
+      (set! item-update #t)
+      (set! (-> *game-info* continue-deaths) (+ (-> *game-info* continue-deaths) 10))
+      (when (= already-teleported? #f)
+        (set! autosave-delayed #t)
+      )
+      (+! (-> *game-info* continue-deaths) 100000000)
+    )
+    (when (and (= menu-slot 0)(= p-drinkable #f)(>= (-> *game-info* skill) 25.0)(= shopid1 11))
+      (-! (-> *game-info* skill) 25.0)
+      (set! shopitem1 "(Out of Stock)")
+      (set! item-tss1 "+2HP Every Level")
+      (set! p-drinkable #t)
+      (set! item-update #t)
+      (set! (-> *game-info* continue-deaths) (+ (-> *game-info* continue-deaths) 10))
+      (when (= already-teleported? #f)
+        (set! autosave-delayed #t)
+      )
+      (+! (-> *game-info* continue-deaths) 100000000)
+    )
+    (when (and (= menu-slot 1)(= p-drinkable #f)(>= (-> *game-info* skill) 25.0)(= shopid3 11))
+      (-! (-> *game-info* skill) 25.0)
+      (set! shopitem3 "(Out of Stock)")
+      (set! item-tss1 "+2HP Every Level")
+      (set! p-drinkable #t)
+      (set! item-update #t)
+      (set! (-> *game-info* continue-deaths) (+ (-> *game-info* continue-deaths) 10))
+      (when (= already-teleported? #f)
+        (set! autosave-delayed #t)
+      )
+      (+! (-> *game-info* continue-deaths) 100000000)
+    )
+    (when (and (= menu-slot 2)(= p-clover #f)(>= (-> *game-info* skill) 40.0)(= shopid2 10))
+      (-! (-> *game-info* skill) 40.0)
+      (set! shopitem2 "(Out of Stock)")
+      (set! item-tss1 "Four-Leaf Clover")
+      (set! p-clover #t)
+      (set! item-update #t)
+      (set! (-> *game-info* continue-deaths) (+ (-> *game-info* continue-deaths) 1))
+      (when (= already-teleported? #f)
+        (set! autosave-delayed #t)
+      )
+      (+! (-> *game-info* continue-deaths) 100000000)
+    ) 
     (when (and (= menu-slot 0)(= (-> *game-info* total-deaths) 3)(>= (-> *game-info* skill) 100.0)(= shopid1 99))
       (-! (-> *game-info* skill) 100.0)
       (set! shopitem1 "(Out of Stock)")
@@ -4005,6 +4194,24 @@ Here are the shop IDs
   (when (= item-tracker 12)
     (set! item-ts12 item-tss1)
   )
+  (when (= item-tracker 13)
+    (set! item-ts13 item-tss1)
+  )
+  (when (= item-tracker 14)
+    (set! item-ts14 item-tss1)
+  )
+  (when (= item-tracker 15)
+    (set! item-ts15 item-tss1)
+  )
+  (when (= item-tracker 16)
+    (set! item-ts16 item-tss1)
+  )
+  (when (= item-tracker 17)
+    (set! item-ts17 item-tss1)
+  )
+  (when (= item-tracker 18)
+    (set! item-ts18 item-tss1)
+  )
   (set! item-update #f)
 )
 
@@ -4021,6 +4228,12 @@ Here are the shop IDs
   (set! item-ts10 "")
   (set! item-ts11 "")
   (set! item-ts12 "")
+  (set! item-ts13 "")
+  (set! item-ts14 "")
+  (set! item-ts15 "")
+  (set! item-ts16 "")
+  (set! item-ts17 "")
+  (set! item-ts18 "")
   (set! item-tss1 "")
   (set! item-tracker 0)
   (set! p-dark-gun #f)
@@ -4032,6 +4245,13 @@ Here are the shop IDs
   (set! p-upgrade-vehicles #f)
   (set! p-double-shot #f)
   (set! p-explode-shot #f)
+  (set! p-clover #f)
+  (set! p-drinkable #f)
+  (set! p-big-punch #f)
+  (set! p-sage-yellow #f)
+  (set! p-sage-blue #f)
+  (set! p-sage-red #f)
+  (set! p-sage-dark #f)
   (set! item-refresh #f)
 )
 (when (not *scene-player*)
@@ -4643,6 +4863,52 @@ Here are the shop IDs
 (= in-menu2 #t)
 (= p-explode-shot #f)
 (or
+(and (= shopid1 999) (= menu-slot 0))
+(and (= shopid2 999) (= menu-slot 2))
+(and (= shopid3 999) (= menu-slot 1))
+)
+)
+(clear matt-str)
+    (clear *pc-encoded-matt-str*)
+    (format matt-str "<COLOR_PINK>Every projectile spawns a grenade on impact"
+    )
+    (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+    (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+      ;; reset bucket settings prior to drawing - font won't do self for us, and
+      ;; draw-raw-image can sometimes mess them up. (intro sequence)
+      (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+      (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 250 245 0.0 (font-color default) (font-flags middle shadow kerning large))))
+        (set! (-> font-ctx scale) 0.325)
+        (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+)
+
+(when (and 
+(= in-menu2 #t)
+(= p-drinkable #f)
+(or
+(and (= shopid1 11) (= menu-slot 0))
+(and (= shopid2 11) (= menu-slot 2))
+(and (= shopid3 11) (= menu-slot 1))
+)
+)
+(clear matt-str)
+    (clear *pc-encoded-matt-str*)
+    (format matt-str "<COLOR_PINK>Every time you complete a mission,~%you get 2 free HP"
+    )
+    (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+    (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+      ;; reset bucket settings prior to drawing - font won't do self for us, and
+      ;; draw-raw-image can sometimes mess them up. (intro sequence)
+      (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+      (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 250 245 0.0 (font-color default) (font-flags middle shadow kerning large))))
+        (set! (-> font-ctx scale) 0.325)
+        (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+)
+
+(when (and 
+(= in-menu2 #t)
+(= p-clover #f)
+(or
 (and (= shopid1 10) (= menu-slot 0))
 (and (= shopid2 10) (= menu-slot 2))
 (and (= shopid3 10) (= menu-slot 1))
@@ -4650,7 +4916,7 @@ Here are the shop IDs
 )
 (clear matt-str)
     (clear *pc-encoded-matt-str*)
-    (format matt-str "<COLOR_PINK>Every projectile spawns a grenade on impact"
+    (format matt-str "<COLOR_PINK>Raises Luck stat~%Chance to evade damage based on Luck"
     )
     (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
     (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
@@ -5582,6 +5848,64 @@ Here are the shop IDs
     item-ts10
     item-ts11
     item-ts12
+    )
+    (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+    (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+      ;; reset bucket settings prior to drawing - font won't do self for us, and
+      ;; draw-raw-image can sometimes mess them up. (intro sequence)
+      (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+      (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 510 285 0.0 (font-color default) (font-flags right shadow kerning large))))
+        (set! (-> font-ctx scale) 0.325)
+        (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+)
+
+(when 
+(and 
+(= (paused?) #f)
+(= (pause-allowed?) #t)
+(not *scene-player*)
+(= in-menu #f) 
+(= item-display? #t)
+(= in-hub? #f)
+)
+  (clear matt-str)
+    (clear *pc-encoded-matt-str*)
+    (format matt-str "<COLOR_GREEN>~%~S~%~S~%~S~%~S~%~S~%~S"
+    item-ts13
+    item-ts14
+    item-ts15
+    item-ts16
+    item-ts17
+    item-ts18
+    )
+    (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+    (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+      ;; reset bucket settings prior to drawing - font won't do self for us, and
+      ;; draw-raw-image can sometimes mess them up. (intro sequence)
+      (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+      (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 510 285 0.0 (font-color default) (font-flags right shadow kerning large))))
+        (set! (-> font-ctx scale) 0.325)
+        (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+)
+
+(when 
+(and 
+(= (paused?) #f)
+(= (pause-allowed?) #t)
+(not *scene-player*)
+(= in-menu #t) 
+(= post-item-display? #t)
+(= in-hub? #t)
+)
+  (clear matt-str)
+    (clear *pc-encoded-matt-str*)
+    (format matt-str "<COLOR_GREEN>~%~S~%~S~%~S~%~S~%~S~%~S"
+    item-ts13
+    item-ts14
+    item-ts15
+    item-ts16
+    item-ts17
+    item-ts18
     )
     (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
     (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
