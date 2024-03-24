@@ -18,6 +18,7 @@
 (define cursed? #f)
 (define boss-cursed #f)
 (define color-floor #f)
+(define run-in-progress #f)
 
 (define start-stage #f)
 

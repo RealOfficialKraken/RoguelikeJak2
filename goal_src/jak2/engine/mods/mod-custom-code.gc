@@ -128,8 +128,6 @@ ITEM IDEAS (7 items left, all cursed items)
 (define curse-save 100000000)
 (define curse-level 0)
 
-(define run-in-progress #f)
-
 (define give-gunred? #f)
 
 (define item-refresh #f)
