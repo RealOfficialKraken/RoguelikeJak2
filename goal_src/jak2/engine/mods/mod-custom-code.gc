@@ -6,22 +6,6 @@
     ;; dgos: TODO
 
 
-    ;;;;;;;;;;;;;;;;;;;;;;;;;;
-    ;; What is self file for.
-    ;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-    #| self file contains function defenitions that are pre placed in the mod base,
-    so if you place custom code inside of these functions, it will exectue based on
-    the name of the function, for example, if you place (set! (-> *game-info* fuel) (+ (-> *game-info* fuel) 1))
-    to the function named runs-on-orb-pickup, then jaks powercell count will increase each time you collect
-    an orb |#
-
-
-
-
-
-
-
 
 
 
@@ -30,8 +14,13 @@
 --------------------------------------------------------------------------------------------------
 
 - Make more purchaseable items to put in runs in the main menu
-- Make stage 4-4 a custom mission stage (nest area, but you have to eliminate 60 metalheads before your task proceeds. Disable cutscene trigger for opening nest)
 - Make ending for dark eco act
+- RNG the chances of cursed item for weapon mod crate drop, based on its rarity
+- Create challenges for certain levels, with an extra reward
+- Stats should be viewed with R3 during run. It should display things like your current stage&act, luck, curse, crit, enemy speed, and enemy resistance
+- Create crit, a way for Jak's mechanical abilities to improve damage on chance (based off luck). It's damage can be boosted with items or by doing damage with punches or twirls
+- Give a way to talk to Vin again lol
+
 vv--optional--vv
 - Make more rng elements in missions alone, like teleporting entities. This will be important to not cause burnout
 - Make cursed bosses, alongside making vanilla bosses harder
@@ -43,8 +32,8 @@ After most of these, the mod will be completed and I can get on with my life
 --------------------------------------------------------------------------------------------------
 
 ITEM IDEAS (7 items left, all cursed items)
+Run items should be centered around 3 core aspects: Luck, Damage, and Mechanical advantages. All of which you should become strong with just one of the three.
 
-- 4 Leaf Clover (ticks up luck stat by 1, chance to evade attack with i-frames)
 - Big Bomb (On chance (luck stat), proj impacts create 30 grenades at set vectors with 0 timer)
 - Big Punch (Jaks punches futher, and knocks back enemies tenfold)
 - Peacemaker Crits (chance off luck stat to spawn a peacemaker shot at impact vector)
@@ -52,6 +41,8 @@ ITEM IDEAS (7 items left, all cursed items)
 - Yellow Sage Shot (Fires yellow shots rain down-forward from above jak)
 - Red Sage Shot (works as a barrier, in front of jak a bunch of red shots come out in one direction.)
 - Blue Sage Shot (Bunch of blue shot facing upwards shoot from underneath jak)
+- Red Dot Sight (crit level up +2)
+- God Punch (All punches give Jak a nice set of I-Frames, maybe red eco particles)
 
 --------------------------------------------------------------------------------------------------
 
@@ -331,6 +322,9 @@ ITEM IDEAS (7 items left, all cursed items)
   (set! boss-cursed #f)
   (set! please-reward #f)
   (set! roll-randomitem #f)
+  (set! tp-bf #f)
+  (set! nest-mission #f)
+  (set! nest-enemyc 55)
   (set! rngspeed (meters 5))
   (set! rngspeed2 (meters 5))
   (set! rngspeed3 (meters 5))
@@ -1989,7 +1983,7 @@ ITEM IDEAS (7 items left, all cursed items)
         )
           (when (= level-pick 1)
             (send-event *target* 'continue (get-continue-by-name *game-info* "nestb-boss-pit"))
-            (play-task (game-task nest-boss) 'debug #f)
+            (play-task (game-task nest-get-to-gun) 'debug #f)
           )
         
         (set! print-stage 5)
@@ -2023,6 +2017,7 @@ ITEM IDEAS (7 items left, all cursed items)
 (when (= level-completed? #t)
   (+! act-stage 1)
   (+! (-> *game-info* buzzer-total) 1.0)
+  (set! re-wait #t)
   (set! temp-skullgemamount (-> *game-info* gem))
   (set! temp-health (-> *target* fact health))
   (set! temp-orbs (-> *game-info* skill))
@@ -2227,7 +2222,12 @@ ITEM IDEAS (7 items left, all cursed items)
       (send-event *target* 'get-pickup (pickup-type ammo-blue) 1000.0)
       (send-event *target* 'get-pickup (pickup-type ammo-dark) 1000.0)
     )
-    (when 
+  )
+)
+
+(when (= re-wait #t)
+  (+! re-i 1)
+  (when 
     (and
     (= please-reward #t) 
     (!= act-stage 1)
@@ -2239,11 +2239,15 @@ ITEM IDEAS (7 items left, all cursed items)
     (!= act-stage 18)
     (!= act-stage 19)
     (!= act-stage 20)
+    (= re-i 500)
     )
       (set! reward-orbs #t)
       (set! please-reward #f)
     )
-  )
+    (when (= re-i 501)
+      (set! re-i 0)
+      (set! re-wait #f)
+    )
 )
 
 (when (and (= in-game? #f)(= wait-extra-for-ingame #t)) ;wait the extra time for in-game? without rewarding orbs.
@@ -5348,6 +5352,49 @@ Here are the shop IDs
     (set! msgi 0)
   )
 )
+
+
+(when 
+(and 
+(task-node-closed? (game-task-node nest-get-to-gun-introduction))
+(not (task-node-closed? (game-task-node nest-get-to-gun-resolution)))
+)
+  (clear matt-str)
+    (clear *pc-encoded-matt-str*)
+    (format matt-str "<COLOR_WHITE>Enemies Left:~%<COLOR_PINK>~D"
+    nest-enemyc
+    )
+    (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+    (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+      ;; reset bucket settings prior to drawing - font won't do self for us, and
+      ;; draw-raw-image can sometimes mess them up. (intro sequence)
+      (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+      (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 0 245 0.0 (font-color default) (font-flags shadow kerning large))))
+        (set! (-> font-ctx scale) 0.325)
+        (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+)
+
+(when 
+(and 
+(<= nest-enemyc 0)
+(not (task-node-closed? (game-task-node nest-get-to-gun-resolution)))
+)
+  (task-node-close! (game-task-node nest-get-to-gun-resolution))
+  (set! nest-mission #f)
+  (set! tp-bf #t)
+)
+
+(when (and (= tp-bfw #t)(not *scene-player*))
+  (+! tp-bfwi 1)
+  (when (= tp-bfwi 30)
+    (send-event *target* 'continue (get-continue-by-name *game-info* "nest-gun"))
+    (set! nest-enemyc 55)
+    (play-task (game-task nest-get-to-gun) 'debug #f)
+    (set! tp-bfwi 0)
+    (set! tp-bfw #f)
+  )
+)
+
 
 (when (and (= (-> *game-info* total-deaths) 1)(= vin-shop #t))
     (when (= vin-talk 1)

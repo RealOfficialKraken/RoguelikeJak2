@@ -58,6 +58,12 @@
 (define log-sec 0)
 (define log-id 0)
 
+(define nest-enemyc 55)
+(define nest-mission #f)
+(define tp-bf #f)
+(define tp-bfw #f)
+(define tp-bfwi 0)
+
 
 (define roll-shopitems #f)
 (define max-equipment 3)
@@ -144,6 +150,8 @@
 (define blue-eco-spawned? #f)
 
 (define please-reward #t)
+(define re-wait #f)
+(define re-i 0)
 (define wait-kill #f)
 (define wait-killi 0)
 (define luck 0.0)

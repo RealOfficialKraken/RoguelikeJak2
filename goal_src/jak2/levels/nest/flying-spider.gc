@@ -498,6 +498,7 @@
   :event enemy-event-handler
   :enter (behavior ()
     (dying self)
+    (-! nest-enemyc 1)
     (set-time! (-> self state-time))
     (set! (-> self hit-points) 0)
     (enemy-method-103 self)

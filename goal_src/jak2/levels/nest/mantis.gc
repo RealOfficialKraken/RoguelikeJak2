@@ -1219,6 +1219,7 @@
      (send-event arg0 'get-attack-count 1)
      (cond
        ((zero? (-> this hit-points))
+       (-! nest-enemyc 1)
         (let ((s5-1 (-> this incoming knocked-type)))
           (cond
             ((and (= s5-1 (knocked-type knocked-type-4))
