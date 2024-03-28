@@ -18,10 +18,11 @@
 - RNG the chances of cursed item for weapon mod crate drop, based on its rarity
 - Create challenges for certain levels, with an extra reward
 - Stats should be viewed with R3 during run. It should display things like your current stage&act, luck, curse, crit, enemy speed, and enemy resistance
-- Create crit, a way for Jak's mechanical abilities to improve damage on chance (based off luck). It's damage can be boosted with items or by doing damage with punches or twirls
 - Give a way to talk to Vin again lol
-
+- Make a way to access shop from not just HipHog
+- Create intro msg for accessing dark act for the first time, selecting 1 of 3 equal boons to carry to the end.
 vv--optional--vv
+- Create crit, a way for Jak's mechanical abilities to improve damage on chance (based off luck). It's damage can be boosted with items or by doing damage with punches or twirls
 - Make more rng elements in missions alone, like teleporting entities. This will be important to not cause burnout
 - Make cursed bosses, alongside making vanilla bosses harder
 - Level 9 curse will shoot guard projectiles from all directions towards jak, at rng chance.
@@ -1971,7 +1972,7 @@ Run items should be centered around 3 core aspects: Luck, Damage, and Mechanical
         )
           (when (= level-pick 1)
             (send-event *target* 'continue (get-continue-by-name *game-info* "nest-gun"))
-            (play-task (game-task nest-enter) 'debug #f)
+            (play-task (game-task nest-get-to-gun) 'debug #f)
           )
         )
         (set! print-stage 4)
