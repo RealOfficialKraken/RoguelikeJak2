@@ -466,6 +466,13 @@ Run items should be centered around 3 core aspects: Luck, Damage, and Mechanical
   )
 )
 
+(when 
+(and
+(= run-in-progress #t)
+(= (-> *setting-control* user-default play-hints) #t)
+)
+(set! (-> *setting-control* user-default play-hints) #f)
+)
 
 (when ;when the easter egg happens from HM+
 (and 
@@ -6264,7 +6271,7 @@ Here are the shop IDs
   (when (and (= in-hub? #t))
     (clear matt-str)
       (clear *pc-encoded-matt-str*)
-      (format matt-str "<COLOR_GREEN>total-trys (Item amount in shop) = <COLOR_ORANGE>~D/9"
+      (format matt-str "<COLOR_GREEN>total-trys (Item amount in shop) = <COLOR_ORANGE>~D/11"
       (-> *game-info* total-trys)
       )
       (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
