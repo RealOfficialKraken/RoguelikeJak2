@@ -4365,7 +4365,7 @@ Here are the shop IDs
   (set! teleport-back? #f)
 )
 
-(when (and (= teleport-hiphog #t)(= avoidc-waitb #f)(= already-teleported? #f)(cpad-pressed? 0 r3))
+(when (and (= teleport-hiphog #t)(= avoidc-waitb #f)(= already-teleported? #f)(= (paused?) #f)(cpad-pressed? 0 r3))
   (send-event *target* 'continue (get-continue-by-name *game-info* "hiphog-start"))
   (set! already-teleported? #t)
   (set! teleport-hiphog #f)
@@ -4408,7 +4408,7 @@ Here are the shop IDs
   (+! (-> *game-info* total-deaths) 1)
 )|#
 
-(when (and (= teleport-hiphog #t)(= teleport-back? #f)(= already-teleported? #f))
+(when (and (= teleport-hiphog #t)(= (paused?) #f)(= teleport-back? #f)(= already-teleported? #f))
   (clear matt-str)
     (clear *pc-encoded-matt-str*)
     (format matt-str "<COLOR_RED>R3<COLOR_WHITE>:<COLOR_GREEN> Teleport to <COLOR_PINK>HipHog Shop!"
