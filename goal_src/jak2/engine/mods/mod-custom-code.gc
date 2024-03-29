@@ -17,7 +17,6 @@
 - Make ending for dark eco act
 - RNG the chances of cursed item for weapon mod crate drop, based on its rarity
 - Create challenges for certain levels, with an extra reward
-- Stats should be viewed with R3 during run. It should display things like your current stage&act, luck, curse, crit, enemy speed, and enemy resistance
 - Give a way to talk to Vin again lol
 - Make a way to access shop from not just HipHog
 - Create intro msg for accessing dark act for the first time, selecting 1 of 3 equal boons to carry to the end.
@@ -328,6 +327,8 @@ Run items should be centered around 3 core aspects: Luck, Damage, and Mechanical
   (set! tp-bf #f)
   (set! nest-mission #f)
   (set! nest-enemyc 55)
+  (set! stat-menu #f)
+  (set! stat-menu-intro #f)
   (set! rngspeed (meters 5))
   (set! rngspeed2 (meters 5))
   (set! rngspeed3 (meters 5))
@@ -2181,6 +2182,9 @@ Run items should be centered around 3 core aspects: Luck, Damage, and Mechanical
       (set! act4-1 #t)
       (set! level-completed? #f)
       (set! (-> *time-of-day-context* overide-enable) #f)
+      (when (= (-> *game-info* karma) 2.0)
+        (set! (-> *game-info* karma) 3.0)
+      )
     )
     (when (and (< (-> *game-info* total-deaths) 4)(= (-> *game-info* buzzer-total) 16.0)(= level-completed? #t))
       (set! (-> *target* fact health) 0.0)
@@ -5475,7 +5479,7 @@ Here are the shop IDs
 (= avoidc-waitb #f)
 (= run-in-progress #t)
 (= (-> *game-info* karma) 3.0)
-(cpad-pressed? 0 triangle)
+(not (cpad-hold? 0 l2))
 (= in-hub? #f)
 (= in-menu2 #f)
 (= stat-menu-intro #t)
@@ -5483,7 +5487,6 @@ Here are the shop IDs
   (set! stat-menu-intro #f)
   (set! (-> *game-info* karma) 4.0)
   (set! stat-menu #f)
-  (set! camera-unlocked #t)
   (set! pause-menu-blocked? #f)
 )
 
@@ -5493,14 +5496,13 @@ Here are the shop IDs
 (= avoidc-waitb #f)
 (= run-in-progress #t)
 (= (-> *game-info* karma) 3.0)
-(cpad-pressed? 0 r3)
+(cpad-pressed? 0 l2)
 (= in-hub? #f)
 (= in-menu2 #f)
 (= stat-menu-intro #f)
 )
   (set! stat-menu-intro #t)
   (set! stat-menu #t)
-  (set! camera-locked #t)
   (set! pause-menu-blocked? #t)
 )
 
@@ -5510,11 +5512,11 @@ Here are the shop IDs
 (= avoidc-waitb #f)
 (= run-in-progress #t)
 (= (-> *game-info* karma) 4.0)
-(cpad-pressed? 0 triangle)
+(not (cpad-hold? 0 l2))
+(= in-hub? #f)
 (= stat-menu #t)
 )
   (set! stat-menu #f)
-  (set! camera-unlocked #t)
   (set! pause-menu-blocked? #f)
 )
 
@@ -5524,14 +5526,38 @@ Here are the shop IDs
 (= avoidc-waitb #f)
 (= run-in-progress #t)
 (= (-> *game-info* karma) 4.0)
-(cpad-pressed? 0 r3)
+(= in-hub? #f)
+(cpad-pressed? 0 l2)
 (= stat-menu #f)
+(= in-menu2 #f)
+(= in-dialogue? #f)
 )
   (set! stat-menu #t)
-  (set! camera-locked #t)
   (set! pause-menu-blocked? #t)
 )
 
+(when 
+(and 
+(= run-in-progress #t)
+(= (-> *game-info* karma) 3.0)
+(= stat-menu #f)
+(= in-hub? #f)
+(= in-menu2 #f)
+(= in-dialogue? #f)
+)
+(clear matt-str)
+    (clear *pc-encoded-matt-str*)
+    (format matt-str "<COLOR_WHITE>INFO:~%<COLOR_ORANGE>Hold <COLOR_RED>L2<COLOR_ORANGE> to look at your stat menu!"
+    )
+    (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+    (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+      ;; reset bucket settings prior to drawing - font won't do self for us, and
+      ;; draw-raw-image can sometimes mess them up. (intro sequence)
+      (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+      (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 255 330 0.0 (font-color default) (font-flags middle shadow kerning large))))
+        (set! (-> font-ctx scale) 0.325)
+        (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+)
 
 (when (= stat-menu-intro #t)
   (clear matt-str)
@@ -5569,7 +5595,7 @@ Here are the shop IDs
 ~%
 ~%
 ~%
-~%<COLOR_WHITE>Exit: <COLOR_GREEN>Triangle
+~%
 "
     act-act
     print-stage
