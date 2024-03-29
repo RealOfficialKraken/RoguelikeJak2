@@ -160,6 +160,7 @@
 (define rngspeed3 (meters 5))
 (define rngspeed4 (meters 5))
 (define-extern e-vec vector)
+(define-extern e-vec2 vector)
 
 (defenum pickup-type
   :bitfield #f

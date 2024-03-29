@@ -292,7 +292,6 @@
         (set! (-> a1-5 quad) (-> s5-0 trans quad))
         (vector+! a1-5 a1-5 v1-14)
         (move-to-point! (-> arg0 root) a1-5)
-        (set! e-vec a1-5)
         (when (= p-explode-shot #t)
         (someone-fire-guard-grenade *target* a1-5 a1-5)
       )
