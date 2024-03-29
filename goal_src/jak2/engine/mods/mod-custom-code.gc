@@ -2029,6 +2029,12 @@ Run items should be centered around 3 core aspects: Luck, Damage, and Mechanical
   (set! temp-skullgemamount (-> *game-info* gem))
   (set! temp-orbs (-> *game-info* skill))
   (set! please-reward #t)
+  (when (and (= p-drinkable #t)(<= (-> *target* fact health) 6.0))
+    (+! (-> *target* fact health) 2.0)
+  )
+  (when (and (= p-drinkable #t)(= (-> *target* fact health) 7.0))
+    (+! (-> *target* fact health) 1.0)
+  )
     (when 
   (and 
   (= (/ (mod (-> *game-info* continue-deaths) 100000000) 10000000) 0)
