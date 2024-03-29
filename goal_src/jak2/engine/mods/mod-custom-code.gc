@@ -120,6 +120,9 @@ Run items should be centered around 3 core aspects: Luck, Damage, and Mechanical
 (define curse-save 100000000)
 (define curse-level 0)
 
+(define stat-menu #f)
+(define stat-menu-intro #f)
+
 (define give-gunred? #f)
 
 (define item-refresh #f)
@@ -2405,6 +2408,8 @@ Run items should be centered around 3 core aspects: Luck, Damage, and Mechanical
 (and 
 (= avoidc-waitb #t)
 (not *scene-player*)
+(= in-menu2 #f)
+(= stat-menu #f)
 )
 (+! avoidc-wait 1)
   (when (= avoidc-wait 1)
@@ -5464,6 +5469,122 @@ Here are the shop IDs
   )
 )
 
+(when 
+(and 
+(not *scene-player*)
+(= avoidc-waitb #f)
+(= run-in-progress #t)
+(= (-> *game-info* karma) 3.0)
+(cpad-pressed? 0 triangle)
+(= in-hub? #f)
+(= in-menu2 #f)
+(= stat-menu-intro #t)
+)
+  (set! stat-menu-intro #f)
+  (set! (-> *game-info* karma) 4.0)
+  (set! stat-menu #f)
+  (set! camera-unlocked #t)
+  (set! pause-menu-blocked? #f)
+)
+
+(when 
+(and 
+(not *scene-player*)
+(= avoidc-waitb #f)
+(= run-in-progress #t)
+(= (-> *game-info* karma) 3.0)
+(cpad-pressed? 0 r3)
+(= in-hub? #f)
+(= in-menu2 #f)
+(= stat-menu-intro #f)
+)
+  (set! stat-menu-intro #t)
+  (set! stat-menu #t)
+  (set! camera-locked #t)
+  (set! pause-menu-blocked? #t)
+)
+
+(when 
+(and 
+(not *scene-player*)
+(= avoidc-waitb #f)
+(= run-in-progress #t)
+(= (-> *game-info* karma) 4.0)
+(cpad-pressed? 0 triangle)
+(= stat-menu #t)
+)
+  (set! stat-menu #f)
+  (set! camera-unlocked #t)
+  (set! pause-menu-blocked? #f)
+)
+
+(when 
+(and 
+(not *scene-player*)
+(= avoidc-waitb #f)
+(= run-in-progress #t)
+(= (-> *game-info* karma) 4.0)
+(cpad-pressed? 0 r3)
+(= stat-menu #f)
+)
+  (set! stat-menu #t)
+  (set! camera-locked #t)
+  (set! pause-menu-blocked? #t)
+)
+
+
+(when (= stat-menu-intro #t)
+  (clear matt-str)
+    (clear *pc-encoded-matt-str*)
+    (format matt-str "<COLOR_WHITE>Vin:~%<COLOR_ORANGE>Jak, I've done it! You should now be able to see your stats.~%All of these will influence your current run.~%Make sure you keep tabs on these."
+    act-act
+    print-stage
+    )
+    (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+    (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+      ;; reset bucket settings prior to drawing - font won't do self for us, and
+      ;; draw-raw-image can sometimes mess them up. (intro sequence)
+      (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+      (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 250 25 0.0 (font-color default) (font-flags middle shadow kerning large))))
+        (set! (-> font-ctx scale) 0.325)
+        (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+)
+(when (= stat-menu #t)
+  (clear matt-str)
+    (clear *pc-encoded-matt-str*)
+    (format matt-str "
+<COLOR_WHITE>Current Run:
+~%<COLOR_ORANGE>Act ~D <COLOR_YELLOW>Stage ~D
+~%
+~%<COLOR_GREEN>Luck:<COLOR_ORANGE> ~F
+~%
+~%
+~%
+~%
+~%
+~%
+~%
+~%
+~%
+~%
+~%
+~%
+~%<COLOR_WHITE>Exit: <COLOR_GREEN>Triangle
+"
+    act-act
+    print-stage
+    luck
+    )
+    (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+    (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+      ;; reset bucket settings prior to drawing - font won't do self for us, and
+      ;; draw-raw-image can sometimes mess them up. (intro sequence)
+      (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+      (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 250 75 0.0 (font-color default) (font-flags middle shadow kerning large))))
+        (set! (-> font-ctx scale) 0.325)
+        (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+)
+
 
 (when (and (= (-> *game-info* total-deaths) 1)(= vin-shop #t))
     (when (= vin-talk 1)
@@ -6073,7 +6194,7 @@ Here are the shop IDs
         (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
 )
 
-(when (and (= in-hub? #f)(not *scene-player*)(> curse-level 0)(= wait-tutorial #f)(= ohshit #f))
+(when (and (= in-hub? #f)(not *scene-player*)(= stat-menu #t)(= wait-tutorial #f)(= ohshit #f))
     (clear matt-str)
       (clear *pc-encoded-matt-str*)
       (format matt-str "<COLOR_PINK>Instability Level: <COLOR_RED>~d"
@@ -6084,15 +6205,14 @@ Here are the shop IDs
         ;; reset bucket settings prior to drawing - font won't do self for us, and
         ;; draw-raw-image can sometimes mess them up. (intro sequence)
         (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
-        (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 250 10 0.0 (font-color default) (font-flags middle shadow kerning large))))
+        (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 250 175 0.0 (font-color default) (font-flags middle shadow kerning large))))
           (set! (-> font-ctx scale) 0.325)
           (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
   )
   (when (and (= in-hub? #f)(not *scene-player*)(= in-intro? #t)(> curse-level 0)(= wait-tutorial #f)(= ohshit #f))
     (clear matt-str)
       (clear *pc-encoded-matt-str*)
-      (format matt-str "<COLOR_ORANGE>This stat makes your dimension spawn Unstable Enemies.~%While colored purple, they are faster, and harder to kill. Caps at level 9~%Only city peds and guards are exempt from this, but not bosses!"
-      
+      (format matt-str "<COLOR_ORANGE>Buying non-vanilla items makes your dimension spawn Unstable Enemies.~%While colored purple, they are faster, and harder to kill. Caps at level 9~%Only city peds and guards are exempt from this, but not bosses!"
       )
       (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
       (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
