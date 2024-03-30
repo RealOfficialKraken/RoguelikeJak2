@@ -4929,7 +4929,7 @@ Here are the shop IDs
 
 (clear matt-str)
     (clear *pc-encoded-matt-str*)
-    (format matt-str "<COLOR_WHITE>INFO:~%<COLOR_ORANGE>You cannot <COLOR_YELLOW>load<COLOR_ORANGE> a save while in a run!"
+    (format matt-str "<COLOR_WHITE>INFO:~%<COLOR_ORANGE>You cannot <COLOR_YELLOW>load<COLOR_ORANGE> a save while in a run!~%<COLOR_ORANGE>Please restart the game, then load the save from the main menu."
     )
     (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
     (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
