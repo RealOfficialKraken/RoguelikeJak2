@@ -164,6 +164,9 @@
 (define-extern e-vec vector)
 (define-extern e-vec2 vector)
 
+(define avoidk-wait #f)
+(define w-ik 0)
+
 (defenum pickup-type
   :bitfield #f
   :type int32

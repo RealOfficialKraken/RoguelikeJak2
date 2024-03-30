@@ -1796,7 +1796,7 @@ Run items should be centered around 3 core aspects: Luck, Damage, and Mechanical
         )
           (when (= level-pick 1)
             (send-event *target* 'continue (get-continue-by-name *game-info* "casboss-start"))
-            (play-task (game-task castle-boss) 'debug #f)
+            (set! avoidk-wait #t)
           )
         
         (set! print-stage 5)
@@ -3392,6 +3392,22 @@ These numbers go down in order from the ids. The first 1 is to save all the 0's
   )
 )
 
+(when (and (= avoidk-wait #t)(= (pause-allowed?) #t))
+  (+! w-ik 1)
+  (when (= w-ik 1)
+    (set! autosave-delayed #t)
+  )
+  (when (= w-ik 60)
+    (play-task (game-task castle-boss) 'debug #f)
+  )
+  (when (= w-ik 125)
+    (set! w-ik 0)
+    (set! avoidk-wait #f)
+    (set! (-> *game-info* gem) temp-skullgemamount)
+    (set! (-> *target* fact health) temp-health)
+    (set! (-> *game-info* skill) temp-orbs)
+  )
+)
 
 ;Death params
 (when 
@@ -4812,6 +4828,14 @@ Here are the shop IDs
   (set! item-ts8 "")
   (set! item-ts9 "")
   (set! item-ts10 "")
+  (set! item-ts11 "")
+  (set! item-ts12 "")
+  (set! item-ts13 "")
+  (set! item-ts14 "")
+  (set! item-ts15 "")
+  (set! item-ts16 "")
+  (set! item-ts17 "")
+  (set! item-ts18 "")
   (set! item-tracker 0)
   (when (= (-> *game-info* karma) 1.0)
     (set! (-> *game-info* karma) 2.0)
@@ -6369,7 +6393,7 @@ Here are the shop IDs
   (when (and (= in-hub? #f)(not *scene-player*)(= in-intro? #t)(> curse-level 0)(= wait-tutorial #f)(= ohshit #f))
     (clear matt-str)
       (clear *pc-encoded-matt-str*)
-      (format matt-str "<COLOR_ORANGE>Buying non-vanilla items makes your dimension spawn Unstable Enemies.~%While colored purple, they are faster, and harder to kill. Caps at level 9~%Only city peds and guards are exempt from this, but not bosses!"
+      (format matt-str "<COLOR_ORANGE>Buying non-vanilla items, or refreshing the shop, will make your dimension spawn Unstable Enemies.~%While colored purple, they are faster, and harder to kill. Caps at level 9~%Only mission enemies are affected from the dimension's instability"
       )
       (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
       (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))

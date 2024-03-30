@@ -1092,7 +1092,7 @@
     (not (task-node-closed? (game-task-node castle-boss-resolution)))
     (task-node-closed? (game-task-node castle-boss-introduction))
     )
-      (set! (-> v1-0 target-speed) (* (-> this enemy-info run-travel-speed) 3))
+      (set! (-> v1-0 target-speed) (-> this enemy-info run-travel-speed))
     )
     )
   0
