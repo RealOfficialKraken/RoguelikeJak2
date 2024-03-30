@@ -1573,7 +1573,7 @@ This commonly includes things such as:
             dark-giant
             )
           )
-          (when (rand-vu-percent? curse)
+          (when (rand-vu-percent? 0.0)
         (set! boss-cursed #t)
       )
     (let ((s3-0 (new 'process 'collide-shape-prim-group s4-0 (the-as uint 23) 0)))

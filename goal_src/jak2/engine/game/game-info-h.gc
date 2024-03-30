@@ -96,6 +96,8 @@
 (define p-sage-red #f)
 (define p-sage-dark #f)
 
+(define p-already-punched? #f)
+
 (define dshotwait-r #f)
 (define dshotcount-r 0)
 (define dshotwait-b #f)

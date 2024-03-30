@@ -3,7 +3,7 @@
 
 
 #|
-
+damage-number.gc
   Processes for the damage numbers for enemy damage and health bar for enemy health.
 	Enemies spawn the numbers on hit, and send a message to a health bar manager to spawn a health bar
 	with the appropriate settings.
