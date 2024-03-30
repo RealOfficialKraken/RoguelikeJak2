@@ -6076,7 +6076,7 @@ Here are the shop IDs
     (clear *pc-encoded-matt-str*)
     (format matt-str "<COLOR_WHITE>Vin:~%Nice work! We have almost all of the pieces we need!
     ~%Now we just have to find a <COLOR_RED>Red Eco Shard<COLOR_WHITE> from Act 3.
-    ~%My scans say that it's in <COLOR_YELLOW>the Hiphog Shop<COLOR_WHITE> selling for 100 orbs.
+    ~%My energy readings say it's concentrated in the <COLOR_YELLOW>city port area.
     ~%<COLOR_YELLOW>We're so close, Jak! This will be the last piece to locate our original dimension.
     ~%
     ~%
@@ -6106,7 +6106,7 @@ Here are the shop IDs
     (clear *pc-encoded-matt-str*)
     (format matt-str "<COLOR_WHITE>Vin:~%Nice work! We have almost all of the pieces we need!
     ~%Now we just have to find a <COLOR_RED>Red Eco Shard<COLOR_WHITE> from Act 3.
-    ~%My scans say that it's in <COLOR_YELLOW>the Hiphog Shop<COLOR_WHITE> selling for 100 orbs.
+    ~%My energy readings say it's concentrated in the <COLOR_YELLOW>city port area.
     ~%<COLOR_YELLOW>We're so close, Jak! This will be the last piece to locate our original dimension.
     ~%
     ~%
@@ -6136,7 +6136,7 @@ Here are the shop IDs
     (clear *pc-encoded-matt-str*)
     (format matt-str "<COLOR_WHITE>Vin:~%Nice work! We have almost all of the pieces we need!
     ~%Now we just have to find a <COLOR_RED>Red Eco Shard<COLOR_WHITE> from Act 3.
-    ~%My scans say that it's in <COLOR_YELLOW>the Hiphog Shop<COLOR_WHITE> selling for 100 orbs.
+    ~%My energy readings say it's concentrated in the <COLOR_YELLOW>city port area.
     ~%<COLOR_YELLOW>We're so close, Jak! This will be the last piece to locate our original dimension.
     ~%
     ~%
@@ -6166,7 +6166,7 @@ Here are the shop IDs
     (clear *pc-encoded-matt-str*)
     (format matt-str "<COLOR_WHITE>Vin:~%Nice work! We have almost all of the pieces we need!
     ~%Now we just have to find a <COLOR_RED>Red Eco Shard<COLOR_WHITE> from Act 3.
-    ~%My scans say that it's in <COLOR_YELLOW>the Hiphog Shop<COLOR_WHITE> selling for 100 orbs.
+    ~%My energy readings say it's concentrated in the <COLOR_YELLOW>city port area.
     ~%<COLOR_YELLOW>We're so close, Jak! This will be the last piece to locate our original dimension.
     ~%
     ~%
@@ -6206,9 +6206,9 @@ Here are the shop IDs
     <COLOR_WHITE>Vin:~%You did it! I've now triangulated the position of where this <COLOR_PINK>dark eco<COLOR_WHITE> is coming from!
     ~%Thanks to you, we can finally travel there, you've just got to get past <COLOR_RED>Act 3<COLOR_WHITE>.
     ~%But be warned, as I'm sure you've noticed, the enemies have gotten stronger with how close you've
-    ~%drawn near. The original dimension we were in is completely covered in MORE THAN vast amounts!
-    ~%I-I mean, it's not just a quantifiable amount.. It's virtually infinite amounts of <COLOR_PINK>dark eco<COLOR_WHITE>!
-    ~%If you're still having trouble, you can always give me <COLOR_YELLOW>Skull Gems<COLOR_WHITE> to get stronger items.
+    ~%drawn near. The original dimension we were in is devoured in infinite amounts of <COLOR_PINK>dark eco<COLOR_WHITE>!
+    ~%
+    ~%If you're still having trouble, try saving up <COLOR_YELLOW>Skull Gems<COLOR_WHITE> to get stronger items.
     ~%We're all counting on you, Jak! <COLOR_GREEN>Beat MetalKor, and fulfill the prophecy again!
     ~%
     ~%<COLOR_WHITE>Current Tokens:
