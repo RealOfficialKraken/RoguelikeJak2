@@ -5,11 +5,6 @@
     ;; name in dgo: mod-custom-code
     ;; dgos: TODO
 
-
-
-
-
-
 #| TODO:
 --------------------------------------------------------------------------------------------------
 
@@ -17,7 +12,7 @@
 - Make ending for dark eco act
 - Give a way to talk to Vin again lol
 - After beating the story, offer a cheat menu to give items by pressing L2+L3. Items that are locked cannot be accessed in cheat menu
-- Add a way to loop the run after metalkor with all of your stuff
+- Add a way to loop the run after metalkor with all of your stuff. Feature is better with the implementation of scaleable boon items.
 vv--optional--vv
 - Make a way to access shop from not just HipHog
 - Create intro msg for accessing dark act for the first time, selecting 1 of 3 equal boons to carry to the end.
@@ -37,14 +32,12 @@ ITEM IDEAS (4 items left, all cursed items)
 Run items should be centered around 3 core aspects: Luck, Damage, and Mechanical advantages. All of which you should become strong with just one of the three.
 
 - Big Bomb (On chance (luck stat), proj impacts create 30 grenades at set vectors with 0 timer)
-- Big Punch (Jaks punches futher, and knocks back enemies tenfold)
 - Peacemaker Crits (chance off luck stat to spawn a peacemaker shot at impact vector)
 - Bounce Shot
 - Yellow Sage Shot (Fires yellow shots rain down-forward from above jak)
 - Red Sage Shot (works as a barrier, in front of jak a bunch of red shots come out in one direction.)
 - Blue Sage Shot (Bunch of blue shot facing upwards shoot from underneath jak)
 - Red Dot Sight (crit level up +2)
-- God Punch (All punches give Jak a nice set of I-Frames, maybe red eco particles)
 
 --------------------------------------------------------------------------------------------------
 
@@ -3787,15 +3780,15 @@ Here are the shop IDs
     (set! shopitem3 "Mar's Punch (22 orbs)")
     (set! shopid3 12)
   )
-  (when (and (rand-vu-percent? 0.1) (>= (-> *game-info* karma) 3.0))
+  (when (and (not (= shopid1 999))(not (= shopid2 999))(not (= shopid3 999))(rand-vu-percent? 0.1) (>= (-> *game-info* karma) 3.0))
     (set! shopitem1 "Explosive Yellow Shot (35 orbs)")
     (set! shopid1 999)
   )
-  (when (and (rand-vu-percent? 0.1) (>= (-> *game-info* karma) 3.0))
+  (when (and (not (= shopid1 999))(not (= shopid2 999))(not (= shopid3 999))(rand-vu-percent? 0.1) (>= (-> *game-info* karma) 3.0))
     (set! shopitem2 "Explosive Yellow Shot (35 orbs)")
     (set! shopid2 999)
   )
-  (when (and (rand-vu-percent? 0.1) (>= (-> *game-info* karma) 3.0))
+  (when (and (not (= shopid1 999))(not (= shopid2 999))(not (= shopid3 999))(rand-vu-percent? 0.1) (>= (-> *game-info* karma) 3.0))
     (set! shopitem3 "Explosive Yellow Shot (35 orbs)")
     (set! shopid3 999)
   )
