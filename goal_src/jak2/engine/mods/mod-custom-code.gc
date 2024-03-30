@@ -2408,6 +2408,62 @@ Run items should be centered around 3 core aspects: Luck, Damage, and Mechanical
      (set! roll-randomitem #f)
     )
     (when 
+    (and
+     (= random-int 10)
+     (!= (/ (mod (-> *game-info* continue-deaths) 10) 1) 1)
+     )
+     (+! (-> *game-info* continue-deaths) 1)
+     (set! roll-randomitem #f)
+    )
+    (when 
+    (and
+     (= random-int 11)
+     (!= (/ (mod (-> *game-info* continue-deaths) 100) 10) 1)
+     )
+     (+! (-> *game-info* continue-deaths) 10)
+     (set! roll-randomitem #f)
+    )
+    (when 
+    (and
+     (= random-int 12)
+     (!= (/ (mod (-> *game-info* continue-deaths) 1000) 100) 1)
+     )
+     (+! (-> *game-info* continue-deaths) 100)
+     (set! roll-randomitem #f)
+    )
+    (when 
+    (and
+     (= random-int 13)
+     (!= (/ (mod (-> *game-info* continue-deaths) 10000) 1000) 1)
+     )
+     (+! (-> *game-info* continue-deaths) 1000)
+     (set! roll-randomitem #f)
+    )
+    (when 
+    (and
+     (= random-int 14)
+     (!= (/ (mod (-> *game-info* continue-deaths) 100000) 10000) 1)
+     )
+     (+! (-> *game-info* continue-deaths) 10000)
+     (set! roll-randomitem #f)
+    )
+    (when 
+    (and
+     (= random-int 15)
+     (!= (/ (mod (-> *game-info* continue-deaths) 1000000) 100000) 1)
+     )
+     (+! (-> *game-info* continue-deaths) 10000)
+     (set! roll-randomitem #f)
+    )
+    (when 
+    (and
+     (= random-int 16)
+     (!= (/ (mod (-> *game-info* continue-deaths) 10000000) 1000000) 1)
+     )
+     (+! (-> *game-info* continue-deaths) 1000000)
+     (set! roll-randomitem #f)
+    )
+    (when 
     (and 
     (>= (-> *game-info* karma) 3.0)
     (= roll-randomitem #f)
