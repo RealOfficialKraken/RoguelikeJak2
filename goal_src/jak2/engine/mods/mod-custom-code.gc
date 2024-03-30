@@ -15,23 +15,25 @@
 
 - Make more purchaseable items to put in runs in the main menu
 - Make ending for dark eco act
-- RNG the chances of cursed item for weapon mod crate drop, based on its rarity
-- Create challenges for certain levels, with an extra reward
 - Give a way to talk to Vin again lol
+- After beating the story, offer a cheat menu to give items by pressing L2+L3. Items that are locked cannot be accessed in cheat menu
+- Add a way to loop the run after metalkor with all of your stuff
+vv--optional--vv
 - Make a way to access shop from not just HipHog
 - Create intro msg for accessing dark act for the first time, selecting 1 of 3 equal boons to carry to the end.
-vv--optional--vv
+- Create challenges for certain levels, with an extra reward
+- Create items off of pc-settings.gc (pending), the most OP items ever. It's a separate shop and is only accessible after karma 3.0/4.0.
 - Create crit, a way for Jak's mechanical abilities to improve damage on chance (based off luck). It's damage can be boosted with items or by doing damage with punches or twirls
 - Make more rng elements in missions alone, like teleporting entities. This will be important to not cause burnout
 - Make cursed bosses, alongside making vanilla bosses harder
 - Level 9 curse will shoot guard projectiles from all directions towards jak, at rng chance.
 - Maybe after you beat the game, you unlock consite to enter into as the (black market) area, buying cursed items only.
 
-After most of these, the mod will be completed and I can get on with my life
+After most of the top ones, the mod will be completed and I can get on with my life
 
 --------------------------------------------------------------------------------------------------
 
-ITEM IDEAS (5 items left, all cursed items)
+ITEM IDEAS (4 items left, all cursed items)
 Run items should be centered around 3 core aspects: Luck, Damage, and Mechanical advantages. All of which you should become strong with just one of the three.
 
 - Big Bomb (On chance (luck stat), proj impacts create 30 grenades at set vectors with 0 timer)
@@ -43,6 +45,38 @@ Run items should be centered around 3 core aspects: Luck, Damage, and Mechanical
 - Blue Sage Shot (Bunch of blue shot facing upwards shoot from underneath jak)
 - Red Dot Sight (crit level up +2)
 - God Punch (All punches give Jak a nice set of I-Frames, maybe red eco particles)
+
+--------------------------------------------------------------------------------------------------
+
+BOON IDEAS (infinite items, infinite scaling)
+The idea is to create an infinitely scaling item that'll eventually be OP the more you put into it.
+These items are usually very expensive to both put in your run, and to buy in the hiphog shop.
+It's taken off of the pc-settings clone made by barg/zed, making the item amount unlimited.
+You can scale these items by doing a randomized task, set completely at the beginning of runs.
+Example: When jak takes damage, scale up Fire Rate of All Weapons
+
+(STAT ATTRIBUTES)
+- Fire Rate of all weapons
+- Random Projectile
+- Crits (firing a peacemaker shot off a projectile's impact vector)
+- Upgraded Peacemaker Ability
+
+(STAT SCALERS)
+- Every time Jak takes damage,
+- Every time Jak kills a Krimzon Guard,
+- Every time Jak kills a Dark Eco entity
+- Every time Jak collects an in-level orb
+- Every time Jak collects a skull gem,
+- Every time Jak bonks, a chance to 
+
+--------------------------------------------------------------------------------------------------
+
+IF ADDING A NEW ITEM:
+
+- Make item var in game-info-h.gc
+- edit the var into the next shopid, then add to roll-shopitems, roll-randomitem, and for in-menu2's "(cpad-pressed? 0 x)".
+- Make the item var saveable, and loadable
+- Make item purchaseable through a store in the hub area
 
 --------------------------------------------------------------------------------------------------
 
