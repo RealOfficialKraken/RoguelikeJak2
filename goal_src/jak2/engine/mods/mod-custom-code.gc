@@ -4436,24 +4436,22 @@ Here are the shop IDs
   (clear matt-str)
     (clear *pc-encoded-matt-str*)
     (format matt-str "
-                                                                     <COLOR_GREEN>~S                                                      <COLOR_WHITE>~S
-    ~%
-    ~%                                                                            <COLOR_WHITE>~S
-    ~%
-    ~%
-    ~%
-    ~%
-    ~%
-    ~%
-    ~%
-    ~%
-    ~%
-    ~%
-    ~%
-    ~%"
+<COLOR_GREEN>~S"
     shopitem1
-    shopitem2
-    shopitem3
+    )
+    (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+    (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+      (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+      (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 125 55 0.0 (font-color default) (font-flags middle shadow kerning large))))
+        (set! (-> font-ctx scale) 0.325)
+        (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+)
+(when (and (!= menu-slot 0)(= in-menu2 #t))
+  (clear matt-str)
+    (clear *pc-encoded-matt-str*)
+    (format matt-str "
+<COLOR_WHITE>~S"
+    shopitem1
     )
     (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
     (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
@@ -4466,31 +4464,27 @@ Here are the shop IDs
   (clear matt-str)
     (clear *pc-encoded-matt-str*)
     (format matt-str "
-                                                                     <COLOR_WHITE>~S                                                      <COLOR_WHITE>~S
-    ~%
-    ~%                                                                            <COLOR_GREEN>~S
-    ~%
-    ~%
-    ~%
-    ~%
-    ~%
-    ~%
-    ~%
-    ~%
-    ~%
-    ~%
-    ~%
-    ~%"
-    shopitem1
-    shopitem2
+<COLOR_GREEN>~S"
     shopitem3
     )
     (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
     (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
-      ;; reset bucket settings prior to drawing - font won't do self for us, and
-      ;; draw-raw-image can sometimes mess them up. (intro sequence)
       (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
-      (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 125 55 0.0 (font-color default) (font-flags middle shadow kerning large))))
+      (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 250 95 0.0 (font-color default) (font-flags middle shadow kerning large))))
+        (set! (-> font-ctx scale) 0.325)
+        (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+)
+(when (and (!= menu-slot 1)(= in-menu2 #t))
+  (clear matt-str)
+    (clear *pc-encoded-matt-str*)
+    (format matt-str "
+<COLOR_WHITE>~S"
+    shopitem3
+    )
+    (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+    (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+      (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+      (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 250 95 0.0 (font-color default) (font-flags middle shadow kerning large))))
         (set! (-> font-ctx scale) 0.325)
         (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
 )
@@ -4498,38 +4492,56 @@ Here are the shop IDs
   (clear matt-str)
     (clear *pc-encoded-matt-str*)
     (format matt-str "
-                                                                     <COLOR_WHITE>~S                                                      <COLOR_GREEN>~S
-    ~%
-    ~%                                                                            <COLOR_WHITE>~S
-    ~%
-    ~%
-    ~%
-    ~%
-    ~%
-    ~%
-    ~%
-    ~%
-    ~%
-    ~%
-    ~%
-    ~%"
-    shopitem1
+<COLOR_GREEN>~S"
     shopitem2
-    shopitem3
+    )
+    (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+    (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+      (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+      (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 375 55 0.0 (font-color default) (font-flags middle shadow kerning large))))
+        (set! (-> font-ctx scale) 0.325)
+        (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+)
+(when (and (!= menu-slot 2)(= in-menu2 #t))
+  (clear matt-str)
+    (clear *pc-encoded-matt-str*)
+    (format matt-str "
+<COLOR_WHITE>~S"
+    shopitem2
+    )
+    (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+    (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+      (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+      (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 375 55 0.0 (font-color default) (font-flags middle shadow kerning large))))
+        (set! (-> font-ctx scale) 0.325)
+        (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+)
+(when (and 
+(= in-menu2 #t)
+(= in-intro? #f)
+(!= (/ (mod (-> *game-info* continue-deaths) 1000000000) 100000000) 9)
+)
+  (clear matt-str)
+    (clear *pc-encoded-matt-str*)
+    (format matt-str "<COLOR_WHITE>R1: <COLOR_YELLOW>Refresh Shop <COLOR_PINK>(unstable)~%<COLOR_WHITE>R3: <COLOR_YELLOW>Exit"
     )
     (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
     (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
       ;; reset bucket settings prior to drawing - font won't do self for us, and
       ;; draw-raw-image can sometimes mess them up. (intro sequence)
       (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
-      (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 125 55 0.0 (font-color default) (font-flags middle shadow kerning large))))
+      (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 255 350 0.0 (font-color default) (font-flags middle shadow kerning large))))
         (set! (-> font-ctx scale) 0.325)
         (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
 )
-(when (and (= in-menu2 #t)(= in-intro? #f))
+(when (and 
+(= in-menu2 #t)
+(= in-intro? #f)
+(= (/ (mod (-> *game-info* continue-deaths) 1000000000) 100000000) 9)
+)
   (clear matt-str)
     (clear *pc-encoded-matt-str*)
-    (format matt-str "<COLOR_WHITE>R1: <COLOR_YELLOW>Refresh Shop <COLOR_PINK>(unstable)~%<COLOR_WHITE>R3: <COLOR_YELLOW>Exit"
+    (format matt-str "<COLOR_WHITE>R1: <COLOR_RED>Cannot Refresh Shop <COLOR_PINK>(too unstable)~%<COLOR_WHITE>R3: <COLOR_YELLOW>Exit"
     )
     (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
     (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
