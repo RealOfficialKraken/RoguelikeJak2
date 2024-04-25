@@ -13,6 +13,7 @@
 - Give a way to talk to Vin again lol
 - After beating the story, offer a cheat menu to give items by pressing L2+L3. Items that are locked cannot be accessed in cheat menu
 - Add a way to loop the run after metalkor with all of your stuff. Feature is better with the implementation of scaleable boon items.
+- Add a way to get items at the start of runs, at the cost of gems
 vv--optional--vv
 - Make a way to access shop from not just HipHog
 - Create intro msg for accessing dark act for the first time, selecting 1 of 3 equal boons to carry to the end.
@@ -145,7 +146,7 @@ IF ADDING A NEW ITEM:
 (define save-slot 0)
 (define curse-save 100000000)
 (define curse-level 0)
-
+(define in-menu3 #f)
 (define stat-menu #f)
 (define stat-menu-intro #f)
 
@@ -2785,6 +2786,7 @@ These numbers go down in order from the ids. The first 1 is to save all the 0's
     (set! p-upgrade-damage #t)
     (set! item-tss1 "Upgraded Damage")
     (set! item-update #t)
+    (ml "goal_src/jak2/engine/target/gun/gun-part.gc")
   )
   (when 
   (and 
@@ -2931,6 +2933,7 @@ These numbers go down in order from the ids. The first 1 is to save all the 0's
   (!= (/ (mod (-> *game-info* task-deaths) 1000000) 100000) 1)
   )
     (set! p-upgrade-damage #f)
+    (ml "goal_src/jak2/engine/target/gun/gun-part.gc")
   )
   (when 
   (and 
@@ -4066,6 +4069,7 @@ Here are the shop IDs
       (set! item-tss1 "Upgraded Damage")
       (set! item-update #t)
       (set! (-> *game-info* task-deaths) (+ (-> *game-info* task-deaths) 100000))
+      (ml "goal_src/jak2/engine/target/gun/gun-part.gc")
       (when (= already-teleported? #f)
         (set! autosave-delayed #t)
       )
@@ -4077,6 +4081,7 @@ Here are the shop IDs
       (set! item-tss1 "Upgraded Damage")
       (set! item-update #t)
       (set! (-> *game-info* task-deaths) (+ (-> *game-info* task-deaths) 100000))
+      (ml "goal_src/jak2/engine/target/gun/gun-part.gc")
       (when (= already-teleported? #f)
         (set! autosave-delayed #t)
       )
@@ -4088,6 +4093,7 @@ Here are the shop IDs
       (set! item-tss1 "Upgraded Damage")
       (set! item-update #t)
       (set! (-> *game-info* task-deaths) (+ (-> *game-info* task-deaths) 100000))
+      (ml "goal_src/jak2/engine/target/gun/gun-part.gc")
       (when (= already-teleported? #f)
         (set! autosave-delayed #t)
       )
@@ -4942,8 +4948,29 @@ Here are the shop IDs
 9 Double Shot
 99 Red Eco Shard
 
-
 |#
+
+
+(when 
+(and
+(= vin-shop #t)
+(= in-menu3 #f)
+(cpad-pressed? 0 l1)
+)
+(set! vin-shop #f)
+(set! in-menu3 #t)
+)
+
+(when 
+(and
+(= vin-shop #t)
+(= in-menu3 #t)
+(cpad-pressed? 0 r1)
+)
+(set! vin-shop #t)
+(set! in-menu3 #f)
+)
+
 (when (and 
 (= popup-load #t)
 (not *scene-player*)
