@@ -328,7 +328,7 @@ IF ADDING A NEW ITEM:
   (set! act-before11 0)
   (set! act-before12 0)
   (set! display-run #f)
-  (set! p-yellow-gun #f)
+  (set! p-red-gun #f)
   (set! p-blue-gun #f)
   (set! p-dark-gun #f)
   (set! p-upgrade-red #f)
@@ -2728,12 +2728,12 @@ These numbers go down in order from the ids. The first 1 is to save all the 0's
 
 (when 
   (and 
-  (= p-yellow-gun #f)
+  (= p-red-gun #f)
   (= item-update #f)
   (= (/ (mod (-> *game-info* task-deaths) 10) 1) 1)
   )
-    (set! p-yellow-gun #t)
-    (set! item-tss1 "Yellow Gun")
+    (set! p-red-gun #t)
+    (set! item-tss1 "Scatter Gun")
     (set! item-update #t)
   )
   (when 
@@ -2857,7 +2857,7 @@ These numbers go down in order from the ids. The first 1 is to save all the 0's
   (= (/ (mod (-> *game-info* continue-deaths) 10000) 1000) 1)
   )
     (set! p-sage-yellow #t)
-    (set! item-tss1 "Yellow Sage's Blessing")
+    (set! item-tss1 "Pocket Rift Gate")
     (set! item-update #t)
   )
   (when 
@@ -2893,10 +2893,10 @@ These numbers go down in order from the ids. The first 1 is to save all the 0's
   
 (when 
   (and 
-  (= p-yellow-gun #t)
+  (= p-red-gun #t)
   (!= (/ (mod (-> *game-info* task-deaths) 10) 1) 1)
   )
-    (set! p-yellow-gun #f)
+    (set! p-red-gun #f)
   )
   (when 
   (and 
@@ -3550,8 +3550,8 @@ These numbers go down in order from the ids. The first 1 is to save all the 0's
 
 ;When jak doesnt have his purchased items, give him the items!
 
-(when (and (= p-yellow-gun #t)(not (logtest? (-> *game-info* features) (game-feature gun-yellow))))
-  (logior! (-> *game-info* features) (game-feature gun gun-yellow))
+(when (and (= p-red-gun #t)(not (logtest? (-> *game-info* features) (game-feature gun-red))))
+  (logior! (-> *game-info* features) (game-feature gun gun-red))
 )
 (when (and (= p-blue-gun #t)(not (logtest? (-> *game-info* features) (game-feature gun-blue))))
   (logior! (-> *game-info* features) (game-feature gun gun-blue))
@@ -3640,15 +3640,15 @@ Here are the shop IDs
 
 
   (when (= shoproll1 1)
-    (set! shopitem1 "Yellow Gun (25 orbs)")
+    (set! shopitem1 "Scatter Gun (25 orbs)")
     (set! shopid1 1)
   )
   (when (= shoproll2 1)
-    (set! shopitem2 "Yellow Gun (25 orbs)")
+    (set! shopitem2 "Scatter Gun (25 orbs)")
     (set! shopid2 1)
   )
   (when (= shoproll3 1)
-    (set! shopitem3 "Yellow Gun (25 orbs)")
+    (set! shopitem3 "Scatter Gun (25 orbs)")
     (set! shopid3 1)
   )
   (when (= shoproll1 2)
@@ -3898,10 +3898,10 @@ Here are the shop IDs
 
 (when (and (= in-menu2 #t)(cpad-pressed? 0 x))
     (when (and (= menu-slot 0)(not (logtest? (-> *game-info* features) (game-feature gun-yellow)))(>= (-> *game-info* skill) 25.0)(= shopid1 1))
-      (set! p-yellow-gun #t)
+      (set! p-red-gun #t)
       (-! (-> *game-info* skill) 25.0)
       (set! shopitem1 "(Out of Stock)")
-      (set! item-tss1 "Yellow Gun")
+      (set! item-tss1 "Scatter Gun")
       (set! item-update #t)
       (set! (-> *game-info* task-deaths) (+ (-> *game-info* task-deaths) 1))
       (when (= already-teleported? #f)
@@ -3909,10 +3909,10 @@ Here are the shop IDs
       )
     )
     (when (and (= menu-slot 1)(not (logtest? (-> *game-info* features) (game-feature gun-yellow)))(>= (-> *game-info* skill) 25.0)(= shopid3 1))
-      (set! p-yellow-gun #t)
+      (set! p-red-gun #t)
       (-! (-> *game-info* skill) 25.0)
       (set! shopitem3 "(Out of Stock)")
-      (set! item-tss1 "Yellow Gun")
+      (set! item-tss1 "Scatter Gun")
       (set! item-update #t)
       (set! (-> *game-info* task-deaths) (+ (-> *game-info* task-deaths) 1))
       (when (= already-teleported? #f)
@@ -3920,10 +3920,10 @@ Here are the shop IDs
       )
     )
     (when (and (= menu-slot 2)(not (logtest? (-> *game-info* features) (game-feature gun-yellow)))(>= (-> *game-info* skill) 25.0)(= shopid2 1))
-      (set! p-yellow-gun #t)
+      (set! p-red-gun #t)
       (-! (-> *game-info* skill) 25.0)
       (set! shopitem2 "(Out of Stock)")
-      (set! item-tss1 "Yellow Gun")
+      (set! item-tss1 "Scatter Gun")
       (set! item-update #t)
       (set! (-> *game-info* task-deaths) (+ (-> *game-info* task-deaths) 1))
       (when (= already-teleported? #f)
@@ -4520,7 +4520,7 @@ Here are the shop IDs
   (set! item-tracker 0)
   (set! p-dark-gun #f)
   (set! p-blue-gun #f)
-  (set! p-yellow-gun #f)
+  (set! p-red-gun #f)
   (set! p-upgrade-ammo #f)
   (set! p-upgrade-damage #f)
   (set! p-upgrade-red #f)
@@ -4801,8 +4801,8 @@ Here are the shop IDs
 ~%
 ~%Everything is <COLOR_GREEN>a roll of the dice.
 ~%<COLOR_WHITE>Things like city guard counts, enemy speed, and so many more, are completely random!
-~%And finally, Jak always starts off every run with the Red Gun.
-~%Every other weapon, buff, or upgrade can be purchased or found.
+~%And finally, Jak's default weapon is the Yellow Gun, meaning every other 
+~%weapon, buff, or upgrade can be purchased or found, but not saved..
 ~%You can exit the level to <COLOR_GREEN>start your run<COLOR_WHITE>.
 ~%
 ~%<COLOR_BLUE>X<COLOR_GREEN> Continue"
@@ -5026,7 +5026,7 @@ Here are the shop IDs
 (when (not *scene-player*)
 (when (and 
 (= in-menu2 #t)
-(= p-yellow-gun #f)
+(= p-red-gun #f)
 (or
 (and (= shopid1 1) (= menu-slot 0))
 (and (= shopid2 1) (= menu-slot 2))
@@ -5035,7 +5035,7 @@ Here are the shop IDs
 )
 (clear matt-str)
     (clear *pc-encoded-matt-str*)
-    (format matt-str "<COLOR_ORANGE>Unlocks the Yellow Gun"
+    (format matt-str "<COLOR_ORANGE>Unlocks the <COLOR_RED>Red<COLOR_ORANGE> Gun"
     )
     (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
     (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
@@ -5058,7 +5058,7 @@ Here are the shop IDs
 )
 (clear matt-str)
     (clear *pc-encoded-matt-str*)
-    (format matt-str "<COLOR_ORANGE>Unlocks the Blue Gun"
+    (format matt-str "<COLOR_ORANGE>Unlocks the <COLOR_BLUE>Blue<COLOR_ORANGE> Gun"
     )
     (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
     (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
@@ -5081,7 +5081,7 @@ Here are the shop IDs
 )
 (clear matt-str)
     (clear *pc-encoded-matt-str*)
-    (format matt-str "<COLOR_ORANGE>Unlocks the Peacemaker"
+    (format matt-str "<COLOR_ORANGE>Unlocks the <GREEN>Peacemaker"
     )
     (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
     (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
@@ -5103,7 +5103,7 @@ Here are the shop IDs
 )
 (clear matt-str)
     (clear *pc-encoded-matt-str*)
-    (format matt-str "<COLOR_ORANGE>Rate of fire increased on the Scattergun"
+    (format matt-str "<COLOR_ORANGE>Rate of fire increased on the <COLOR_RED>Red <COLOR_ORANGE>Gun"
     )
     (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
     (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
@@ -5126,7 +5126,7 @@ Here are the shop IDs
 )
 (clear matt-str)
     (clear *pc-encoded-matt-str*)
-    (format matt-str "<COLOR_ORANGE>x2 on ammo for all guns"
+    (format matt-str "<COLOR_ORANGE>x2 on ammo for <COLOR_YELLOW>all weapons"
     )
     (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
     (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
@@ -5149,7 +5149,7 @@ Here are the shop IDs
 )
 (clear matt-str)
     (clear *pc-encoded-matt-str*)
-    (format matt-str "<COLOR_ORANGE>x2 damage increase for all weapons"
+    (format matt-str "<COLOR_ORANGE>x2 damage increase for <COLOR_YELLOW>all weapons"
     )
     (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
     (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
@@ -6505,7 +6505,7 @@ Here are the shop IDs
   (when (and (= in-hub? #f)(not *scene-player*)(= in-intro? #t)(> curse-level 0)(= wait-tutorial #f)(= ohshit #f))
     (clear matt-str)
       (clear *pc-encoded-matt-str*)
-      (format matt-str "<COLOR_ORANGE>Buying non-vanilla items, or refreshing the shop, will make your dimension spawn Unstable Enemies.~%While colored purple, they are faster, and harder to kill. Caps at level 9~%Only mission enemies are affected from the dimension's instability"
+      (format matt-str "<COLOR_ORANGE>Buying non-vanilla items, or refreshing the shop, has a chance to make your dimension Unstable.~%While colored purple, enemies are faster, and harder to kill. Caps at level 9~%Only mission enemies are affected from the dimension's instability"
       )
       (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
       (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
@@ -6774,6 +6774,21 @@ Here are the shop IDs
           (set! (-> font-ctx scale) 0.325)
           (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
   )
+  (when (and (= in-hub? #f)(= wait-tutorial #f)(= in-intro? #t)(= ohshit #f))
+    (clear matt-str)
+      (clear *pc-encoded-matt-str*)
+      (format matt-str "~%~%~%<COLOR_RED>Intro?i = <COLOR_ORANGE>~D/4000"
+      intro?i
+      )
+      (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+      (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+        ;; reset bucket settings prior to drawing - font won't do self for us, and
+        ;; draw-raw-image can sometimes mess them up. (intro sequence)
+        (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+        (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 510 80 0.0 (font-color default) (font-flags right shadow kerning large))))
+          (set! (-> font-ctx scale) 0.325)
+          (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+  )
 
 
 
@@ -6820,65 +6835,66 @@ Here are the shop IDs
 (= in-dialogue? #t)
 )
   (+! log-sec 1)
+  (set! intro?i 0)
   (when (= log-sec 1)
-    (set! di-s "Jak, it's me! Vin! When I dumped my brain into the eco grid,")
-    (set! di-s2 "I found some code that led me to believe that")
-    (set! di-s3 "I'm in a Video Game!!")
+    (set! di-s "Jak, it's me! Vin! Boy, was that close.")
+    (set! di-s2 "Looks like I was able to successfully swap us dimensions.")
+    (set! di-s3 "")
     (set! di-s4 "")
   )
   (when (= log-sec 2)
-    (set! di-s "But that's the LEAST of our concerns..")
+    (set! di-s "You've got to get this all back to normal!")
     (set! di-s2 "")
     (set! di-s3 "")
     (set! di-s4 "")
   )
   (when (= log-sec 3)
-    (set! di-s "There's.. He... you-- you've got to get this all back to normal!")
+    (set! di-s "The Time Loop is shattered! Gone! Yo- you know..")
+    (set! di-s2 "The prophecy where you defeat MetalKor and stop the")
+    (set! di-s3 "metalheads from destroying what's left of us..")
+    (set! di-s4 "")
+  )
+  (when (= log-sec 4)
+    (set! di-s "It never happens! It's like he took out every dimension at the same time!")
     (set! di-s2 "")
     (set! di-s3 "")
     (set! di-s4 "")
   )
-  (when (= log-sec 4)
-    (set! di-s "I know there's systematically no way you")
-    (set! di-s2 "can talk back to me, so t-to be fair...oh God!")
-    (set! di-s3 "I'm not even sure you're even getting this transmission!")
-    (set! di-s4 "")
-  )
   (when (= log-sec 5)
-    (set! di-s "Bu-but if you CAN hear me, listen carefully!")
+    (set! di-s "Listen, this is really important..")
     (set! di-s2 "Someone ELSE is in these files. I-I'm not sure who it is,")
-    (set! di-s3 "but I do know he completely wrecked everything.")
-    (set! di-s4 "")
+    (set! di-s3 "but I do know he's coming after you the second he gets")
+    (set! di-s4 "the chance!")
   )
   (when (= log-sec 6)
-    (set! di-s "The time loop is shattered! Gone! I was absolutely")
-    (set! di-s2 "tricked into giving you up to him. I'm.... sorry.")
+    (set! di-s "You--b-but you're safe! Safe right here in this room,")
+    (set! di-s2 "where he can't hear us.")
     (set! di-s3 "")
     (set! di-s4 "")
   )
   (when (= log-sec 7)
-    (set! di-s "You--b-but you're safe! Safe right here in this room,")
-    (set! di-s2 "where he can't hear us. Believe me, there's no possible")
-    (set! di-s3 "way he can track us here... uh.. at least I think so...")
-    (set! di-s4 "Oh man..")
-  )
-  (when (= log-sec 8)
-    (set! di-s "Look, you've got to get back to your original")
-    (set! di-s2 "dimension and restore all of the timelines!")
-    (set! di-s3 "")
+    (set! di-s "The only way to set everything back to normal, is to go")
+    (set! di-s2 "through all the time dialated areas and fix it.")
+    (set! di-s3 "Usually this takes just completing the mission itself.")
     (set! di-s4 "")
   )
+  (when (= log-sec 8)
+    (set! di-s "But that's not all!")
+    (set! di-s2 "After each fix, I'll use the machine I have in here")
+    (set! di-s3 "to transport you closer to the original dimension.")
+    (set! di-s4 "y-You know.. the one I just pulled you from..")
+  )
   (when (= log-sec 9)
-    (set! di-s "Now, I've calculated all the trajectories,")
-    (set! di-s2 "I can teleport you across infinity, and put")
-    (set! di-s3 "you EXACTLY where you need to be to restore")
-    (set! di-s4 "each timeline.")
+    (set! di-s "We need to fix THAT dimension, and all the others should collapse!")
+    (set! di-s2 "But I can't see where I'm going when dimension hopping,")
+    (set! di-s3 "so I'm completely blind as to where you go.")
+    (set! di-s4 "")
   )
   (when (= log-sec 10)
-    (set! di-s "The system is automatic, if you complete whatever")
-    (set! di-s2 "you need to do, it'll jump you to the next dimension.")
-    (set! di-s3 "By my calculations, you SHOULD get closer to the")
-    (set! di-s4 "source of all this.")
+    (set! di-s "That's why I'll need you to find three unstable items")
+    (set! di-s2 "These items still have code that's raw, and unfinished.")
+    (set! di-s3 "They should help me locate where the dimensions are encrypted.")
+    (set! di-s4 "")
   )
   (when (= log-sec 11)
     (set! di-s "I know this may be a lot of information at once,")
@@ -6887,8 +6903,8 @@ Here are the shop IDs
     (set! di-s4 "")
   )
   (when (= log-sec 12)
-    (set! di-s "B-but we'll need more than just your will to")
-    (set! di-s2 "stay alive to repair this horrible travesty.")
+    (set! di-s "B-but let me show you what I mean...")
+    (set! di-s2 "")
     (set! di-s3 "")
     (set! di-s4 "")
   )
@@ -6938,18 +6954,20 @@ Here are the shop IDs
   (set! in-dialogue? #f)
   (set! tin-game-wait #t)
   (send-event (ppointer->process *time-of-day*) 'change 'hour 20)
+  (set! intro?i 0)
 )
 (when (and (cpad-pressed? 0 x)(= intro-sec 2)(= in-dialogue? #t)(= in-intro? #t)) ;teleports you to shop 1st time
   (set! intro-sec 3)
-  (set! (-> *game-info* skill) 70.0)
+  (set! (-> *game-info* skill) 85.0)
   (set! camera-unlocked #t)
   (set! in-dialogue? #f)
   (set! tin-game-wait #t)
   (send-event (ppointer->process *time-of-day*) 'change 'hour 6)
+  (set! intro?i 0)
 )
 
 (when (and (= shop-tutorial #t) (!= (-> (level-get-target-inside *level*) name) 'hiphog)) ;teleports you to city-help-kid for 3rd and final time
-  (send-event (ppointer->process *time-of-day*) 'change 'hour 20)
+  (send-event (ppointer->process *time-of-day*) 'change 'hour 14)
   (play-task (game-task city-help-kid) 'debug #f)
   (send-event *target* 'continue (get-continue-by-name *game-info* "ctyslumb-fort"))
   (set! intro-sec 4)
@@ -6971,7 +6989,7 @@ Here are the shop IDs
 
 
 
-(when (and (cpad-pressed? 0 x)(= intro-sec 4)(= in-dialogue? #t)(= in-intro? #t)) ;teleports you to shop 1st time
+(when (and (cpad-pressed? 0 x)(= intro-sec 4)(= in-dialogue? #t)(= in-intro? #t)) ;teleports you to end (consite)
   (set! intro-sec 5)
   (set! (-> *game-info* karma) 1.0)
   (set! autosave-delayed #t)
@@ -6990,25 +7008,29 @@ Here are the shop IDs
     (when (= intro-sec 1)
       (play-task (game-task city-help-kid) 'debug #f)
     (send-event *target* 'continue (get-continue-by-name *game-info* "ctyslumb-fort"))
+    (set! intro?i 0)
     )
     (when (= intro-sec 2)
       (play-task (game-task city-help-kid) 'debug #f)
     (send-event *target* 'continue (get-continue-by-name *game-info* "ctyslumb-fort"))
+    (set! intro?i 0)
     )
     (when (= intro-sec 3)
       (task-node-close! (game-task-node nest-boss-resolution))
     (send-event *target* 'continue (get-continue-by-name *game-info* "ctyport-hiphog"))
-    (set! shopitem1 "Yellow Gun (25 orbs)")
-    (set! shopid1 1)
+    (set! shopitem1 "Four-Leaf Clover (40 orbs)")
+    (set! shopid1 10)
     (set! shopitem2 "Double Shot (25 orbs)")
     (set! shopid2 9)
     (set! shopitem3 "Upgrade Damage x2 (20 orbs)")
     (set! shopid3 6)
+    (set! intro?i 0)
     )
     (when (= intro-sec 5)
       (play-task (game-task city-help-kid) 'debug #f)
     (send-event *target* 'continue (get-continue-by-name *game-info* "consite-airlock"))
     (set! wait-vintalk #t)
+    (set! intro?i 0)
     )
   )
   (when (= tin-wait 121)
@@ -7020,13 +7042,54 @@ Here are the shop IDs
   )
 )
 
+(when (= (-> *game-info* karma) 0)
+  (when (= intro?i 0)
+    (set! skip-intro #f)
+  )
+  (+! intro?i 1)
+  (when (= intro?i 4000)
+    (set! skip-intro #t)
+  )
+)
+
+(when (= skip-intro #t)
+  (clear matt-str)
+    (clear *pc-encoded-matt-str*)
+    (format matt-str "<COLOR_RED>R3<COLOR_WHITE>+<COLOR_RED>L3<COLOR_WHITE>:<COLOR_PINK> Skip Intro~%<COLOR_RED>Do not use on vehicle"
+    )
+    (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+    (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+      ;; reset bucket settings prior to drawing - font won't do self for us, and
+      ;; draw-raw-image can sometimes mess them up. (intro sequence)
+      (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+      (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 0 260 0.0 (font-color default) (font-flags shadow kerning large))))
+        (set! (-> font-ctx scale) 0.325)
+        (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+)
+
 (when 
 (and 
-(= intro-sec 4)
-(not (logtest? (-> *game-info* features) (game-feature gun-red)))
+(= skip-intro #t) 
+(= (-> *game-info* karma) 0)
+(cpad-hold? 0 r3)
+(cpad-hold? 0 l3)
+(= popup-shop #f)
+(= in-menu2 #f)
 )
-      (logior! (-> *game-info* features) (game-feature gun-red))
-    )
+  (set! intro-sec 5)
+  (set! (-> *game-info* karma) 1.0)
+  (set! autosave-delayed #t)
+  (set! in-intro? #f)
+  (send-event *target* 'continue (get-continue-by-name *game-info* "consite-airlock"))
+  (set! (-> *game-info* total-deaths) 1)
+  (play-task (game-task fortress-escape) 'debug #f)
+  (set! in-dialogue? #f)
+  (set! camera-unlocked #t)
+  (set! skip-intro #f)
+  (set! intro? #f)
+  (set! intro?i 0)
+)
+
 #|
 
     (set! traffic-metalheads? #t) ;turns on traffic lwideb'

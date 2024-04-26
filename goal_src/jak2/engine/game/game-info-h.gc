@@ -77,9 +77,12 @@
 (define popup-shop #f)
 (define in-menu2wait #f)
 (define in-menu2waiti 0)
+(define intro? #f)
+(define intro?i 0)
+(define skip-intro #f)
 
 ;give jak his items if he has bought them but doesn't actually have them
-(define p-yellow-gun #f)
+(define p-red-gun #f)
 (define p-blue-gun #f)
 (define p-dark-gun #f)
 (define p-upgrade-ammo #f)
