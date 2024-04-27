@@ -5311,6 +5311,8 @@ Here are the shop IDs
         (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
 )
 
+
+
 (when (not *scene-player*)
 (when (and 
 (= in-menu2 #t)

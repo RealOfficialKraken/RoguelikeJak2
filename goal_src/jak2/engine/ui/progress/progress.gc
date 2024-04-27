@@ -2770,10 +2770,14 @@
           (set! (-> *game-info* mode) 'play)
           (case *kernel-boot-message*
             (('demo-shared 'demo)
-             (initialize! *game-info* 'game (the-as game-save #f) "demo-start")
+             ;(initialize! *game-info* 'game (the-as game-save #f) "demo-start")
+             (set-master-mode 'game)
+             (set! popup-load2 #t)
              )
             (else
-              (initialize! *game-info* 'game (the-as game-save #f) "title-restart")
+              ;(initialize! *game-info* 'game (the-as game-save #f) "title-restart")
+              (set-master-mode 'game)
+              (set! popup-load2 #t)
               )
             )
           )
