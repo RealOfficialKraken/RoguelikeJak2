@@ -80,6 +80,7 @@
 (define intro? #f)
 (define intro?i 0)
 (define skip-intro #f)
+(define enemy-drop-weapon-once #f)
 
 ;give jak his items if he has bought them but doesn't actually have them
 (define p-red-gun #f)

@@ -302,8 +302,8 @@ IF ADDING A NEW ITEM:
   (set! (-> *game-info* total-trys) 4)
 )
 
-;Checks to see if there's a new game, then sets you to look-around camera with the main menu.
-(when ;is new game started?
+;Checks to see if you're in consite with tutorial completed to set variables to play.
+(when 
 (and 
 *target*
 (= tutorial-completed? #f)
@@ -367,6 +367,7 @@ IF ADDING A NEW ITEM:
   (set! (-> *game-info* task-deaths) 1000000000)
   (set! (-> *game-info* continue-deaths) 1000000000)
   (set! autosave-delayed #t)
+  (set! enemy-drop-weapon-once #f)
   (when (= (-> *game-info* total-trys) 4)
     (set! menu-value 5.0)
     (set! mod-s "Peacemaker")
@@ -747,6 +748,7 @@ IF ADDING A NEW ITEM:
         )
         (format #t "<<<<<<<<<<<<<<<<<<<<<<<<<<Level picked: ~D" level-pick)
         (set! roll-shopitems #t)
+        (set! enemy-drop-weapon-once #f)
         (when (= level-pick act-before1)
             (set! level-pick (rand-vu-int-range 1 8))
             (format #t "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<Level picked the same mission! Rerolling to: ~D" level-pick)
@@ -1159,6 +1161,7 @@ IF ADDING A NEW ITEM:
         )
         (format #t "<<<<<<<<<<<<<<<<<<<<<<<<<<Level picked: ~D" level-pick)
         (set! roll-shopitems #t)
+        (set! enemy-drop-weapon-once #f)
         (set! print-stage 1)
         (when (= level-pick act-before4)
             (set! level-pick (rand-vu-int-range 1 11))
@@ -1591,6 +1594,7 @@ IF ADDING A NEW ITEM:
         (format #t "<<<<<<<<<<<<<<<<<<<<<<<<<<Level picked: ~D" level-pick)
         (set! print-stage 1)
         (set! roll-shopitems #t)
+        (set! enemy-drop-weapon-once #f)
         (when (= level-pick act-before4)
             (set! level-pick (rand-vu-int-range 1 8))
             (format #t "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<Level picked the same mission! Rerolling to: ~D" level-pick)
@@ -1898,6 +1902,7 @@ IF ADDING A NEW ITEM:
         (format #t "<<<<<<<<<<<<<<<<<<<<<<<<<<Level picked: ~D" level-pick)
         (set! print-stage 1)
         (set! act-act 4)
+        (set! enemy-drop-weapon-once #f)
         (when (= level-pick act-before4)
             (set! level-pick (rand-vu-int-range 1 4))
             (format #t "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<Level picked the same mission! Rerolling to: ~D" level-pick)
@@ -2481,6 +2486,12 @@ IF ADDING A NEW ITEM:
      (!= (/ (mod (-> *game-info* continue-deaths) 10) 1) 1)
      )
      (+! (-> *game-info* continue-deaths) 1)
+     (when (= (/ (mod (-> *game-info* continue-deaths) 100000000) 10000000) 9);luck increase 1
+      (+! (-> *game-info* continue-deaths) 10000000)
+    )
+    (when (<= (/ (mod (-> *game-info* continue-deaths) 100000000) 10000000) 7);luck increase 2
+      (+! (-> *game-info* continue-deaths) 20000000)
+    )
      (set! roll-randomitem #f)
     )
     (when 
@@ -4006,7 +4017,7 @@ Here are the shop IDs
 
 
 (when (and (= in-menu2 #t)(cpad-pressed? 0 x))
-    (when (and (= menu-slot 0)(not (logtest? (-> *game-info* features) (game-feature gun-yellow)))(>= (-> *game-info* skill) 25.0)(= shopid1 1))
+    (when (and (= menu-slot 0)(not (logtest? (-> *game-info* features) (game-feature gun-red)))(>= (-> *game-info* skill) 25.0)(= shopid1 1))
       (set! p-red-gun #t)
       (-! (-> *game-info* skill) 25.0)
       (set! shopitem1 "(Out of Stock)")
@@ -4017,7 +4028,7 @@ Here are the shop IDs
         (set! autosave-delayed #t)
       )
     )
-    (when (and (= menu-slot 1)(not (logtest? (-> *game-info* features) (game-feature gun-yellow)))(>= (-> *game-info* skill) 25.0)(= shopid3 1))
+    (when (and (= menu-slot 1)(not (logtest? (-> *game-info* features) (game-feature gun-red)))(>= (-> *game-info* skill) 25.0)(= shopid3 1))
       (set! p-red-gun #t)
       (-! (-> *game-info* skill) 25.0)
       (set! shopitem3 "(Out of Stock)")
@@ -4028,7 +4039,7 @@ Here are the shop IDs
         (set! autosave-delayed #t)
       )
     )
-    (when (and (= menu-slot 2)(not (logtest? (-> *game-info* features) (game-feature gun-yellow)))(>= (-> *game-info* skill) 25.0)(= shopid2 1))
+    (when (and (= menu-slot 2)(not (logtest? (-> *game-info* features) (game-feature gun-red)))(>= (-> *game-info* skill) 25.0)(= shopid2 1))
       (set! p-red-gun #t)
       (-! (-> *game-info* skill) 25.0)
       (set! shopitem2 "(Out of Stock)")
@@ -4376,7 +4387,7 @@ Here are the shop IDs
       (when (!= (/ (mod (-> *game-info* continue-deaths) 1000000000) 100000000) 9)
       (+! (-> *game-info* continue-deaths) 100000000)
     )
-    (when (= (/ (mod (-> *game-info* continue-deaths) 100000000) 10000000) 8);luck increase 1
+    (when (= (/ (mod (-> *game-info* continue-deaths) 100000000) 10000000) 9);luck increase 1
       (+! (-> *game-info* continue-deaths) 10000000)
     )
     (when (<= (/ (mod (-> *game-info* continue-deaths) 100000000) 10000000) 7);luck increase 2

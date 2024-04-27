@@ -1126,7 +1126,7 @@
                          (-> *FACT-bank* default-eco-pill-green-inc)
                          )
         )
-        (when (and (rand-vu-percent? (- luck 0.04)))
+        (when (and (rand-vu-percent? (- luck 0.04))) ;drop orbs off luck stat
     (set! (-> this fact pickup-type) (pickup-type skill))
     (set! (-> this fact pickup-amount) 1.0)
     (when (rand-vu-percent? (/ luck 4))
@@ -1148,7 +1148,7 @@
 spawned-orb-entity
 ")
   )
-  (when 
+  (when ;drop health when you're not at full HP off luck stat
   (and 
   (rand-vu-percent? (- luck 0.086))
   (!= (-> *target* fact health) 8.0)
