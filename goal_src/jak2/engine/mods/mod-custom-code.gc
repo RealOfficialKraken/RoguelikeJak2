@@ -12,12 +12,13 @@
 - Make ending for dark eco act. Add a way to loop
 - Give a way to talk to people again
 - Add a chance of random challenges that reward skull gems per stage, to compliment scalable items, and to make acquiring gems to buy items easier.
+- Makes crates teleportable, then play around with some wacky locations for some.
+- Once crates are tpable, make the crate from the 1st stage of act's weapon mod tp to jak's pos
 vv--optional ideas--vv
 - Add a way to get items at the start of runs, at the cost of gems
 - After 100%ing items, for 1000 gems unlock the cheats menu.
 - Make a way to access shop from not just HipHog
 - Create intro msg for accessing dark act for the first time, selecting 1 of 3 equal boons to carry to the end.
-- Create challenges for certain levels, with an extra reward
 - Create items off of pc-settings.gc (pending), the most OP items ever. It's a separate shop and is only accessible after karma 3.0/4.0.
 - Create crit, a way for Jak's mechanical abilities to improve damage on chance (based off luck). It's damage can be boosted with items or by doing damage with punches or twirls
 - Make more rng elements in missions alone, like teleporting entities. This will be important to not cause burnout
@@ -36,9 +37,10 @@ Run items should be centered around 3 core aspects: Luck, Damage, and Mechanical
 - Peacemaker Crits (chance off luck stat to spawn a peacemaker shot at impact vector)
 - Bounce Shot
 - Yellow Sage Shot (Fires yellow shots rain down-forward from above jak)
-- Red Sage Shot (works as a barrier, in front of jak a bunch of red shots come out in one direction.)
+- Red Sage Shot (works as a barrier, in front of jak a bunch of red shots come out in one direction. Gets bigger with more skull gems. 7 Levels max)
 - Blue Sage Shot (Bunch of blue shot facing upwards shoot from underneath jak)
 - Red Dot Sight (crit level up +2)
+- Gol's Unbeknowngst (fires chanced peacemaker shots depending on how many skull gems you have in current run)
 
 --------------------------------------------------------------------------------------------------
 

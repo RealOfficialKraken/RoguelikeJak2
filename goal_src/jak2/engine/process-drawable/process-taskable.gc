@@ -252,7 +252,7 @@ Seen take in - `true-func` which takes no args TODO - seems fishy
                (set! (-> s5-1 flags) (font-flags shadow kerning middle-vert large))
                (print-game-text (lookup-text! *common-text* (-> self talk-message) #f) s5-1 #f 44 (bucket-id progress))
                )
-             #|(when (cpad-pressed? 0 triangle)
+             (when (cpad-pressed? 0 triangle)
                (logclear! (-> *cpad-list* cpads 0 button0-abs 0) (pad-buttons triangle))
                (logclear! (-> *cpad-list* cpads 0 button0-rel 0) (pad-buttons triangle))
                (case (-> gp-0 action)
@@ -263,7 +263,7 @@ Seen take in - `true-func` which takes no args TODO - seems fishy
                    (go-virtual active gp-0)
                    )
                  )
-               )|#
+               )
              )
            )
          )

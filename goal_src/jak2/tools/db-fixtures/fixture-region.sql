@@ -22,7 +22,7 @@ INSERT INTO `region_point` (`region_face_id`, `idx`, `x`, `y`, `z`, `w`) values 
 INSERT INTO `region_point` (`region_face_id`, `idx`, `x`, `y`, `z`, `w`) values (2, 1, 3769690.0, 204104.0, 4053470.0, 1.0);
 INSERT INTO `region_point` (`region_face_id`, `idx`, `x`, `y`, `z`, `w`) values (2, 2, 4036090.0, 27112.0996, 4059880.0, 1.0);
 INSERT INTO `region_point` (`region_face_id`, `idx`, `x`, `y`, `z`, `w`) values (2, 3, 3769690.0, 27112.0996, 4053470.0, 1.0);
-INSERT INTO `region` (`region_id`, `level_name`, `tree`, `on_enter`, `on_exit`, `on_inside`) values (561, 'ctyinda', 'target', '(want-load ''ctyinda ''ctywide ''vinroom ''consiteb)', '', '');
+INSERT INTO `region` (`region_id`, `level_name`, `tree`, `on_enter`, `on_exit`, `on_inside`) values (561, 'ctyinda', 'target', '(want-load ''ctyinda ''ctywide ''consiteb)', '', '');
 INSERT INTO `region_face` (`region_face_id`, `region_id`, `kind`, `flags`, `normal_x`, `normal_y`, `normal_z`, `normal_w`, `pos_x`, `pos_y`, `pos_z`, `pos_w`) values (3, 561, 'plane', '', 0.9998, 0.0, -0.0197, 3435385.5, 3509325.0, 115608.0468, 3708215.0, 115460.6484);
 INSERT INTO `region_point` (`region_face_id`, `idx`, `x`, `y`, `z`, `w`) values (3, 0, 3510790.0, 204104.0, 3782360.0, 1.0);
 INSERT INTO `region_point` (`region_face_id`, `idx`, `x`, `y`, `z`, `w`) values (3, 1, 3510790.0, 27112.0996, 3782360.0, 1.0);
