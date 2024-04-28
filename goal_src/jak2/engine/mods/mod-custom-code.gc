@@ -8,13 +8,13 @@
 #| TODO:
 --------------------------------------------------------------------------------------------------
 
-- Make more purchaseable items to put in runs in the main menu
-- Make ending for dark eco act
-- Give a way to talk to Vin again lol
-- After beating the story, offer a cheat menu to give items by pressing L2+L3. Items that are locked cannot be accessed in cheat menu
-- Add a way to loop the run after metalkor with all of your stuff. Feature is better with the implementation of scaleable boon items.
+- Make rest of items work
+- Make ending for dark eco act. Add a way to loop
+- Give a way to talk to people again
+- Add a chance of random challenges that reward skull gems per stage, to compliment scalable items, and to make acquiring gems to buy items easier.
+vv--optional ideas--vv
 - Add a way to get items at the start of runs, at the cost of gems
-vv--optional--vv
+- After 100%ing items, for 1000 gems unlock the cheats menu.
 - Make a way to access shop from not just HipHog
 - Create intro msg for accessing dark act for the first time, selecting 1 of 3 equal boons to carry to the end.
 - Create challenges for certain levels, with an extra reward
