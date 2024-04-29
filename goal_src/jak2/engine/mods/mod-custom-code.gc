@@ -4097,7 +4097,7 @@ Here are the shop IDs
       )
     )
     (when (and (= menu-slot 0)(!= (-> *target* fact health) 8.0)(>= (-> *game-info* skill) 4.0)(= shopid1 7))
-      (-! (-> *game-info* skill) 8.0)
+      (-! (-> *game-info* skill) 4.0)
       (set! (-> *target* fact health) 8.0)
       (when (= already-teleported? #f)
         (set! autosave-delayed #t)
@@ -4107,7 +4107,7 @@ Here are the shop IDs
     )
     )
     (when (and (= menu-slot 1)(!= (-> *target* fact health) 8.0)(>= (-> *game-info* skill) 4.0)(= shopid3 7))
-      (-! (-> *game-info* skill) 8.0)
+      (-! (-> *game-info* skill) 4.0)
       (set! (-> *target* fact health) 8.0)
       (when (= already-teleported? #f)
         (set! autosave-delayed #t)
@@ -4117,7 +4117,7 @@ Here are the shop IDs
     )
     )
     (when (and (= menu-slot 2)(!= (-> *target* fact health) 8.0)(>= (-> *game-info* skill) 4.0)(= shopid2 7))
-      (-! (-> *game-info* skill) 8.0)
+      (-! (-> *game-info* skill) 4.0)
       (set! (-> *target* fact health) 8.0)
       (when (= already-teleported? #f)
         (set! autosave-delayed #t)
@@ -6121,7 +6121,7 @@ Here are the shop IDs
     ~%There's a <COLOR_YELLOW>Yellow Eco Shard<COLOR_WHITE> that a <COLOR_RED>Krimzon Guard<COLOR_WHITE> has.
     ~%I need you to go into the <COLOR_YELLOW>Yellow Eco Stage<COLOR_WHITE> and find the guard that has it.
     ~%This eco is part of our ticket out of here. I'll get it the second you collect it.
-    ~%I also want to say, do not be discouraged if you die. Your main focus should
+    ~%<COLOR_YELLOW>I also want to say, do not be discouraged if you die. Your main focus should
     ~%be on finding that shard, and getting as many skull gems and items as possible!
     ~%
     ~%
