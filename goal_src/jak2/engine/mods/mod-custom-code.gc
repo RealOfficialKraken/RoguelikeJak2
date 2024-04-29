@@ -128,7 +128,77 @@ IF ADDING A NEW ITEM:
   (none)
   )
 
+;this is to make the dm-play-task-with-continue macro work in retail-mode
+(defun debug-menu-make-task-menu ((arg0 debug-menu-context))
+  (local-vars (sv-16 debug-menu-context))
+  (let* ((s5-0 (new 'debug 'debug-menu arg0 "Task menu"))
+         (s4-0 (new 'debug 'debug-menu-item-submenu "Task" s5-0))
+         )
+    (let* ((s3-0 '(city
+                    fortress
+                    stadium
+                    palace
+                    castle
+                    ruins
+                    atoll
+                    sewer
+                    strip
+                    mountain
+                    forest
+                    drill
+                    tomb
+                    dig
+                    canyon
+                    consite
+                    under
+                    nest
+                    default
+                    test
+                    )
+                 )
+           (a0-3 (car s3-0))
+           )
+      (while (not (null? s3-0))
+        (let ((s2-0 debug-menu-append-item)
+              (s1-0 s5-0)
+              (s0-0 debug-menu-make-from-template)
+              )
+          (set! sv-16 arg0)
+          (let ((a1-2 (debug-menu-make-task-sub-menu (the-as symbol a0-3))))
+            (s2-0 s1-0 (s0-0 sv-16 a1-2))
+            )
+          )
+        (set! s3-0 (cdr s3-0))
+        (set! a0-3 (car s3-0))
+        )
+      )
+    s4-0
+    )
+  )
 
+(defun dm-play-task-with-continue ((arg0 game-task) (arg1 string))
+  (let* ((t9-0 play-task)
+         (a1-1 'debug)
+         (a2-0 (cond
+                 ((cpad-hold? 0 l1)
+                  'pre-play
+                  )
+                 ((cpad-hold? 0 r1)
+                  'kiosk
+                  )
+                 )
+               )
+         (a1-2 (t9-0 arg0 a1-1 a2-0))
+         )
+    (if arg1
+        (set! a1-2 arg1)
+        )
+    (start 'play (get-continue-by-name *game-info* a1-2))
+    )
+  (set-master-mode 'game)
+  0
+  (none)
+  )
 
 
 
@@ -1700,6 +1770,7 @@ IF ADDING A NEW ITEM:
         (set! print-stage 1)
         (set! act-act 4)
         (set! enemy-drop-weapon-once #f)
+        (update-nestmood)
         (when (= level-pick act-before4)
             (set! level-pick (rand-vu-int-range 1 4))
             (format #t "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<Level picked the same mission! Rerolling to: ~D" level-pick)
@@ -1749,6 +1820,7 @@ IF ADDING A NEW ITEM:
         )
         (format #t "<<<<<<<<<<<<<<<<<<<<<<<<<<Level picked: ~D" level-pick)
         (set! print-stage 2)
+        (update-nestmood)
         (when (= level-pick act-before4)
             (set! level-pick (rand-vu-int-range 1 4))
             (format #t "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<Level picked the same mission! Rerolling to: ~D" level-pick)
@@ -1797,6 +1869,7 @@ IF ADDING A NEW ITEM:
         )
         (format #t "<<<<<<<<<<<<<<<<<<<<<<<<<<Level picked: ~D" level-pick)
         (set! print-stage 3)
+        (update-nestmood)
         (when (= level-pick act-before4)
             (set! level-pick 1)
             (format #t "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<Level picked the same mission! Rerolling to: ~D" level-pick)
@@ -1855,6 +1928,7 @@ IF ADDING A NEW ITEM:
         (set! act4-4 #f)
         (set! waitenter #t)
         (set! wait-for-ingame #t)
+        (update-nestmood)
         (set! (-> *game-info* gem) temp-skullgemamount)
         (set! (-> *target* fact health) temp-health)
         (set! (-> *game-info* skill) temp-orbs)
@@ -1871,6 +1945,7 @@ IF ADDING A NEW ITEM:
         
         (set! print-stage 5)
         (set! act4-5 #f)
+        (update-nestmood)
         (set! waitenter #t)
         (set! (-> *game-info* gem) temp-skullgemamount)
         (set! (-> *target* fact health) temp-health)
@@ -2051,7 +2126,7 @@ IF ADDING A NEW ITEM:
       (set! level-completed? #f)
     )
     (when (and (>= (-> *game-info* total-deaths) 4)(= (-> *game-info* buzzer-total) 16.0)(= level-completed? #t))
-      (set! act4-1 #t)
+      (all-randomize)
       (set! level-completed? #f)
       (set! (-> *time-of-day-context* overide-enable) #f)
       (when (= (-> *game-info* karma) 2.0)
@@ -2068,11 +2143,11 @@ IF ADDING A NEW ITEM:
       (set! level-completed? #f)
     )
     (when (and (>= (-> *game-info* total-deaths) 4)(= (-> *game-info* buzzer-total) 17.0)(= level-completed? #t))
-      (set! act4-2 #t)
+      (all-randomize)
       (set! level-completed? #f)
     )
     (when (and (>= (-> *game-info* total-deaths) 4)(= (-> *game-info* buzzer-total) 18.0)(= level-completed? #t))
-      (set! act4-3 #t)
+      (all-randomize)
       (set! level-completed? #f)
     )
     (when (and (>= (-> *game-info* total-deaths) 4)(= (-> *game-info* buzzer-total) 19.0)(= level-completed? #t))
@@ -2626,7 +2701,6 @@ These numbers go down in order from the ids. The first 1 is to save all the 0's
     (set! p-upgrade-damage #t)
     (set! item-tss1 "Upgraded Damage")
     (set! item-update #t)
-    (ml "goal_src/jak2/engine/target/gun/gun-part.gc")
   )
   (when 
   (and 
@@ -3134,6 +3208,17 @@ These numbers go down in order from the ids. The first 1 is to save all the 0's
 
 (when 
 (and 
+(= dark-mode #t)
+(!= (-> (level-get-target-inside *level*) mood-func)update-mood-nest)
+*target*
+(not *scene-player*)
+(= (pause-allowed?) #t)
+)
+(set! (-> (level-get-target-inside *level*) mood-func)update-mood-nest)
+)
+#|
+(when 
+(and 
 (= act-act 4)
 (= (pause-allowed?) #t)
 (= avoidc-waitb #f)
@@ -3157,7 +3242,7 @@ These numbers go down in order from the ids. The first 1 is to save all the 0's
   (set! (-> *mood-control* overide fog) 1.0)
   (set! (-> *mood-control* overide cloud) 1.0)
   (set! (-> (level-get-target-inside *level*) mood-func)update-mood-nest)
-)
+)|#
 
 (when 
 (and 
