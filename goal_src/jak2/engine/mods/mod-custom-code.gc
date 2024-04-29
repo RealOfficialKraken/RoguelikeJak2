@@ -347,15 +347,15 @@ IF ADDING A NEW ITEM:
     (set! mod-s "Pocket Rift Gate")
   )
   (when (= (-> *game-info* total-trys) 13)
-    (set! menu-value 100.0)
+    (set! menu-value 125.0)
     (set! mod-s "Training Weight")
   )
   (when (= (-> *game-info* total-trys) 14)
-    (set! menu-value 100.0)
+    (set! menu-value 150.0)
     (set! mod-s "Red Sage's Blessing")
   )
   (when (= (-> *game-info* total-trys) 15)
-    (set! menu-value 125.0)
+    (set! menu-value 200.0)
     (set! mod-s "Gol's Unbeknowngst")
   )
   (when (= (-> *game-info* total-trys) 16)
@@ -1038,7 +1038,7 @@ IF ADDING A NEW ITEM:
         (gp-0 (-> *game-info* features))
         )
           (when (= level-pick 1)
-            (dm-play-task-with-continue (game-task palace-boss) "palroof-boss")
+            ;(dm-play-task-with-continue (game-task palace-boss) "palroof-boss")
             (task-node-close! (game-task-node mountain-collection-resolution))
             (task-node-close! (game-task-node city-krew-collection-resolution))
           )
@@ -1439,7 +1439,7 @@ IF ADDING A NEW ITEM:
         (gp-0 (-> *game-info* features))
         )
           (when (= level-pick 1)
-            (dm-play-task-with-continue (game-task tomb-boss) "tombboss-start")
+            ;(dm-play-task-with-continue (game-task tomb-boss) "tombboss-start")
           )
         
         (set! print-stage 5)
@@ -1737,7 +1737,7 @@ IF ADDING A NEW ITEM:
         (gp-0 (-> *game-info* features))
         )
           (when (= level-pick 1)
-            (dm-play-task-with-continue (game-task castle-boss) "casboss-start")
+            ;(dm-play-task-with-continue (game-task castle-boss) "casboss-start")
             ;(set! avoidk-wait #t)
           )
         
@@ -1943,7 +1943,7 @@ IF ADDING A NEW ITEM:
         (gp-0 (-> *game-info* features))
         )
           (when (= level-pick 1)
-            (dm-play-task-with-continue (game-task nest-boss) "nestb-boss-pit")
+            ;(dm-play-task-with-continue (game-task nest-boss) "nestb-boss-pit")
           )
         
         (set! print-stage 5)
@@ -5932,7 +5932,7 @@ Here are the shop IDs
   )
 )
 
-
+#|
 (when 
 (and 
 (task-node-closed? (game-task-node nest-get-to-gun-introduction))
@@ -5951,7 +5951,7 @@ Here are the shop IDs
       (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 0 245 0.0 (font-color default) (font-flags shadow kerning large))))
         (set! (-> font-ctx scale) 0.325)
         (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
-)
+)|#
 
 (when 
 (and 
@@ -5963,7 +5963,7 @@ Here are the shop IDs
   (set! tp-bf #t)
 )
 
-(when (and (= tp-bfw #t)(not *scene-player*))
+#|(when (and (= tp-bfw #t)(not *scene-player*))
   (+! tp-bfwi 1)
   (when (= tp-bfwi 30)
     (send-event *target* 'continue (get-continue-by-name *game-info* "nest-gun"))
@@ -5972,7 +5972,7 @@ Here are the shop IDs
     (set! tp-bfwi 0)
     (set! tp-bfw #f)
   )
-)
+)|#
 
 (when 
 (and 
@@ -6145,7 +6145,7 @@ Here are the shop IDs
         (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
     )
     (when (= vin-talk 2)
-      (clear matt-str)
+    (clear matt-str)
     (clear *pc-encoded-matt-str*)
     (format matt-str "<COLOR_WHITE>Vin:~%Listen, if we want to get out of here, we should think about getting certain items across dimensions.
     ~%If you happen to see a <COLOR_YELLOW>Yellow Eco Shard<COLOR_WHITE> that a <COLOR_RED>Krimzon Guard<COLOR_WHITE> has,

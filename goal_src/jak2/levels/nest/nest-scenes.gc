@@ -949,7 +949,7 @@
         )
       (1141 (fadeout (frame-time-30 (new 'static 'bfloat :data 5.0))))
       (9000 (want-continue "nest-gun"))
-      ;(10000 (task-close! "nest-get-to-gun-resolution") (apply ,(lambda () (disable *screen-filter*) (none))))
+      (10000 (task-close! "nest-get-to-gun-resolution") (apply ,(lambda () (disable *screen-filter*) (none))))
       )
     :cut-list '(0 202 276 324 367 392 458 628 728 853 943)
     :wait-ground-time (seconds 1)

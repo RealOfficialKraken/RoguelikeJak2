@@ -1129,12 +1129,6 @@
              )
           )
         )
-        (when (= tp-bf #t)
-          (task-close! "nest-boss-introduction")
-        )
-        (when (= tp-bf #f)
-          (set! tp-bfw #t)
-        )
       (10000
         (apply ,(lambda :behavior scene-player () (set-darkjak-highres-nest-texture-morph! 0.0) (none)))
         (setting-pers music mode 'danger4 time (seconds 5))
