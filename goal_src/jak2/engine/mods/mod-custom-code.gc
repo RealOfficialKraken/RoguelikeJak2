@@ -352,7 +352,7 @@ IF ADDING A NEW ITEM:
   )
   (when (= (-> *game-info* total-trys) 14)
     (set! menu-value 150.0)
-    (set! mod-s "Red Sage's Blessing")
+    (set! mod-s "Rapid Fire")
   )
   (when (= (-> *game-info* total-trys) 15)
     (set! menu-value 200.0)
@@ -381,7 +381,7 @@ IF ADDING A NEW ITEM:
 (when (= (-> *game-info* total-trys) 13)
     (set! (-> *game-info* total-trys) 14)
     (set! menu-value 100.0)
-    (set! mod-s "Red Sage's Blessing")
+    (set! mod-s "Rapid Fire")
     (set! autosave-delayed #t)
   )
   (when (= (-> *game-info* total-trys) 12)
@@ -2794,7 +2794,7 @@ These numbers go down in order from the ids. The first 1 is to save all the 0's
   (= (/ (mod (-> *game-info* continue-deaths) 1000000) 100000) 1)
   )
     (set! p-sage-red #t)
-    (set! item-tss1 "Red Sage's Blessing")
+    (set! item-tss1 "Rapid Fire")
     (set! item-update #t)
   )
   (when 
@@ -3737,15 +3737,15 @@ Here are the shop IDs
     (set! shopid3 14)
   )
   (when (= shoproll1 15)
-    (set! shopitem1 "Red Sage's Blessing (40 orbs)")
+    (set! shopitem1 "Rapid Fire (40 orbs)")
     (set! shopid1 15)
   )
   (when (= shoproll2 15)
-    (set! shopitem2 "Red Sage's Blessing (40 orbs)")
+    (set! shopitem2 "Rapid Fire (40 orbs)")
     (set! shopid2 15)
   )
   (when (= shoproll3 15)
-    (set! shopitem3 "Red Sage's Blessing (40 orbs)")
+    (set! shopitem3 "Rapid Fire (40 orbs)")
     (set! shopid3 15)
   )
   (when (= shoproll1 16)
@@ -4484,7 +4484,7 @@ Here are the shop IDs
     (when (and (= menu-slot 2)(= p-sage-red #f)(>= (-> *game-info* skill) 40.0)(= shopid2 15))
       (-! (-> *game-info* skill) 40.0)
       (set! shopitem2 "(Out of Stock)")
-      (set! item-tss1 "Red Sage's Blessing")
+      (set! item-tss1 "Rapid Fire")
       (set! p-sage-red #t)
       (set! item-update #t)
       (set! (-> *game-info* continue-deaths) (+ (-> *game-info* continue-deaths) 100000))
@@ -4498,7 +4498,7 @@ Here are the shop IDs
     (when (and (= menu-slot 0)(= p-sage-red #f)(>= (-> *game-info* skill) 40.0)(= shopid1 15))
       (-! (-> *game-info* skill) 40.0)
       (set! shopitem1 "(Out of Stock)")
-      (set! item-tss1 "Red Sage's Blessing")
+      (set! item-tss1 "Rapid Fire")
       (set! p-sage-red #t)
       (set! item-update #t)
       (set! (-> *game-info* continue-deaths) (+ (-> *game-info* continue-deaths) 100000))
@@ -4512,7 +4512,7 @@ Here are the shop IDs
     (when (and (= menu-slot 1)(= p-sage-red #f)(>= (-> *game-info* skill) 40.0)(= shopid3 15))
       (-! (-> *game-info* skill) 40.0)
       (set! shopitem3 "(Out of Stock)")
-      (set! item-tss1 "Red Sage's Blessing")
+      (set! item-tss1 "Rapid Fire")
       (set! p-sage-red #t)
       (set! item-update #t)
       (set! (-> *game-info* continue-deaths) (+ (-> *game-info* continue-deaths) 100000))
@@ -6494,9 +6494,9 @@ Here are the shop IDs
     (clear *pc-encoded-matt-str*)
     (format matt-str "
     <COLOR_WHITE>Vin:~%You did it! I've now triangulated the position of where this <COLOR_PINK>dark eco<COLOR_WHITE> is coming from!
-    ~%Thanks to you, we can finally travel there, you've just got to get past <COLOR_RED>Act 3<COLOR_WHITE>.
-    ~%But be warned, as I'm sure you've noticed, the enemies have gotten stronger with how close you've
-    ~%drawn near. The original dimension we were in is devoured in infinite amounts of <COLOR_PINK>dark eco<COLOR_WHITE>!
+    ~%Wow.. there's so.. so many universes.. listen, we should travel there again. I feel like now is the time to act.
+    ~%But be warned, you could end up playing any mission across the whole story.
+    ~%<COLOR_ORANGE>You've got to prepare accordingly<COLOR_WHITE>
     ~%
     ~%If you're still having trouble, try saving up <COLOR_YELLOW>Skull Gems<COLOR_WHITE> to get stronger items.
     ~%We're all counting on you, Jak! <COLOR_GREEN>Beat MetalKor, and fulfill the prophecy again!

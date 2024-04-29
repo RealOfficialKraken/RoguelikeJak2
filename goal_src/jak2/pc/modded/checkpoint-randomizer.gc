@@ -186,12 +186,12 @@
 
     (defun update-nestmood ()
       (set! (-> *mood-control* overide-weather-flag) #t)
-  (set! (-> *mood-control* overide fog) 1.0)
-  (set! (-> *mood-control* overide cloud) 1.0)
-  (set! (-> *overide-mood-color-table* data (logand (-> *time-of-day-context* mode) (time-of-day-palette-id unk0 unk1 unk2)) amb-color x) 1.9921)
-  (set! (-> *overide-mood-color-table* data (logand (-> *time-of-day-context* mode) (time-of-day-palette-id unk0 unk1 unk2)) amb-color y) 1.9921)
-  (set! (-> *overide-mood-color-table* data (logand (-> *time-of-day-context* mode) (time-of-day-palette-id unk0 unk1 unk2)) amb-color z) 1.9921)
-  (set! (-> *overide-mood-color-table* data (logand (-> *time-of-day-context* mode) (time-of-day-palette-id unk0 unk1 unk2)) amb-color w) 2.0)
+      (set! (-> *mood-control* overide fog) 1.0)
+      (set! (-> *mood-control* overide cloud) 1.0)
+      (set! (-> *overide-mood-color-table* data (logand (-> *time-of-day-context* mode) (time-of-day-palette-id unk0 unk1 unk2)) amb-color x) 1.9921)
+      (set! (-> *overide-mood-color-table* data (logand (-> *time-of-day-context* mode) (time-of-day-palette-id unk0 unk1 unk2)) amb-color y) 1.9921)
+      (set! (-> *overide-mood-color-table* data (logand (-> *time-of-day-context* mode) (time-of-day-palette-id unk0 unk1 unk2)) amb-color z) 1.9921)
+      (set! (-> *overide-mood-color-table* data (logand (-> *time-of-day-context* mode) (time-of-day-palette-id unk0 unk1 unk2)) amb-color w) 2.0)
     )
 
     (defun all-randomize ()
