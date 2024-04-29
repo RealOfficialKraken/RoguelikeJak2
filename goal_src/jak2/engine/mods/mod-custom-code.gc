@@ -508,6 +508,7 @@ IF ADDING A NEW ITEM:
   (+! ohshiti 1)
   (when (= ohshiti 240)
     (play-sound-file "goal_src/jak2/pc/snd/ohshit.mp3" 100)
+    (set! intro?i 0)
   )
   (when (= ohshiti 241)
     (set! (-> *mood-control* overide-weather-flag) #t)
@@ -537,6 +538,7 @@ IF ADDING A NEW ITEM:
       (send-event *traffic-manager* 'set-guard-target-level 100)
       (set! gt-i 0.0)
       (set! gf-i 0.0)
+      (set! intro?i 0)
   )
   (when (>= ohshiti 1204)
     (send-event (ppointer->process *time-of-day*) 'change 'ratio 240.0) 
@@ -562,6 +564,7 @@ IF ADDING A NEW ITEM:
   (set! ohshiti 0)
   (send-event (ppointer->process *time-of-day*) 'change 'ratio 1.0) 
   (set! (-> *target* fact health) 8.0)
+  (set! intro?i 0)
 )
 )
 
@@ -3321,6 +3324,7 @@ These numbers go down in order from the ids. The first 1 is to save all the 0's
   (+! waits-frame 1)
   (when (= waits-frame 1)
     (set! tutorial-completed? #t)
+    (set! skip-intro #f)
   )
   (when (> waits-frame 60)
     (when (= display-death-screen #t)
@@ -6117,8 +6121,8 @@ Here are the shop IDs
     ~%There's a <COLOR_YELLOW>Yellow Eco Shard<COLOR_WHITE> that a <COLOR_RED>Krimzon Guard<COLOR_WHITE> has.
     ~%I need you to go into the <COLOR_YELLOW>Yellow Eco Stage<COLOR_WHITE> and find the guard that has it.
     ~%This eco is part of our ticket out of here. I'll get it the second you collect it.
-    ~%So please, don't worry about dying. You've got me to pull you back every time!
-    ~%
+    ~%I also want to say, do not be discouraged if you die. Your main focus should
+    ~%be on finding that shard, and getting as many skull gems and items as possible!
     ~%
     ~%
     ~%<COLOR_WHITE>Current Tokens:
@@ -6177,7 +6181,7 @@ Here are the shop IDs
     ~%Right now, a <COLOR_YELLOW>Yellow Eco Shard<COLOR_WHITE> can be collected from a <COLOR_RED>Krimzon Guard<COLOR_WHITE>.
     ~%It's in Act 1, if you see it, please get it for me!
     ~%<COLOR_YELLOW>Crates have a very low chance in dropping a random item for you. So, if you see
-    ~%a jetboard pop out of a crate, it's an item!
+    ~%a jetboard pop out of a crate, go grab it!
     ~%
     ~%
     ~%
@@ -7104,8 +7108,8 @@ Here are the shop IDs
   )
   (when (= log-sec 7)
     (set! di-s "The only way to set everything back to normal, is to go")
-    (set! di-s2 "through all the time dialated areas and fix it.")
-    (set! di-s3 "Usually this takes just completing the mission itself.")
+    (set! di-s2 "through all the time dialated areas and fix them all.")
+    (set! di-s3 "Usually you just have to complete the mission itself.")
     (set! di-s4 "")
   )
   (when (= log-sec 8)
@@ -7280,6 +7284,14 @@ Here are the shop IDs
   (when (= intro?i 4000)
     (set! skip-intro #t)
   )
+)
+
+(when 
+(and 
+(!= (-> *game-info* karma) 0)
+(= skip-intro #t)
+)
+  (set! skip-intro #f)
 )
 
 (when (= skip-intro #t)
