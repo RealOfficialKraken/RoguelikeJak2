@@ -477,6 +477,7 @@
   "entity-debug.o" ;; added
   "mod-settings.o" ;; added
   "mod-common-functions.o" ;; added
+  "checkpoint-randomizer.o" ;added by Kraken
   "mod-custom-code.o" ;; added
   "crimson-guard-level.o";;;;;;;;;;;;;;;;; added for guard-grenade and all the way down.
   "guard-conversation.o"
