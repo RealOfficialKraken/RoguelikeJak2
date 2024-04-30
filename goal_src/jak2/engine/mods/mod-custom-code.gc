@@ -3533,6 +3533,18 @@ These numbers go down in order from the ids. The first 1 is to save all the 0's
   )
 )
 
+(when (= rapid-fire-blue #t)
+  (+! rapid-fire-int 1)
+  (when (= rapid-fire-int 3)
+    (someone-fire-blue *target* (-> *target* gun fire-point) (-> *target* gun fire-dir-out))
+  )
+  (when (= rapid-fire-int 6)
+    (someone-fire-blue *target* (-> *target* gun fire-point) (-> *target* gun fire-dir-out))
+    (set! rapid-fire-int 0)
+    (set! rapid-fire-blue #f)
+  )
+)
+
 
 
 #| All of these are set to IDs

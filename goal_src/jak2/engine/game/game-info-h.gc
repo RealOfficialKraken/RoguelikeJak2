@@ -149,6 +149,8 @@
 (define p-explode-shot #f)
 
 (defun-extern weight-add (float))
+(define rapid-fire-blue #f)
+(define rapid-fire-int 0)
 
 (define ohshit #f)
 (define ohshiti 0)
