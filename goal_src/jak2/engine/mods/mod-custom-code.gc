@@ -8,12 +8,9 @@
 #| TODO:
 --------------------------------------------------------------------------------------------------
 
-- Make rest of items work
-- Make ending for dark eco act. Add a way to loop
-- Add a chance of random challenges that reward skull gems per stage, to compliment scalable items, and to make acquiring gems to buy items easier.
-- Makes crates teleportable, then play around with some wacky locations for some.
-- Once crates are tpable, make the crate from the 1st stage of act's weapon mod tp to jak's pos
+- Make ending for dark eco act.
 vv--optional ideas--vv
+- Add a chance of random challenges that reward skull gems per stage, to make acquiring gems to buy items easier.
 - Add a way to get items at the start of runs, at the cost of gems
 - After 100%ing items, for 1000 gems unlock the cheats menu.
 - Make a way to access shop from not just HipHog
@@ -374,19 +371,19 @@ IF ADDING A NEW ITEM:
   )
   (when (= (-> *game-info* total-trys) 14)
     (set! (-> *game-info* total-trys) 15)
-    (set! menu-value 125.0)
+    (set! menu-value 200.0)
     (set! mod-s "Gol's Unbeknowngst")
     (set! autosave-delayed #t)
   )
 (when (= (-> *game-info* total-trys) 13)
     (set! (-> *game-info* total-trys) 14)
-    (set! menu-value 100.0)
+    (set! menu-value 150.0)
     (set! mod-s "Rapid Fire")
     (set! autosave-delayed #t)
   )
   (when (= (-> *game-info* total-trys) 12)
     (set! (-> *game-info* total-trys) 13)
-    (set! menu-value 100.0)
+    (set! menu-value 125.0)
     (set! mod-s "Training Weight")
     (set! autosave-delayed #t)
   )
@@ -2380,14 +2377,6 @@ IF ADDING A NEW ITEM:
     (when 
     (and
      (= random-int 13)
-     (!= (/ (mod (-> *game-info* continue-deaths) 10000) 1000) 1)
-     )
-     (+! (-> *game-info* continue-deaths) 1000)
-     (set! roll-randomitem #f)
-    )
-    (when 
-    (and
-     (= random-int 14)
      (!= (/ (mod (-> *game-info* continue-deaths) 100000) 10000) 1)
      )
      (+! (-> *game-info* continue-deaths) 10000)
@@ -2395,7 +2384,7 @@ IF ADDING A NEW ITEM:
     )
     (when 
     (and
-     (= random-int 15)
+     (= random-int 14)
      (!= (/ (mod (-> *game-info* continue-deaths) 1000000) 100000) 1)
      )
      (+! (-> *game-info* continue-deaths) 10000)
@@ -2403,7 +2392,7 @@ IF ADDING A NEW ITEM:
     )
     (when 
     (and
-     (= random-int 16)
+     (= random-int 15)
      (!= (/ (mod (-> *game-info* continue-deaths) 10000000) 1000000) 1)
      )
      (+! (-> *game-info* continue-deaths) 1000000)
