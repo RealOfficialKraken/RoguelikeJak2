@@ -148,7 +148,7 @@
 
 (define p-explode-shot #f)
 
-
+(defun-extern weight-add (float))
 
 (define ohshit #f)
 (define ohshiti 0)
@@ -233,6 +233,11 @@
 (define p-sage-dark #f)
 
 (define p-already-punched? #f)
+
+(define punch-alignspeed 0.0)
+(define uppercut-alignspeed 0.0)
+(define uppercut-traction 0.0)
+(define twirl-alignspeed 0.0)
 
 (define dshotwait-r #f)
 (define dshotcount-r 0)

@@ -416,5 +416,33 @@
       )
     )
 
+    (defun activate-weight-start ()
+      (set! (-> *run-attack-mods* align-speed) (/ (-> *run-attack-mods* align-speed) 2))
+      (set! (-> *attack-mods* align-speed) (/ (-> *attack-mods* align-speed) 2))
+      (set! (-> *uppercut-jump-mods* align-speed) (/ (-> *uppercut-jump-mods* align-speed) 2))
+      (set! (-> *uppercut-jump-mods* slope-up-factor) (/ (-> *uppercut-jump-mods* slope-up-factor) 2))
+    )
+
+    (defun weight-add ()
+    ;runs every enemy kill after buying training weight.
+    ;It also saves float values to global variables for later use.
+      (when (and (< (-> *run-attack-mods* align-speed) 4.9999))
+        (+! (-> *run-attack-mods* align-speed) 0.01)
+        (set! punch-alignspeed (-> *run-attack-mods* align-speed))
+      )
+      (when (and (< (-> *attack-mods* align-speed) 4.9999))
+        (+! (-> *attack-mods* align-speed) 0.01)
+        (set! twirl-alignspeed (-> *attack-mods* align-speed))
+      )
+      (when (and (< (-> *uppercut-jump-mods* align-speed) 4.9999))
+        (+! (-> *uppercut-jump-mods* align-speed) 0.01)
+        (set! uppercut-alignspeed (-> *uppercut-jump-mods* slope-up-traction))
+      )
+      (when (and (< (-> *uppercut-jump-mods* slope-up-factor) 4.9999))
+        (+! (-> *uppercut-jump-mods* slope-up-factor) 0.01)
+        (set! uppercut-traction (-> *uppercut-jump-mods* slope-up-factor))
+      )
+    )
+
     
 

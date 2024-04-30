@@ -3122,14 +3122,14 @@ These numbers go down in order from the ids. The first 1 is to save all the 0's
 (when 
 (and
 (= p-big-punch #t)
-(!= (-> *run-attack-mods* align-speed) 2.0)
+(!= (-> *run-attack-mods* impact-fric) 0.0)
 )
 (set! (-> *run-attack-mods* align-speed) 2.0)
 (set! (-> *run-attack-mods* impact-fric) 0.0)
 )
 (when 
 (and
-(= p-big-punch #f)
+(and (= p-big-punch #f) (= p-sage-blue #f))
 (!= (-> *run-attack-mods* align-speed) 1.0)
 )
 (set! (-> *run-attack-mods* align-speed) 1.0)
@@ -4445,6 +4445,7 @@ Here are the shop IDs
       (set! item-tss1 "Training Weight")
       (set! p-sage-blue #t)
       (set! item-update #t)
+      (activate-weight-start)
       (set! (-> *game-info* continue-deaths) (+ (-> *game-info* continue-deaths) 10000))
       (when (= already-teleported? #f)
         (set! autosave-delayed #t)
@@ -4457,6 +4458,7 @@ Here are the shop IDs
       (-! (-> *game-info* skill) 15.0)
       (set! shopitem1 "(Out of Stock)")
       (set! item-tss1 "Training Weight")
+      (activate-weight-start)
       (set! p-sage-blue #t)
       (set! item-update #t)
       (set! (-> *game-info* continue-deaths) (+ (-> *game-info* continue-deaths) 10000))
@@ -4471,6 +4473,7 @@ Here are the shop IDs
       (-! (-> *game-info* skill) 15.0)
       (set! shopitem3 "(Out of Stock)")
       (set! item-tss1 "Training Weight")
+      (activate-weight-start)
       (set! p-sage-blue #t)
       (set! item-update #t)
       (set! (-> *game-info* continue-deaths) (+ (-> *game-info* continue-deaths) 10000))
