@@ -110,7 +110,7 @@ IF ADDING A NEW ITEM:
   (none)
   )
 
-(defbehavior vin-npc-init-by-other vin-npc ((vec vector))
+(defbehavior vin-npc-init-by-other vin-npc ((vec vector)) ;spawn vinny
   (stack-size-set! (-> self main-thread) 512)
   (process-taskable-method-31 self)
   (logior! (-> self mask) (process-mask actor-pause))
@@ -3870,6 +3870,9 @@ Here are the shop IDs
       (set! (-> *game-info* buzzer-total) 1.0)
       (set! act-act 1)
       (set! print-stage 1)
+      (set! teleport-hiphog #f)
+      (set! already-teleported? #f)
+      (set! teleport-back? #f)
       (set! temp-skullgemamount (-> *game-info* gem))
       (set! temp-health (-> *target* fact health))
       (set! temp-orbs (-> *game-info* skill))
