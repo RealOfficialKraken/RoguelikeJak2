@@ -9,6 +9,11 @@
 (declare-type continue-point basic)
 (declare-type game-save basic)
 
+
+(define-extern someone-fire-blue (function process-drawable vector vector (pointer process)))
+(define-extern someone-fire-red (function process-drawable vector vector (pointer process)))
+(define-extern someone-fire-dark (function process-drawable vector vector (pointer process)))
+(define-extern someone-fire-guard-grenade (function process-drawable vector vector (pointer process)))
 (define in-game? #f)
 (define tin-game? #f)
 (define tin-game-wait #f)

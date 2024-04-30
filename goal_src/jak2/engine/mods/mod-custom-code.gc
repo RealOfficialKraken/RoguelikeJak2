@@ -5554,7 +5554,30 @@ Here are the shop IDs
 )
 (clear matt-str)
     (clear *pc-encoded-matt-str*)
-    (format matt-str "<COLOR_PINK>Blast opponents with ScatterGun shot when you fire your weapons"
+    (format matt-str "<COLOR_PINK>Blast opponents at lightning speeds!~%Does not affect the <COLOR_RED>Scattergun<COLOR_PINK>."
+    )
+    (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+    (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+      ;; reset bucket settings prior to drawing - font won't do self for us, and
+      ;; draw-raw-image can sometimes mess them up. (intro sequence)
+      (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+      (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 250 245 0.0 (font-color default) (font-flags middle shadow kerning large))))
+        (set! (-> font-ctx scale) 0.325)
+        (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+)
+
+(when (and 
+(= in-menu2 #t)
+(= p-sage-dark #f)
+(or
+(and (= shopid1 16) (= menu-slot 0))
+(and (= shopid2 16) (= menu-slot 2))
+(and (= shopid3 16) (= menu-slot 1))
+)
+)
+(clear matt-str)
+    (clear *pc-encoded-matt-str*)
+    (format matt-str "<COLOR_PINK>Crit with a Peacemaker blast out of any weapon!~%Crit chance based off your <COLOR_GREEN>luck stat"
     )
     (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
     (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
