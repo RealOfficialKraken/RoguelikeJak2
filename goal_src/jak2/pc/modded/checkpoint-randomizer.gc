@@ -413,6 +413,9 @@
             (dm-play-task-with-continue (game-task palace-sneak-in) "throne-ashelin")
             (set! waitenter #t)
           )
+        (set! (-> *game-info* gem) temp-skullgemamount)
+        (set! (-> *target* fact health) temp-health)
+        (set! (-> *game-info* skill) temp-orbs)
       )
     )
 
