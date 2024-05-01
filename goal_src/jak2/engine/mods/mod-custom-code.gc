@@ -9,6 +9,7 @@
 --------------------------------------------------------------------------------------------------
 
 - Make ending for dark eco act.
+- DO NOT increase enemy speeds on under-sig
 vv--optional ideas--vv
 - Add a chance of random challenges that reward skull gems per stage, to make acquiring gems to buy items easier.
 - Add a way to get items at the start of runs, at the cost of gems
@@ -2132,6 +2133,7 @@ IF ADDING A NEW ITEM:
     (when (and (>= (-> *game-info* total-deaths) 4)(= (-> *game-info* buzzer-total) 16.0)(= level-completed? #t))
       (all-randomize)
       (update-nestmood)
+      (set! print-stage 1)
       (set! act-act 4)
       (set! level-completed? #f)
       (set! (-> *time-of-day-context* overide-enable) #f)
@@ -2151,18 +2153,21 @@ IF ADDING A NEW ITEM:
     (when (and (>= (-> *game-info* total-deaths) 4)(= (-> *game-info* buzzer-total) 17.0)(= level-completed? #t))
       (all-randomize)
       (update-nestmood)
+      (set! print-stage 2)
       (set! act-act 4)
       (set! level-completed? #f)
     )
     (when (and (>= (-> *game-info* total-deaths) 4)(= (-> *game-info* buzzer-total) 18.0)(= level-completed? #t))
       (all-randomize)
       (update-nestmood)
+      (set! print-stage 3)
       (set! act-act 4)
       (set! level-completed? #f)
     )
     (when (and (>= (-> *game-info* total-deaths) 4)(= (-> *game-info* buzzer-total) 19.0)(= level-completed? #t))
       (set! act4-4 #t)
       (update-nestmood)
+      (set! print-stage 4)
       (set! act-act 4)
       (set! level-completed? #f)
       (when (rand-vu-percent? 0.0)
@@ -2172,6 +2177,7 @@ IF ADDING A NEW ITEM:
     (when (and (>= (-> *game-info* total-deaths) 4)(= (-> *game-info* buzzer-total) 20.0)(= level-completed? #t))
       (set! act4-5 #t)
       (update-nestmood)
+      (set! print-stage 5)
       (set! level-completed? #f)
     )
   (set! level-completed? #f)
