@@ -6639,7 +6639,7 @@ Here are the shop IDs
   )
 )
 
-(when (and (= (-> *game-info* total-deaths) 4)(= vin-shop #t))
+(when (and (!= (-> *game-info* karma) 5.0)(= (-> *game-info* total-deaths) 4)(= vin-shop #t))
   (when (or
     (= vin-talk 1)
     (= vin-talk 2)
@@ -6656,6 +6656,45 @@ Here are the shop IDs
     ~%
     ~%If you're still having trouble, try saving up <COLOR_YELLOW>Skull Gems<COLOR_WHITE> to get stronger items.
     ~%We're all counting on you, Jak! <COLOR_GREEN>Beat MetalKor, and fulfill the prophecy again!
+    ~%
+    ~%<COLOR_WHITE>Current Tokens:
+    ~%<COLOR_PINK>~d
+    ~%
+    ~%<COLOR_RED>R1: <COLOR_WHITE>Buy <COLOR_GREEN>~S<COLOR_WHITE> to permenantly put in the shop for <COLOR_YELLOW>~d Tokens!
+    ~%
+    ~%<COLOR_GREEN>Press <COLOR_RED>R3<COLOR_GREEN> to Exit"
+    (the int (-> *game-info* fuel))
+    mod-s
+    (the int menu-value)
+    )
+    (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+    (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+      ;; reset bucket settings prior to drawing - font won't do self for us, and
+      ;; draw-raw-image can sometimes mess them up. (intro sequence)
+      (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+      (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 250 65 0.0 (font-color default) (font-flags middle shadow kerning large))))
+        (set! (-> font-ctx scale) 0.325)
+        (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+  )
+)
+
+(when (and (= (-> *game-info* karma) 5.0)(= (-> *game-info* total-deaths) 4)(= vin-shop #t))
+  (when (or
+    (= vin-talk 1)
+    (= vin-talk 2)
+    (= vin-talk 3)
+    (= vin-talk 4)
+  )
+    (clear matt-str)
+    (clear *pc-encoded-matt-str*)
+    (format matt-str "
+    <COLOR_WHITE>Vin:~%Oh man! We were so close!
+    ~%b-But don't worry! I've got that light eco scattered across infinity
+    ~%They're all in crates, so let's use this win to our advantage and get back there!
+    ~%
+    ~%
+    ~%
+    ~%
     ~%
     ~%<COLOR_WHITE>Current Tokens:
     ~%<COLOR_PINK>~d
