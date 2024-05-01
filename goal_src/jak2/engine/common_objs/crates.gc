@@ -1175,6 +1175,15 @@ This commonly includes things such as:
             )
       )
     )
+    (when 
+  (and
+  (>= (-> *game-info* karma) 5.0)
+  (rand-vu-percent? 0.3)
+  )
+    (set! (-> this fact pickup-type) (pickup-type eco-yellow))
+    (set! (-> this fact pickup-amount) 1.0)
+    (color-light-eco)
+  )
     (when (rand-vu-percent? 0.33)
     (set! (-> this fact pickup-type) (pickup-type ammo-random))
     (set! (-> this fact pickup-amount) 1.0)
@@ -1237,14 +1246,6 @@ CRATE HAS A WEAPON MOD STORED UP")
   (set! (-> this carry max-pull) 3686.4)
   (set! (-> this carry carry-radius) 3276.8)
   (set! (-> this target) (the-as handle #f))
-    (when (and (= act-act 2)(= (-> *game-info* total-deaths) 2)(rand-vu-percent? (- luck 0.1)))
-      (set! (-> this fact pickup-type) (pickup-type eco-blue))
-      (set! color-floor #t)
-      (print "
-
-Eco Shard spawned in a crate nearby!
-")
-    )
   (none)
   )
 
