@@ -5,6 +5,9 @@
     ;; name in dgo: checkpoint-randomizer
     ;; dgos: TODO
 
+    ;this file is only used for the (all-randomize) function, 
+    ;everything else in this file is either for certain items, or for testing purposes
+
 
     (defun act1-1-randomize ()
         (let (
@@ -447,5 +450,32 @@
       )
     )
 
-    
+    (defun vehicle-particle-roll ()
+      (let 
+      (
+        (roll (rand-vu-int-range 1 5))
+        (color-red (new 'static 'vector :x 255.0 :y 0.0 :z 0.0 :w 1.0))
+        (color-yellow (new 'static 'vector :x 0.0 :y 255.0 :z 0.0 :w 1.0))
+        (color-blue (new 'static 'vector :x 0.0 :y 0.0 :z 255.0 :w 1.0))
+        (color-lightblue (new 'static 'vector :x 0.0 :y 127.0 :z 127.0 :w 1.0))
+        (color-orange (new 'static 'vector :x 127.0 :y 127.0 :z 0.0 :w 1.0))
+        (color-white (new 'static 'vector :x 255.0 :y 255.0 :z 255.0 :w 1.0))
+      )
+      (when (= roll 1)
+        (set! (-> *part-id-table* 776 init-specs 2 initial-valuef) (-> color-red x))
+      )
+      (when (= roll 2)
+        (set! (-> *part-id-table* 776 init-specs 2 initial-valuef) (-> color-yellow x))
+      )
+      (when (= roll 3)
+        (set! (-> *part-id-table* 776 init-specs 2 initial-valuef) (-> color-blue x))
+      )
+      (when (= roll 4)
+      (set! (-> *part-id-table* 776 init-specs 2 initial-valuef) (-> color-red x))
+      )
+      (when (= roll 5)
+      (set! (-> *part-id-table* 776 init-specs 2 initial-valuef) (-> color-red x))
+      )
+      )
+    )
 

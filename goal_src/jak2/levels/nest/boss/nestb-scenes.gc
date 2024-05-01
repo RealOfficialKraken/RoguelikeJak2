@@ -1130,6 +1130,7 @@
           )
         )
       (10000
+        (task-close! "nest-boss-introduction")
         (apply ,(lambda :behavior scene-player () (set-darkjak-highres-nest-texture-morph! 0.0) (none)))
         (setting-pers music mode 'danger4 time (seconds 5))
         )

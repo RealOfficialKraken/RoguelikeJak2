@@ -787,7 +787,7 @@
         )
       (2990 (fadeout (frame-time-30 10)))
       (10000
-        (task-close! "nest-boss-introduction")
+        (task-close! "nest-get-to-gun-resolution")
         (apply ,(lambda :behavior scene-player
                   ()
                   (when (-> self aborted?)
