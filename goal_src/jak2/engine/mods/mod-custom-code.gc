@@ -2671,7 +2671,8 @@ These numbers go down in order from the ids. The first 1 is to save all the 0's
     (set! power-level "IllllllllllI")
   )
 
-  (when (= power-dur 60)
+  (when (= p-sage-dark #f)
+    (when (= power-dur 60)
     (set! power-level "Illlllllll I")
   )
   (when (= power-dur 120)
@@ -2701,6 +2702,40 @@ These numbers go down in order from the ids. The first 1 is to save all the 0's
   (when (= power-dur 599)
     (set! power-level "I          I")
   )
+  )
+
+  (when (= p-sage-dark #t)
+    (when (= power-dur 180)
+    (set! power-level "Illlllllll I")
+  )
+  (when (= power-dur 360)
+    (set! power-level "Illllllll  I")
+  )
+  (when (= power-dur 180)
+    (set! power-level "Illlllll   I")
+  )
+  (when (= power-dur 540)
+    (set! power-level "Illllll    I")
+  )
+  (when (= power-dur 720)
+    (set! power-level "Illlll     I")
+  )
+  (when (= power-dur 900)
+    (set! power-level "Illll      I")
+  )
+  (when (= power-dur 1080)
+    (set! power-level "Illl       I")
+  )
+  (when (= power-dur 1260)
+    (set! power-level "Ill        I")
+  )
+  (when (= power-dur 1440)
+    (set! power-level "Il         I")
+  )
+  (when (= power-dur 1620)
+    (set! power-level "I          I")
+  )
+  )
 
 (clear matt-str)
     (clear *pc-encoded-matt-str*)
@@ -2718,7 +2753,8 @@ These numbers go down in order from the ids. The first 1 is to save all the 0's
 
 
 
-  (when (= power-dur 600)
+  (when (= p-sage-dark #f)
+    (when (= power-dur 600)
     (set! power-dur 0)
     (set! powered? #f)
     (set! power-shoti 0)
@@ -2727,6 +2763,19 @@ These numbers go down in order from the ids. The first 1 is to save all the 0's
     (set! (-> *part-id-table* 224 init-specs 8 initial-valuef) 0.0)
     (set! (-> *part-id-table* 224 init-specs 9 initial-valuef) 8.0)
     (set! (-> *part-id-table* 230 init-specs 8 initial-valuef) 0.0)
+  )
+  )
+  (when (= p-sage-dark #t)
+    (when (= power-dur 1621)
+    (set! power-dur 0)
+    (set! powered? #f)
+    (set! power-shoti 0)
+    (set! power-shot #f)
+    ;particle values are set back here
+    (set! (-> *part-id-table* 224 init-specs 8 initial-valuef) 0.0)
+    (set! (-> *part-id-table* 224 init-specs 9 initial-valuef) 8.0)
+    (set! (-> *part-id-table* 230 init-specs 8 initial-valuef) 0.0)
+  )
   )
 )
 
@@ -3988,6 +4037,8 @@ Here are the shop IDs
       (set! teleport-hiphog #f)
       (set! already-teleported? #f)
       (set! teleport-back? #f)
+      (set! camera-unlocked #t)
+      (set! pause-menu-blocked? #f)
       (set! temp-skullgemamount (-> *game-info* gem))
       (set! temp-health (-> *target* fact health))
       (set! temp-orbs (-> *game-info* skill))
@@ -5032,7 +5083,7 @@ Here are the shop IDs
       ;; reset bucket settings prior to drawing - font won't do self for us, and
       ;; draw-raw-image can sometimes mess them up. (intro sequence)
       (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
-      (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 255 350 0.0 (font-color default) (font-flags middle shadow kerning large))))
+      (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 255 400 0.0 (font-color default) (font-flags middle shadow kerning large))))
         (set! (-> font-ctx scale) 0.325)
         (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
 )
@@ -5697,7 +5748,7 @@ Here are the shop IDs
 )
 (clear matt-str)
     (clear *pc-encoded-matt-str*)
-    (format matt-str "<COLOR_PINK>Crit with a Peacemaker blast out of any weapon!~%Crit chance based off your <COLOR_GREEN>luck stat"
+    (format matt-str "<COLOR_PINK>Crit with a Peacemaker blast out of any weapon!~%Crit chance based off your <COLOR_GREEN>luck stat~%Also makes a very special ability last longer"
     )
     (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
     (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
@@ -6170,7 +6221,7 @@ Here are the shop IDs
 (not *scene-player*)
 (= avoidc-waitb #f)
 (= run-in-progress #t)
-(= (-> *game-info* karma) 4.0)
+(>= (-> *game-info* karma) 4.0)
 (not (cpad-hold? 0 l2))
 (= in-hub? #f)
 (= stat-menu #t)
@@ -6184,7 +6235,7 @@ Here are the shop IDs
 (not *scene-player*)
 (= avoidc-waitb #f)
 (= run-in-progress #t)
-(= (-> *game-info* karma) 4.0)
+(>= (-> *game-info* karma) 4.0)
 (= in-hub? #f)
 (cpad-pressed? 0 l2)
 (= stat-menu #f)
@@ -6692,7 +6743,7 @@ Here are the shop IDs
     (format matt-str "
     <COLOR_WHITE>Vin:~%Oh man! We were so close!
     ~%b-But don't worry! I've got that light eco scattered across infinity
-    ~%They're all in crates, so let's use this win to our advantage and get back there!
+    ~%They're all in crates and enemies, so let's use this win to our advantage and get back there!
     ~%
     ~%
     ~%
