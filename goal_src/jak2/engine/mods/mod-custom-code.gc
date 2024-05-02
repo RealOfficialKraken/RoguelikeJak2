@@ -6332,7 +6332,7 @@ Here are the shop IDs
         (set! (-> font-ctx scale) 0.325)
         (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
 )
-(when (= stat-menu #t)
+(when (and (= stat-menu #t)(!= (-> *game-info* karma) 6.0))
   (clear matt-str)
     (clear *pc-encoded-matt-str*)
     (format matt-str "
@@ -6368,6 +6368,41 @@ Here are the shop IDs
         (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
 )
 
+(when (and (= stat-menu #t)(!= (-> *game-info* karma) 6.0))
+  (clear matt-str)
+    (clear *pc-encoded-matt-str*)
+    (format matt-str "
+<COLOR_WHITE>Current Run:
+~%<COLOR_ORANGE>Act ~D <COLOR_YELLOW>Stage ~D
+~%
+~%<COLOR_GREEN>Luck:<COLOR_ORANGE> ~F
+~%
+~%
+~%
+~%
+~%
+~%
+~%
+~%
+~%
+~%
+~%
+~%<COLOR_ORANGE>Press <COLOR_RED>R3 <COLOR_ORANGE>to open the <COLOR_GREEN>Cheat Menu<COLOR_ORANGE>.
+~%
+"
+    act-act
+    print-stage
+    luck
+    )
+    (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+    (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+      ;; reset bucket settings prior to drawing - font won't do self for us, and
+      ;; draw-raw-image can sometimes mess them up. (intro sequence)
+      (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+      (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 250 75 0.0 (font-color default) (font-flags middle shadow kerning large))))
+        (set! (-> font-ctx scale) 0.325)
+        (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+)
 
 (when (and (= (-> *game-info* total-deaths) 1)(= vin-shop #t))
     (when (= vin-talk 1)
@@ -7931,6 +7966,83 @@ Here are the shop IDs
   (set! intro?i 0)
 )
 
+
+
+
+
+(when                         ;stat menu cheat option
+(and 
+(= run-in-progress #t)
+(= (-> *game-info* karma) 6.0)
+(cpad-hold? 0 l2)
+(cpad-pressed? 0 r3)
+)
+  (set! in-cheat #t)
+  (set! camera-locked #t)
+  (set! pause-menu-blocked? #t)
+)
+
+(when (and (= in-cheat #t)(= cm-select 0)(cpad-pressed? 0 left))
+(-! cm-option 1)
+(when (<= cm-option 0)
+  (set! cm-option 1)
+)
+)
+
+(when (and (= in-cheat #t)(= cm-select 0)(cpad-pressed? 0 right))
+  (+! cm-option 1)
+  (when (>= cm-option 21)
+    (set! cm-option 20)
+  )
+)
+
+(when (and (= in-cheat #t)(= cm-select 1)(cpad-pressed? 0 left))
+(-! cm-option 1)
+(when (<= cm-option 0)
+  (set! cm-option 1)
+)
+)
+
+(when (and (= in-cheat #t)(= cm-select 1)(cpad-pressed? 0 right))
+  (+! cm-option 1)
+  (when (>= cm-option 17)
+    (set! cm-option 16)
+  )
+)
+
+(when (and (= in-cheat #t)(cpad-pressed? 0 up))
+(-! cm-select 1)
+(when (<= cm-select 0)
+  (set! cm-select 1)
+)
+)
+
+(when (and (= in-cheat #t)(cpad-pressed? 0 down))
+  (+! cm-select 1)
+  (when (>= cm-select 3)
+    (set! cm-select 2)
+  )
+)
+
+(when (and (= in-cheat #t)(= cm-select 0))
+  (clear matt-str)
+    (clear *pc-encoded-matt-str*)
+    (format matt-str "<COLOR_GREEN>Select Act:~%<COLOR_YELLOW>~D~%~%<COLOR_WHITE>Weapon Select:~%<COLOR_YELLOW>~S"
+    cm-option
+    cm-string
+    )
+    (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+    (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+      ;; reset bucket settings prior to drawing - font won't do self for us, and
+      ;; draw-raw-image can sometimes mess them up. (intro sequence)
+      (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+      (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 250 65 0.0 (font-color default) (font-flags middle shadow kerning large))))
+        (set! (-> font-ctx scale) 0.325)
+        (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+)
+
+
+    
 #|
 
     (set! traffic-metalheads? #t) ;turns on traffic lwideb'

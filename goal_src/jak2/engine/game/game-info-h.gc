@@ -309,6 +309,11 @@
 
 (define autosave-delayed #f)
 
+(define in-cheat #f)
+(define cm-select 0)
+(define cm-option 0)
+(define cm-string "")
+
 (define main-msg-1 #f)
 (define main-msg-2 #f)
 (define main-msg-3 #f)
