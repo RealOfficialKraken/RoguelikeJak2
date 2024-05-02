@@ -162,11 +162,20 @@
 (define waitdie-tutorial #f)
 (define waitdiei 0)
 (define dark-mode #f)
+(define ending-loop #f)
+(define ending-i 0)
 
 (define intro-wait #f)
 (define intro-waiti 0)
 
 (define save-w 0)
+(define see-ending #f)
+
+(define ecol1 (new 'static 'vector :x (meters 176.8366) :y (meters 23.4631) :z (meters -435.5126)))
+(define ecol2 (new 'static 'vector :x (meters 183.1626) :y (meters 23.4631) :z (meters -416.5868)))
+(define ecol3 (new 'static 'vector :x (meters 201.2980) :y (meters 23.4631) :z (meters -414.8286)))
+(define ecol4 (new 'static 'vector :x (meters 210.0315) :y (meters 23.4631) :z (meters -429.6452)))
+(define ecol5 (new 'static 'vector :x (meters 205.0616) :y (meters 23.4631) :z (meters -442.8900)))
 
 (define act-stage 0)
 (define act-task 0)
@@ -296,6 +305,7 @@
 
 (define in-hub? #f)
 (define talk-to-vin #f)
+(define talk-rare #f)
 
 (define autosave-delayed #f)
 

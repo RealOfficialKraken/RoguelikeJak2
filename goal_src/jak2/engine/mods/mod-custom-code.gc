@@ -2176,7 +2176,6 @@ IF ADDING A NEW ITEM:
     )
     (when (and (>= (-> *game-info* total-deaths) 4)(= (-> *game-info* buzzer-total) 20.0)(= level-completed? #t))
       (set! act4-5 #t)
-      (update-nestmood)
       (set! print-stage 5)
       (set! level-completed? #f)
     )
@@ -3290,6 +3289,9 @@ These numbers go down in order from the ids. The first 1 is to save all the 0's
   (+! vin-talk 1)
   (when (>= vin-talk 5)
     (set! vin-talk 1)
+  )
+  (when (and (rand-vu-percent? 0.01)(= (-> *game-info* karma) 6.0))
+    (set! talk-rare #t)
   )
 )
 
@@ -5175,7 +5177,7 @@ Here are the shop IDs
         (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
 )
 
-(when (and (= in-menu #t)(= (paused?) #f)(= win-lose #f)(>= (-> *game-info* karma) 2.0)(not (cpad-pressed? 0 x)))
+(when (and (= in-menu #t)(= (paused?) #f)(= win-lose #f)(!= (-> *game-info* karma) 6.0)(>= (-> *game-info* karma) 2.0)(not (cpad-pressed? 0 x)))
   (clear matt-str)
     (clear *pc-encoded-matt-str*)
     (format matt-str "<COLOR_WHITE>Welcome to<COLOR_RED> Roguelike Jak II<COLOR_WHITE>!
@@ -5215,7 +5217,9 @@ Here are the shop IDs
         (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
 )
 
-(when (and (= in-menu #t)(= (paused?) #f)(= win-lose #t)(>= (-> *game-info* karma) 2.0)(not (cpad-pressed? 0 x)))
+
+
+(when (and (= in-menu #t)(= (paused?) #f)(= win-lose #t)(>= (-> *game-info* karma) 2.0)(!= (-> *game-info* karma) 6.0)(not (cpad-pressed? 0 x)))
   (clear matt-str)
     (clear *pc-encoded-matt-str*)
     (format matt-str "~%<COLOR_GREEN>~%You Won!
@@ -5243,6 +5247,43 @@ Here are the shop IDs
     (the int (-> *game-info* fuel))
     mod-s
     (the int menu-value)
+    )
+    (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+    (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+      ;; reset bucket settings prior to drawing - font won't do self for us, and
+      ;; draw-raw-image can sometimes mess them up. (intro sequence)
+      (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+      (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 250 25 0.0 (font-color default) (font-flags middle shadow kerning large))))
+        (set! (-> font-ctx scale) 0.325)
+        (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+)
+
+(when (and (= in-menu #t)(= (paused?) #f)(>= (-> *game-info* karma) 6.0)(not (cpad-pressed? 0 x)))
+  (clear matt-str)
+    (clear *pc-encoded-matt-str*)
+    (format matt-str "~%<COLOR_GREEN>~%You beat RogueLike Jak II!
+~%<COLOR_ORANGE>Thank you for playing!!!!
+~%<COLOR_WHITE>Skulls Gems turned into Tokens:
+~%<COLOR_YELLOW>~d
+~%
+~%
+~%<COLOR_WHITE>Progress:
+~%<COLOR_GREEN> You frickin won
+~%
+~%
+~%<COLOR_WHITE>Current Tokens:
+~%<COLOR_PINK>~d
+~%
+~%<COLOR_ORANGE>BIG GG!! CHEATS unlocked while pressing R2 while <COLOR_GREEN>in your run!
+~%<COLOR_WHITE>Light Eco<COLOR_ORANGE> is still present across the universe!
+~%<COLOR_GREEN>The Time Loop is now fixed in all dimensions!
+~%<COLOR_ORANGE>Maybe there's more secrets to unfold...
+~%
+~%<COLOR_GREEN>Press <COLOR_BLUE>X<COLOR_GREEN> to Continue"
+    (the int temp-skullgemamount)
+    act-act
+    print-stage
+    (the int (-> *game-info* fuel))
     )
     (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
     (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
@@ -5343,7 +5384,7 @@ Here are the shop IDs
 
 (clear matt-str)
     (clear *pc-encoded-matt-str*)
-    (format matt-str "<COLOR_WHITE>INFO:~%<COLOR_ORANGE>You cannot <COLOR_YELLOW>load<COLOR_ORANGE> a save while in a run!~%<COLOR_ORANGE>Please restart the game, then load the save from the main menu."
+    (format matt-str "<COLOR_WHITE>INFO:~%<COLOR_ORANGE>You cannot do that while in a run!~%<COLOR_ORANGE>Please restart the game, then load the save from the main menu."
     )
     (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
     (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
@@ -6698,7 +6739,7 @@ Here are the shop IDs
   )
 )
 
-(when (and (!= (-> *game-info* karma) 5.0)(= (-> *game-info* total-deaths) 4)(= vin-shop #t))
+(when (and (!= (-> *game-info* karma) 5.0)(!= (-> *game-info* karma) 6.0)(= (-> *game-info* total-deaths) 4)(= vin-shop #t))
   (when (or
     (= vin-talk 1)
     (= vin-talk 2)
@@ -6737,6 +6778,44 @@ Here are the shop IDs
   )
 )
 
+(when (and (= (-> *game-info* karma) 5.0)(!= (-> *game-info* karma) 6.0)(= (-> *game-info* total-deaths) 4)(= vin-shop #t))
+  (when (or
+    (= vin-talk 1)
+    (= vin-talk 2)
+    (= vin-talk 3)
+    (= vin-talk 4)
+  )
+    (clear matt-str)
+    (clear *pc-encoded-matt-str*)
+    (format matt-str "
+    <COLOR_WHITE>Vin:~%Oh man! We were so close!
+    ~%b-But don't worry! I've got that light eco scattered across infinity
+    ~%They're all in crates and enemies, so let's use this win to our advantage and get back there!
+    ~%
+    ~%
+    ~%
+    ~%
+    ~%
+    ~%<COLOR_WHITE>Current Tokens:
+    ~%<COLOR_PINK>~d
+    ~%
+    ~%<COLOR_RED>R1: <COLOR_WHITE>Buy <COLOR_GREEN>~S<COLOR_WHITE> to permenantly put in the shop for <COLOR_YELLOW>~d Tokens!
+    ~%
+    ~%<COLOR_GREEN>Press <COLOR_RED>R3<COLOR_GREEN> to Exit"
+    (the int (-> *game-info* fuel))
+    mod-s
+    (the int menu-value)
+    )
+    (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+    (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+      ;; reset bucket settings prior to drawing - font won't do self for us, and
+      ;; draw-raw-image can sometimes mess them up. (intro sequence)
+      (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+      (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 250 65 0.0 (font-color default) (font-flags middle shadow kerning large))))
+        (set! (-> font-ctx scale) 0.325)
+        (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+  )
+)
 (when (and (= (-> *game-info* karma) 5.0)(= (-> *game-info* total-deaths) 4)(= vin-shop #t))
   (when (or
     (= vin-talk 1)
@@ -6753,6 +6832,85 @@ Here are the shop IDs
     ~%
     ~%
     ~%
+    ~%
+    ~%
+    ~%<COLOR_WHITE>Current Tokens:
+    ~%<COLOR_PINK>~d
+    ~%
+    ~%<COLOR_RED>R1: <COLOR_WHITE>Buy <COLOR_GREEN>~S<COLOR_WHITE> to permenantly put in the shop for <COLOR_YELLOW>~d Tokens!
+    ~%
+    ~%<COLOR_GREEN>Press <COLOR_RED>R3<COLOR_GREEN> to Exit"
+    (the int (-> *game-info* fuel))
+    mod-s
+    (the int menu-value)
+    )
+    (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+    (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+      ;; reset bucket settings prior to drawing - font won't do self for us, and
+      ;; draw-raw-image can sometimes mess them up. (intro sequence)
+      (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+      (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 250 65 0.0 (font-color default) (font-flags middle shadow kerning large))))
+        (set! (-> font-ctx scale) 0.325)
+        (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+  )
+)
+
+(when (and (= (-> *game-info* karma) 6.0)(= (-> *game-info* total-deaths) 4)(= vin-shop #t))
+  (when (or
+    (= vin-talk 1)
+    (= vin-talk 2)
+    (= vin-talk 3)
+    (= vin-talk 4)
+  )
+    (clear matt-str)
+    (clear *pc-encoded-matt-str*)
+    (format matt-str "
+    <COLOR_RED>...~%
+    ~%
+    ~%
+    ~%
+    ~%
+    ~%
+    ~%
+    ~%
+    ~%<COLOR_WHITE>Current Tokens:
+    ~%<COLOR_PINK>~d
+    ~%
+    ~%<COLOR_RED>R1: <COLOR_WHITE>Buy <COLOR_GREEN>~S<COLOR_WHITE> to permenantly put in the shop for <COLOR_YELLOW>~d Tokens!
+    ~%
+    ~%<COLOR_GREEN>Press <COLOR_RED>R3<COLOR_GREEN> to Exit"
+    (the int (-> *game-info* fuel))
+    mod-s
+    (the int menu-value)
+    )
+    (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+    (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+      ;; reset bucket settings prior to drawing - font won't do self for us, and
+      ;; draw-raw-image can sometimes mess them up. (intro sequence)
+      (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+      (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 250 65 0.0 (font-color default) (font-flags middle shadow kerning large))))
+        (set! (-> font-ctx scale) 0.325)
+        (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+  )
+)
+
+(when (and (= (-> *game-info* karma) 6.0)(= (-> *game-info* total-deaths) 4)(= vin-shop #t))
+  (when (or
+    (= vin-talk 1)
+    (= vin-talk 2)
+    (= vin-talk 3)
+    (= vin-talk 4)
+    (= talk-rare #t)
+  )
+    (clear matt-str)
+    (clear *pc-encoded-matt-str*)
+    (format matt-str "
+    <COLOR_RED>Yes I'm the one who put you back here.~%I couldn't figure out how to quarantine worlds like Vin did.
+    ~%He's truly a smart creature.
+    ~%
+    ~%But none of that matters now, as you're trapped here with me.
+    ~%You're lucky though, you get to live out your natural life.
+    ~%...I'm here for eternity...
     ~%
     ~%
     ~%<COLOR_WHITE>Current Tokens:
@@ -7170,7 +7328,7 @@ Here are the shop IDs
   (when (or (= wait-tutorial #f)(= ohshit #f))
     (clear matt-str)
       (clear *pc-encoded-matt-str*)
-      (format matt-str "<COLOR_YELLOW>karma (progressive items) <COLOR_ORANGE>~D/5"
+      (format matt-str "<COLOR_YELLOW>karma (progressive items) <COLOR_ORANGE>~D/6"
       (the int (-> *game-info* karma))
       )
       (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
@@ -7481,6 +7639,122 @@ Here are the shop IDs
   )
 )
 
+(when (and (= see-ending #f)(= (-> *game-info* karma) 5.0)(not *scene-player*)(= (-> *game-info* total-deaths) 4)(task-node-closed? (game-task-node nest-boss-resolution)) *target* (= in-game? #t)(= (pause-allowed?) #t))
+  (set! log-id 4)
+  (set! di-s "you- That was amazing!")
+  (set! di-s2 "The time loop is fixed! Our destinies are back on track!")
+  (set! di-s3 "")
+  (set! di-s4 "")
+  (set! log-sec 0)
+  (set! in-dialogue? #t)
+  (set! nest-mission #t)
+  (set! camera-locked #t)
+  (set! see-ending #t)
+)
+
+(when 
+(and 
+(cpad-pressed? 0 x)
+(= log-id 4)
+(= in-dialogue? #t)
+)
+  (+! log-sec 1)
+  (when (= log-sec 1)
+    (set! di-s "Now, onto business.")
+    (set! di-s2 "")
+    (set! di-s3 "")
+    (set! di-s4 "")
+  )
+  (when (= log-sec 2)
+    (set! di-s "Our worlds became unstable because of this very dimension.")
+    (set! di-s2 "One cannot exist without the other..")
+    (set! di-s3 "")
+    (set! di-s4 "")
+  )
+  (when (= log-sec 3)
+    (set! di-s "But considering the permanent damage this guy has done to everything")
+    (set! di-s2 "I have no choice but to quarantine this dimension from the others.")
+    (set! di-s3 "")
+    (set! di-s4 "")
+  )
+  (when (= log-sec 4)
+    (set! di-s "Absolutely no one will be able to go in or out of this world")
+    (set! di-s2 "")
+    (set! di-s3 "")
+    (set! di-s4 "")
+  )
+  (when (= log-sec 5)
+    (set! di-s "Being able to edit code in real time is a very dangerous thing")
+    (set! di-s2 "That's why I'm going to get more proficient")
+    (set! di-s3 "and eventually delete the thing that")
+    (set! di-s4 "caused all of this mayhem.")
+  )
+  (when (= log-sec 6)
+    (set! di-s "He's like a virus, since the game first came out in 2003 he's been")
+    (set! di-s2 "putting in weird bugs, like that Jetboard glitch.")
+    (set! di-s3 "...or the weird deload glitch in Jak 1.")
+    (set! di-s4 "I'm seeing it all so clearly now.")
+  )
+  (when (= log-sec 7)
+    (set! di-s "He was given tremendous amounts of dark eco.")
+    (set! di-s2 "and I'm talking like an almost infinite amount.")
+    (set! di-s3 "I'm surprised the game could handle as such..")
+    (set! di-s4 "")
+  )
+  (when (= log-sec 8)
+    (set! di-s "But I digress, this world must be left to die.")
+    (set! di-s2 "and you must remain here, to die with it.")
+    (set! di-s3 "")
+    (set! di-s4 "")
+  )
+  (when (= log-sec 9)
+    (set! di-s "I'm... sorry it has to be this way.")
+    (set! di-s2 "")
+    (set! di-s3 "")
+    (set! di-s4 "")
+  )
+  (when (= log-sec 10)
+    (set! di-s "...goodbye")
+    (set! di-s2 "")
+    (set! di-s3 "")
+    (set! di-s4 "")
+  )
+  (when (= log-sec 11)
+    (set! log-sec 0)
+    (set! in-dialogue? #f)
+    (set! camera-unlocked #t)
+    (set! item-display? #t)
+    (set! ending-loop #t)
+  )
+
+)
+
+(when (= ending-loop #t)
+  (+! ending-i 1)
+
+  (when (>= ending-i 600)
+    (clear matt-str)
+    (clear *pc-encoded-matt-str*)
+    (format matt-str "<COLOR_RED>R3:<COLOR_WHITE>+<COLOR_RED>L3<COLOR_WHITE>: Travel back in time to before~%you completed the time loop"
+    )
+    (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+    (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+      ;; reset bucket settings prior to drawing - font won't do self for us, and
+      ;; draw-raw-image can sometimes mess them up. (intro sequence)
+      (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+      (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 0 260 0.0 (font-color default) (font-flags shadow kerning large))))
+        (set! (-> font-ctx scale) 0.325)
+        (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+  )
+  (when (and (>= ending-i 600) (cpad-hold? 0 l3)(cpad-hold? 0 r3))
+    (set! (-> *target* fact health) 0.0)
+    (set! (-> *game-info* karma) 6.0)
+    (set! autosave-delayed #t)
+    (set! ending-loop #f)
+    (set! ending-i 0)
+  )
+)
+
 (when (= intro-wait #t)
   (+! intro-waiti 1)
   (when (= intro-waiti 1)
@@ -7572,14 +7846,14 @@ Here are the shop IDs
     )
     (when (= intro-sec 3)
       (task-node-close! (game-task-node nest-boss-resolution))
-    (send-event *target* 'continue (get-continue-by-name *game-info* "ctyport-hiphog"))
-    (set! shopitem1 "Four-Leaf Clover (40 orbs)")
-    (set! shopid1 10)
-    (set! shopitem2 "Double Shot (25 orbs)")
-    (set! shopid2 9)
-    (set! shopitem3 "Upgrade Damage x2 (20 orbs)")
-    (set! shopid3 6)
-    (set! intro?i 0)
+      (send-event *target* 'continue (get-continue-by-name *game-info* "ctyport-hiphog"))
+      (set! shopitem1 "Four-Leaf Clover (40 orbs)")
+      (set! shopid1 10)
+      (set! shopitem2 "Double Shot (25 orbs)")
+      (set! shopid2 9)
+      (set! shopitem3 "Upgrade Damage x2 (20 orbs)")
+      (set! shopid3 6)
+      (set! intro?i 0)
     )
     (when (= intro-sec 5)
       (play-task (game-task city-help-kid) 'debug #f)

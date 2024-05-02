@@ -2292,6 +2292,11 @@
           (sound-play "nboss-pre-shot")
           )
       )
+#|      (let (rnd (rand-vu-int-range 1 5))
+        (when (= rnd 1)
+          ()
+        )
+      )|#
     (when (or (time-elapsed? (-> self state-time) (seconds 1.25))
               (and (time-elapsed? (-> self state-time) (seconds 0.75)) (nonzero? (-> self shots-fired)))
               )
