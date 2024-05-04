@@ -5099,7 +5099,7 @@ Here are the shop IDs
       ;; reset bucket settings prior to drawing - font won't do self for us, and
       ;; draw-raw-image can sometimes mess them up. (intro sequence)
       (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
-      (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 255 400 0.0 (font-color default) (font-flags middle shadow kerning large))))
+      (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 255 380 0.0 (font-color default) (font-flags middle shadow kerning large))))
         (set! (-> font-ctx scale) 0.325)
         (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
 )
@@ -5117,7 +5117,7 @@ Here are the shop IDs
       ;; reset bucket settings prior to drawing - font won't do self for us, and
       ;; draw-raw-image can sometimes mess them up. (intro sequence)
       (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
-      (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 255 350 0.0 (font-color default) (font-flags middle shadow kerning large))))
+      (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 255 380 0.0 (font-color default) (font-flags middle shadow kerning large))))
         (set! (-> font-ctx scale) 0.325)
         (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
 )
@@ -5131,7 +5131,7 @@ Here are the shop IDs
       ;; reset bucket settings prior to drawing - font won't do self for us, and
       ;; draw-raw-image can sometimes mess them up. (intro sequence)
       (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
-      (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 255 350 0.0 (font-color default) (font-flags middle shadow kerning large))))
+      (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 255 380 0.0 (font-color default) (font-flags middle shadow kerning large))))
         (set! (-> font-ctx scale) 0.325)
         (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
 )
@@ -5283,7 +5283,7 @@ Here are the shop IDs
 ~%<COLOR_PINK>~d
 ~%
 ~%<COLOR_ORANGE>BIG GG!! CHEATS unlocked while pressing R2 while <COLOR_GREEN>in your run!
-~%<COLOR_WHITE>Light Eco<COLOR_ORANGE> is still present across the universe!
+~%<COLOR_WHITE>Light Eco<COLOR_ORANGE> is still present across the multiverse!
 ~%<COLOR_GREEN>The Time Loop is now fixed in all dimensions!
 ~%<COLOR_ORANGE>Maybe there's more secrets to unfold...
 ~%
@@ -5851,7 +5851,7 @@ Here are the shop IDs
 
 )
 |#
-(when (and (= act-act 1)(= (-> *game-info* buzzer-total) 1.0)(= display-run #t))
+(when (and (not *scene-player*) (= act-act 1)(= (-> *game-info* buzzer-total) 1.0)(= display-run #t))
     (clear matt-str)
     (clear *pc-encoded-matt-str*)
     (format matt-str "<COLOR_YELLOW><<COLOR_WHITE>---<---<---<---(BOSS)"
@@ -5879,7 +5879,7 @@ Here are the shop IDs
         (set! (-> font-ctx scale) 0.325)
         (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
 )
-(when (and (= act-act 1)(= (-> *game-info* buzzer-total) 3.0)(= display-run #t))
+(when (and (not *scene-player*) (= act-act 1)(= (-> *game-info* buzzer-total) 3.0)(= display-run #t))
     (clear matt-str)
     (clear *pc-encoded-matt-str*)
     (format matt-str "<COLOR_YELLOW><---<---<<COLOR_WHITE>---<---(BOSS)"
@@ -5893,7 +5893,7 @@ Here are the shop IDs
         (set! (-> font-ctx scale) 0.325)
         (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
 )
-(when (and (= act-act 1)(= (-> *game-info* buzzer-total) 4.0)(= display-run #t))
+(when (and (not *scene-player*) (= act-act 1)(= (-> *game-info* buzzer-total) 4.0)(= display-run #t))
     (clear matt-str)
     (clear *pc-encoded-matt-str*)
     (format matt-str "<COLOR_YELLOW><---<---<---<<COLOR_WHITE>---(BOSS)"
@@ -5907,7 +5907,7 @@ Here are the shop IDs
         (set! (-> font-ctx scale) 0.325)
         (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
 )
-(when (and (= act-act 1)(= (-> *game-info* buzzer-total) 5.0)(= display-run #t))
+(when (and (not *scene-player*) (= act-act 1)(= (-> *game-info* buzzer-total) 5.0)(= display-run #t))
     (clear matt-str)
     (clear *pc-encoded-matt-str*)
     (format matt-str "<COLOR_YELLOW><---<---<---<---<COLOR_RED>(BOSS)"
@@ -5922,7 +5922,7 @@ Here are the shop IDs
         (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
 )
 ;----------------------------SECOND ACT-----------------------------
-(when (and (= act-act 2)(= (-> *game-info* buzzer-total) 6.0)(= display-run #t))
+(when (and (not *scene-player*) (= act-act 2)(= (-> *game-info* buzzer-total) 6.0)(= display-run #t))
     (clear matt-str)
     (clear *pc-encoded-matt-str*)
     (format matt-str "<COLOR_BLUE><<COLOR_WHITE>---<---<---<---(BOSS)"
@@ -5936,7 +5936,7 @@ Here are the shop IDs
         (set! (-> font-ctx scale) 0.325)
         (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
 )
-(when (and (= act-act 2)(= (-> *game-info* buzzer-total) 7.0)(= display-run #t))
+(when (and (not *scene-player*) (= act-act 2)(= (-> *game-info* buzzer-total) 7.0)(= display-run #t))
     (clear matt-str)
     (clear *pc-encoded-matt-str*)
     (format matt-str "<COLOR_BLUE><---<<COLOR_WHITE>---<---<---(BOSS)"
@@ -5950,7 +5950,7 @@ Here are the shop IDs
         (set! (-> font-ctx scale) 0.325)
         (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
 )
-(when (and (= act-act 2)(= (-> *game-info* buzzer-total) 8.0)(= display-run #t))
+(when (and (not *scene-player*) (= act-act 2)(= (-> *game-info* buzzer-total) 8.0)(= display-run #t))
     (clear matt-str)
     (clear *pc-encoded-matt-str*)
     (format matt-str "<COLOR_BLUE><---<---<<COLOR_WHITE>---<---(BOSS)"
@@ -5964,7 +5964,7 @@ Here are the shop IDs
         (set! (-> font-ctx scale) 0.325)
         (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
 )
-(when (and (= act-act 2)(= (-> *game-info* buzzer-total) 9.0)(= display-run #t))
+(when (and (not *scene-player*) (= act-act 2)(= (-> *game-info* buzzer-total) 9.0)(= display-run #t))
     (clear matt-str)
     (clear *pc-encoded-matt-str*)
     (format matt-str "<COLOR_BLUE><---<---<---<<COLOR_WHITE>---(BOSS)"
@@ -5978,7 +5978,7 @@ Here are the shop IDs
         (set! (-> font-ctx scale) 0.325)
         (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
 )
-(when (and (= act-act 2)(= (-> *game-info* buzzer-total) 10.0)(= display-run #t))
+(when (and (not *scene-player*) (= act-act 2)(= (-> *game-info* buzzer-total) 10.0)(= display-run #t))
     (clear matt-str)
     (clear *pc-encoded-matt-str*)
     (format matt-str "<COLOR_BLUE><---<---<---<---<COLOR_RED>(BOSS)"
@@ -5994,7 +5994,7 @@ Here are the shop IDs
 )
 
 ;----------------------------THIRD ACT-----------------------------
-(when (and (= act-act 3)(= (-> *game-info* buzzer-total) 11.0)(= display-run #t))
+(when (and (not *scene-player*) (= act-act 3)(= (-> *game-info* buzzer-total) 11.0)(= display-run #t))
     (clear matt-str)
     (clear *pc-encoded-matt-str*)
     (format matt-str "<COLOR_RED><<COLOR_WHITE>---<---<---<---(BOSS)"
@@ -6008,7 +6008,7 @@ Here are the shop IDs
         (set! (-> font-ctx scale) 0.325)
         (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
 )
-(when (and (= act-act 3)(= (-> *game-info* buzzer-total) 12.0)(= display-run #t))
+(when (and (not *scene-player*) (= act-act 3)(= (-> *game-info* buzzer-total) 12.0)(= display-run #t))
     (clear matt-str)
     (clear *pc-encoded-matt-str*)
     (format matt-str "<COLOR_RED><---<<COLOR_WHITE>---<---<---(BOSS)"
@@ -6022,7 +6022,7 @@ Here are the shop IDs
         (set! (-> font-ctx scale) 0.325)
         (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
 )
-(when (and (= act-act 3)(= (-> *game-info* buzzer-total) 13.0)(= display-run #t))
+(when (and (not *scene-player*) (= act-act 3)(= (-> *game-info* buzzer-total) 13.0)(= display-run #t))
     (clear matt-str)
     (clear *pc-encoded-matt-str*)
     (format matt-str "<COLOR_RED><---<---<<COLOR_WHITE>---<---(BOSS)"
@@ -6036,7 +6036,7 @@ Here are the shop IDs
         (set! (-> font-ctx scale) 0.325)
         (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
 )
-(when (and (= act-act 3)(= (-> *game-info* buzzer-total) 14.0)(= display-run #t))
+(when (and (not *scene-player*) (= act-act 3)(= (-> *game-info* buzzer-total) 14.0)(= display-run #t))
     (clear matt-str)
     (clear *pc-encoded-matt-str*)
     (format matt-str "<COLOR_RED><---<---<---<<COLOR_WHITE>---(BOSS)"
@@ -6050,7 +6050,7 @@ Here are the shop IDs
         (set! (-> font-ctx scale) 0.325)
         (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
 )
-(when (and (= act-act 3)(= (-> *game-info* buzzer-total) 15.0)(= display-run #t))
+(when (and (not *scene-player*) (= act-act 3)(= (-> *game-info* buzzer-total) 15.0)(= display-run #t))
     (clear matt-str)
     (clear *pc-encoded-matt-str*)
     (format matt-str "<COLOR_RED><---<---<---<---<COLOR_RED>(BOSS)"
@@ -6066,7 +6066,7 @@ Here are the shop IDs
 )
 
 ;----------------------------DARK ACT-----------------------------
-(when (and (= act-act 4)(= (-> *game-info* buzzer-total) 16.0)(= display-run #t))
+(when (and (not *scene-player*) (= act-act 4)(= (-> *game-info* buzzer-total) 16.0)(= display-run #t))
     (clear matt-str)
     (clear *pc-encoded-matt-str*)
     (format matt-str "<COLOR_PINK><<COLOR_WHITE>---<---<---<---(BOSS)"
@@ -6080,7 +6080,7 @@ Here are the shop IDs
         (set! (-> font-ctx scale) 0.325)
         (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
 )
-(when (and (= act-act 4)(= (-> *game-info* buzzer-total) 17.0)(= display-run #t))
+(when (and (not *scene-player*) (= act-act 4)(= (-> *game-info* buzzer-total) 17.0)(= display-run #t))
     (clear matt-str)
     (clear *pc-encoded-matt-str*)
     (format matt-str "<COLOR_PINK><---<<COLOR_WHITE>---<---<---(BOSS)"
@@ -6094,7 +6094,7 @@ Here are the shop IDs
         (set! (-> font-ctx scale) 0.325)
         (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
 )
-(when (and (= act-act 4)(= (-> *game-info* buzzer-total) 18.0)(= display-run #t))
+(when (and (not *scene-player*) (= act-act 4)(= (-> *game-info* buzzer-total) 18.0)(= display-run #t))
     (clear matt-str)
     (clear *pc-encoded-matt-str*)
     (format matt-str "<COLOR_PINK><---<---<<COLOR_WHITE>---<---(BOSS)"
@@ -6108,7 +6108,7 @@ Here are the shop IDs
         (set! (-> font-ctx scale) 0.325)
         (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
 )
-(when (and (= act-act 4)(= (-> *game-info* buzzer-total) 19.0)(= display-run #t))
+(when (and (not *scene-player*) (= act-act 4)(= (-> *game-info* buzzer-total) 19.0)(= display-run #t))
     (clear matt-str)
     (clear *pc-encoded-matt-str*)
     (format matt-str "<COLOR_PINK><---<---<---<<COLOR_WHITE>---(BOSS)"
@@ -6122,7 +6122,7 @@ Here are the shop IDs
         (set! (-> font-ctx scale) 0.325)
         (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
 )
-(when (and (= act-act 4)(= (-> *game-info* buzzer-total) 20.0)(= display-run #t))
+(when (and (not *scene-player*) (= act-act 4)(= (-> *game-info* buzzer-total) 20.0)(= display-run #t))
     (clear matt-str)
     (clear *pc-encoded-matt-str*)
     (format matt-str "<COLOR_PINK><---<---<---<---<COLOR_PINK>(BOSS)"
@@ -6948,12 +6948,12 @@ Here are the shop IDs
     (clear matt-str)
     (clear *pc-encoded-matt-str*)
     (format matt-str "
-    <COLOR_RED>Yes I'm the one who put you back here.~%I couldn't figure out how to quarantine worlds like Vin did.
+    <COLOR_RED>Yes I'm the one who put you back here.~%But I couldn't figure out how to quarantine worlds like Vin did.
     ~%He's truly a smart creature.
     ~%
     ~%But none of that matters now, as you're trapped here with me.
     ~%You're lucky though, you get to live out your natural life.
-    ~%...I'm here for eternity...
+    ~%...I'm here for another eternity...
     ~%
     ~%
     ~%<COLOR_WHITE>Current Tokens:
