@@ -3553,7 +3553,7 @@ These numbers go down in order from the ids. The first 1 is to save all the 0's
 )
 
 
-(when (= wait-kill #t)
+(when (and (= wait-kill #t)(= randomizer #t))
   (+! wait-killi 1)
   (when (= wait-killi 400)
     (send-event *target* 'continue (get-continue-by-name *game-info* "consite-airlock"))
@@ -7525,7 +7525,7 @@ Here are the shop IDs
   )
   |#
 
-(when (and (= nest-mission #f)(task-node-closed? (game-task-node nest-get-to-gun-resolution))(not (task-node-closed? (game-task-node nest-enter-resolution))) *target* (= in-game? #t)(= (pause-allowed?) #t))  (set! log-id 3)
+(when (and (= nest-mission #f)(= (-> *game-info* karma) 4.0)(task-node-closed? (game-task-node nest-get-to-gun-resolution))(not (task-node-closed? (game-task-node nest-enter-resolution))) *target* (= in-game? #t)(= (pause-allowed?) #t))  (set! log-id 3)
   (set! di-s "Alright, Jak. This is it.")
   (set! di-s2 "Now it turns out that MetalKor is hard coded to not take any damage.")
   (set! di-s3 "This could pose a real issue..")
@@ -7572,7 +7572,9 @@ Here are the shop IDs
     (set! camera-unlocked #t)
     (set! log-sec 0)
     (set! log-id 5)
-    (set! (-> *game-info* karma) 5.0)
+    (when (= (-> *game-info* karma) 4.0)
+      (set! (-> *game-info* karma) 5.0)
+    )
     (set! autosave-delayed #t)
   )
 )
@@ -8148,6 +8150,7 @@ Here are the shop IDs
 )
 
 (when (and (= in-cheat #t)(cpad-pressed? 0 x))
+  (set! wait-kill #f)
   (when (and (= cm-select 0)(= cm-yn #f))
   (set! camera-unlocked #t)
   (set! pause-menu-blocked? #f)
@@ -8337,6 +8340,7 @@ Here are the shop IDs
     )
     (when (and (= cm-option2 14)(= p-sage-blue #f))
       (+! (-> *game-info* continue-deaths) 10000)
+      (activate-weight-start)
     )
     (when (and (= cm-option2 15)(= p-sage-red #f))
       (+! (-> *game-info* continue-deaths) 100000)
@@ -8350,10 +8354,12 @@ Here are the shop IDs
 (when (and (= in-cheat #t)(= cm-select 2)(cpad-pressed? 0 left))
     (set! in-game? #f)
     (set! randomizer #f)
+    (set! wait-kill #f)
   )
   (when (and (= in-cheat #t)(= cm-select 2)(cpad-pressed? 0 right))
     (set! in-game? #t)
     (set! randomizer #t)
+    (set! wait-kill #f)
   )
 
 
@@ -8414,7 +8420,7 @@ Here are the shop IDs
         (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
 )
 
-(when (and (= in-cheat #t)(!= cm-select 2)(= in-game? #f))
+(when (and (= in-cheat #t)(!= cm-select 2)(= randomizer #f))
   (clear matt-str)
     (clear *pc-encoded-matt-str*)
     (format matt-str "<COLOR_WHITE>Mission Randomizer (Left/Right):~%<COLOR_RED>False"
@@ -8429,7 +8435,7 @@ Here are the shop IDs
         (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
 )
 
-(when (and (= in-cheat #t)(!= cm-select 2)(= in-game? #t))
+(when (and (= in-cheat #t)(!= cm-select 2)(= randomizer #t))
   (clear matt-str)
     (clear *pc-encoded-matt-str*)
     (format matt-str "<COLOR_WHITE>Mission Randomizer (Left/Right):~%<COLOR_GREEN>True"
@@ -8444,7 +8450,7 @@ Here are the shop IDs
         (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
 )
 
-(when (and (= in-cheat #t)(= cm-select 2)(= in-game? #f))
+(when (and (= in-cheat #t)(= cm-select 2)(= randomizer #f))
   (clear matt-str)
     (clear *pc-encoded-matt-str*)
     (format matt-str "<COLOR_GREEN>Mission Randomizer (Left/Right):~%<COLOR_RED>False"
@@ -8459,7 +8465,7 @@ Here are the shop IDs
         (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
 )
 
-(when (and (= in-cheat #t)(= cm-select 2)(= in-game? #t))
+(when (and (= in-cheat #t)(= cm-select 2)(= randomizer #t))
   (clear matt-str)
     (clear *pc-encoded-matt-str*)
     (format matt-str "<COLOR_GREEN>Mission Randomizer (Left/Right):~%<COLOR_GREEN>True"
