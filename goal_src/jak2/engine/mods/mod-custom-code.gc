@@ -3325,6 +3325,13 @@ These numbers go down in order from the ids. The first 1 is to save all the 0's
 (send-event *target* 'get-pickup (pickup-type eco-red) 1.0)
 )
 
+(when (and (= p-sage-blue #f) (!= (-> *uppercut-jump-mods* slope-up-factor) 1.0))
+  (set! (-> *uppercut-jump-mods* slope-up-factor) 1.0)
+(set! (-> *uppercut-jump-mods* align-speed) 1.0)
+(set! (-> *attack-mods* align-speed) 1.0)
+(set! (-> *run-attack-mods* align-speed) 1.0)
+)
+
 
 #|
 (when 
