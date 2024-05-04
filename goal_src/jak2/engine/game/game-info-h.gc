@@ -245,6 +245,8 @@
 (define wait-power-respawn #f)
 (define wpr-i 0)
 
+(define scoutmission? #f)
+
 (defun-extern color-light-eco (none))
 
 ;give jak his items if he has bought them but doesn't actually have them

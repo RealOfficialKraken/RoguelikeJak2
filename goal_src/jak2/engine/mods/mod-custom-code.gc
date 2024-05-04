@@ -303,6 +303,7 @@ IF ADDING A NEW ITEM:
   (set! rngspeed2 (meters 5))
   (set! rngspeed3 (meters 5))
   (set! rngspeed4 (meters 5))
+  (set! scoutmission? #f)
   (color-gem)
   (set! (-> *game-info* buzzer-total) 0.0)
   (set! (-> *mood-control* overide-weather-flag) #f)
@@ -7772,6 +7773,19 @@ Here are the shop IDs
     (set! ending-loop #t)
   )
 
+)
+
+(when (and 
+(task-node-closed? (game-task-node forest-scouts-introduction))
+(not (task-node-closed? (game-task-node forest-scouts-resolution)))
+(= scoutmission? #f))
+(set! scoutmission? #t)
+)
+
+(when (and 
+(task-node-closed? (game-task-node forest-scouts-resolution))
+(= scoutmission? #t))
+(set! scoutmission? #f)
 )
 
 (when (= ending-loop #t)
