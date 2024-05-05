@@ -7,9 +7,8 @@
 
 #| TODO:
 --------------------------------------------------------------------------------------------------
-
-- Make ending for dark eco act.
-- DO NOT increase enemy speeds on under-sig
+- Traffic-kill whenever you buy or collect buffed-vehicles
+- Remake randomized missions to use knuth random
 vv--optional ideas--vv
 - Add a chance of random challenges that reward skull gems per stage, to make acquiring gems to buy items easier.
 - Add a way to get items at the start of runs, at the cost of gems
@@ -7885,6 +7884,7 @@ Here are the shop IDs
   (set! in-dialogue? #f)
   (set! camera-unlocked #t)
   (set! wait-pulloutgun #t)
+  (set! intro?i 0)
 )
 
 (when (and (= wait-vintalk #t)(= in-menu #t))
@@ -7953,6 +7953,10 @@ Here are the shop IDs
 (and 
 (= (-> *game-info* karma) 0)
 (= wait-tutorial #f)
+(not *scene-player*)
+*target*
+(= (paused?) #f)
+(= (pause-allowed?) #t)
 )
   (when (= intro?i 0)
     (set! skip-intro #f)
