@@ -1008,13 +1008,31 @@
 (defmethod nav-enemy-method-165 ((this nav-enemy))
   (let ((v1-0 (-> this nav)))
         (set! (-> v1-0 target-speed) (-> this enemy-info walk-travel-speed))
-    (when (= act-act 2)
+    (when (and 
+    (= act-act 2)
+    (= scoutmission? #f)
+    (= under-sig-mission? #f)
+    (= krew-boss-mission? #f)
+    (= tomb-boss-mission? #f)
+    )
       (set! (-> v1-0 target-speed) rngspeed)
     )
-    (when (= act-act 3)
+    (when (and 
+    (= act-act 3)
+    (= scoutmission? #f)
+    (= under-sig-mission? #f)
+    (= krew-boss-mission? #f)
+    (= tomb-boss-mission? #f)
+    )
       (set! (-> v1-0 target-speed) rngspeed2)
     )
-    (when (= act-act 4)
+    (when (and 
+    (= act-act 4)
+    (= scoutmission? #f)
+    (= under-sig-mission? #f)
+    (= krew-boss-mission? #f)
+    (= tomb-boss-mission? #f)
+    )
       (set! (-> v1-0 target-speed) rngspeed3)
     )
     (when 
@@ -1023,6 +1041,15 @@
     (task-node-closed? (game-task-node tomb-boss-introduction))
     )
       (set! (-> v1-0 target-speed) (-> this enemy-info walk-travel-speed))
+      (set! tomb-boss-mission? #t)
+    )
+    (when 
+    (and 
+    (not (task-node-closed? (game-task-node under-sig-resolution)))
+    (task-node-closed? (game-task-node under-mech-resolution))
+    )
+      (set! (-> v1-0 target-speed) (-> this enemy-info walk-travel-speed))
+      (set! under-sig-mission? #t)
     )
     (when 
     (and 
@@ -1030,18 +1057,37 @@
     (task-node-closed? (game-task-node castle-boss-introduction))
     )
       (set! (-> v1-0 target-speed) (-> this enemy-info walk-travel-speed))
+      (set! krew-boss-mission? #t)
     )
     )
   0
   (let ((v1-2 (-> this nav)))
         (set! (-> v1-2 acceleration) (-> this enemy-info walk-acceleration))
-    (when (= act-act 2)
+    (when (and 
+    (= act-act 2)
+    (= scoutmission? #f)
+    (= under-sig-mission? #f)
+    (= krew-boss-mission? #f)
+    (= tomb-boss-mission? #f)
+    )
       (set! (-> v1-2 acceleration) (-> this enemy-info walk-acceleration))
     )
-    (when (= act-act 3)
+    (when (and 
+    (= act-act 3)
+    (= scoutmission? #f)
+    (= under-sig-mission? #f)
+    (= krew-boss-mission? #f)
+    (= tomb-boss-mission? #f)
+    )
       (set! (-> v1-2 acceleration) rngspeed)
     )
-    (when (= act-act 4)
+    (when (and 
+    (= act-act 4)
+    (= scoutmission? #f)
+    (= under-sig-mission? #f)
+    (= krew-boss-mission? #f)
+    (= tomb-boss-mission? #f)
+    )
       (set! (-> v1-2 acceleration) rngspeed3)
     )
     (when 
@@ -1050,6 +1096,15 @@
     (task-node-closed? (game-task-node tomb-boss-introduction))
     )
       (set! (-> v1-2 acceleration) (-> this enemy-info walk-acceleration))
+      (set! tomb-boss-mission? #t)
+    )
+    (when 
+    (and 
+    (not (task-node-closed? (game-task-node under-sig-resolution)))
+    (task-node-closed? (game-task-node under-mech-resolution))
+    )
+      (set! (-> v1-2 acceleration) (-> this enemy-info walk-acceleration))
+      (set! under-sig-mission? #t)
     )
     (when 
     (and 
@@ -1057,6 +1112,7 @@
     (task-node-closed? (game-task-node castle-boss-introduction))
     )
       (set! (-> v1-2 acceleration) (-> this enemy-info walk-acceleration))
+      (set! krew-boss-mission? #t)
     )
     )
   0
@@ -1071,13 +1127,32 @@
 (defmethod nav-enemy-method-166 ((this nav-enemy))
   (let ((v1-0 (-> this nav)))
         (set! (-> v1-0 target-speed) (-> this enemy-info run-travel-speed))
-    (when (= act-act 2)
+    (when 
+    (and 
+    (= act-act 2)
+    (= scoutmission? #f)
+    (= under-sig-mission? #f)
+    (= krew-boss-mission? #f)
+    (= tomb-boss-mission? #f)
+    )
       (set! (-> v1-0 target-speed) rngspeed)
     )
-    (when (= act-act 3)
+    (when (and 
+    (= act-act 3)
+    (= scoutmission? #f)
+    (= under-sig-mission? #f)
+    (= krew-boss-mission? #f)
+    (= tomb-boss-mission? #f)
+    )
       (set! (-> v1-0 target-speed) rngspeed2)
     )
-    (when (= act-act 4)
+    (when (and 
+    (= act-act 4)
+    (= scoutmission? #f)
+    (= under-sig-mission? #f)
+    (= krew-boss-mission? #f)
+    (= tomb-boss-mission? #f)
+    )
       (set! (-> v1-0 target-speed) rngspeed3)
     )
     (when 
@@ -1086,6 +1161,15 @@
     (task-node-closed? (game-task-node tomb-boss-introduction))
     )
       (set! (-> v1-0 target-speed) (-> this enemy-info run-travel-speed))
+      (set! tomb-boss-mission? #t)
+    )
+    (when 
+    (and 
+    (not (task-node-closed? (game-task-node under-sig-resolution)))
+    (task-node-closed? (game-task-node under-mech-resolution))
+    )
+      (set! (-> v1-0 target-speed) (-> this enemy-info run-travel-speed))
+      (set! under-sig-mission? #t)
     )
     (when 
     (and 
@@ -1093,18 +1177,37 @@
     (task-node-closed? (game-task-node castle-boss-introduction))
     )
       (set! (-> v1-0 target-speed) (-> this enemy-info run-travel-speed))
+      (set! krew-boss-mission? #t)
     )
     )
   0
   (let ((v1-2 (-> this nav)))
     (set! (-> v1-2 acceleration) (-> this enemy-info run-acceleration))
-    (when (= act-act 2)
+    (when (and 
+    (= act-act 2)
+    (= scoutmission? #f)
+    (= under-sig-mission? #f)
+    (= krew-boss-mission? #f)
+    (= tomb-boss-mission? #f)
+    )
       (set! (-> v1-2 acceleration) (-> this enemy-info run-acceleration))
     )
-    (when (= act-act 3)
+    (when (and 
+    (= act-act 3)
+    (= scoutmission? #f)
+    (= under-sig-mission? #f)
+    (= krew-boss-mission? #f)
+    (= tomb-boss-mission? #f)
+    )
       (set! (-> v1-2 acceleration) rngspeed)
     )
-    (when (= act-act 4)
+    (when (and 
+    (= act-act 4)
+    (= scoutmission? #f)
+    (= under-sig-mission? #f)
+    (= krew-boss-mission? #f)
+    (= tomb-boss-mission? #f)
+    )
       (set! (-> v1-2 acceleration) rngspeed3)
     )
     (when 
@@ -1113,6 +1216,15 @@
     (task-node-closed? (game-task-node tomb-boss-introduction))
     )
       (set! (-> v1-2 acceleration) (-> this enemy-info run-acceleration))
+      (set! tomb-boss-mission? #t)
+    )
+    (when 
+    (and 
+    (not (task-node-closed? (game-task-node under-sig-resolution)))
+    (task-node-closed? (game-task-node under-mech-resolution))
+    )
+      (set! (-> v1-2 acceleration) (-> this enemy-info run-acceleration))
+      (set! under-sig-mission? #t)
     )
     (when 
     (and 
@@ -1120,6 +1232,7 @@
     (task-node-closed? (game-task-node castle-boss-introduction))
     )
       (set! (-> v1-2 acceleration) (-> this enemy-info run-acceleration))
+      (set! krew-boss-mission? #t)
     )
     )
   0
@@ -1292,6 +1405,9 @@
   (and 
   (rand-vu-percent? curse)
   (= scoutmission? #f)
+  (= under-sig-mission? #f)
+  (= krew-boss-mission? #f)
+  (= tomb-boss-mission? #f)
   )
     (set-vector! (-> this draw color-mult) 1.0 0.2 0.7 1.0)
     (set! (-> this hit-points) (* (-> this hit-points) 2))

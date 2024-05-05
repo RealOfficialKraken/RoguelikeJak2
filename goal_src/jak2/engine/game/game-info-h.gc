@@ -246,6 +246,9 @@
 (define wpr-i 0)
 
 (define scoutmission? #f)
+(define krew-boss-mission? #f)
+(define tomb-boss-mission? #f)
+(define under-sig-mission? #f)
 
 (defun-extern color-light-eco (none))
 

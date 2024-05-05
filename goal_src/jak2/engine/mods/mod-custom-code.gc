@@ -304,6 +304,9 @@ IF ADDING A NEW ITEM:
   (set! rngspeed3 (meters 5))
   (set! rngspeed4 (meters 5))
   (set! scoutmission? #f)
+  (set! tomb-boss-mission? #f)
+  (set! krew-boss-mission? #f)
+  (set! under-sig-mission? #f)
   (color-gem)
   (set! (-> *game-info* buzzer-total) 0.0)
   (set! (-> *mood-control* overide-weather-flag) #f)
@@ -7786,6 +7789,24 @@ Here are the shop IDs
 (task-node-closed? (game-task-node forest-scouts-resolution))
 (= scoutmission? #t))
 (set! scoutmission? #f)
+)
+
+(when (and 
+(task-node-closed? (game-task-node under-sig-resolution))
+(= under-sig-mission? #t))
+(set! under-sig-mission? #f)
+)
+
+(when (and 
+(task-node-closed? (game-task-node tomb-boss-resolution))
+(= tomb-boss-mission? #t))
+(set! tomb-boss-mission? #f)
+)
+
+(when (and 
+(task-node-closed? (game-task-node castle-boss-resolution))
+(= krew-boss-mission? #t))
+(set! krew-boss-mission? #f)
 )
 
 (when (= ending-loop #t)
