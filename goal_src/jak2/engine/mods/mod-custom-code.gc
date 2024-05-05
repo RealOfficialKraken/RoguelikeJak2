@@ -9,6 +9,11 @@
 --------------------------------------------------------------------------------------------------
 - Traffic-kill whenever you buy or collect buffed-vehicles
 - Remake randomized missions to use knuth random
+- Getting to end after you've beaten ending before, softlocks jak
+- Debug the f out of the cheat menu
+- Make the item spawning work with (-> *game-info* total-trys) in cheat menu
+- Add curse and luck stat to cheat menu
+- Add free health refill and invulnerability in cheat menu
 vv--optional ideas--vv
 - Add a chance of random challenges that reward skull gems per stage, to make acquiring gems to buy items easier.
 - Add a way to get items at the start of runs, at the cost of gems
@@ -30,13 +35,11 @@ ITEM IDEAS (4 items left, all cursed items)
 Run items should be centered around 3 core aspects: Luck, Damage, and Mechanical advantages. All of which you should become strong with just one of the three.
 
 - Big Bomb (On chance (luck stat), proj impacts create 30 grenades at set vectors with 0 timer)
-- Peacemaker Crits (chance off luck stat to spawn a peacemaker shot at impact vector)
 - Bounce Shot
 - Yellow Sage Shot (Fires yellow shots rain down-forward from above jak)
 - Red Sage Shot (works as a barrier, in front of jak a bunch of red shots come out in one direction. Gets bigger with more skull gems. 7 Levels max)
 - Blue Sage Shot (Bunch of blue shot facing upwards shoot from underneath jak)
 - Red Dot Sight (crit level up +2)
-- Gol's Unbeknowngst (fires chanced peacemaker shots depending on how many skull gems you have in current run)
 
 --------------------------------------------------------------------------------------------------
 
@@ -46,6 +49,8 @@ These items are usually very expensive to both put in your run, and to buy in th
 It's taken off of the pc-settings clone made by barg/zed, making the item amount unlimited.
 You can scale these items by doing a randomized task, set completely at the beginning of runs.
 Example: When jak takes damage, scale up Fire Rate of All Weapons
+
+Another note to add is that these items are cheap, and are very slowly procked.
 
 (STAT ATTRIBUTES)
 - Fire Rate of all weapons
@@ -8060,8 +8065,8 @@ Here are the shop IDs
 
 (when (and (= in-cheat #t)(= cm-select 1)(cpad-pressed? 0 right))
   (+! cm-option2 1)
-  (when (>= cm-option2 17)
-    (set! cm-option2 16)
+  (when (>= cm-option2 (+ (-> *game-info* total-trys) 1))
+    (set! cm-option2 (-> *game-info* total-trys))
   )
   (set! cm-refresh #t)
 )
@@ -8106,28 +8111,28 @@ Here are the shop IDs
     (set! cm-string "Double Shot")
   )
   (when (= cm-option2 9)
-    (set! cm-string "Explosive Shot")
-  )
-  (when (= cm-option2 10)
     (set! cm-string "Four-Leaf Clover")
   )
-  (when (= cm-option2 11)
+  (when (= cm-option2 10)
     (set! cm-string "+2HP Every Level")
   )
-  (when (= cm-option2 12)
+  (when (= cm-option2 11)
     (set! cm-string "Mar's Punch")
   )
-  (when (= cm-option2 13)
+  (when (= cm-option2 12)
     (set! cm-string "Pocket Rift Gate")
   )
-  (when (= cm-option2 14)
+  (when (= cm-option2 13)
     (set! cm-string "Training Weight")
   )
-  (when (= cm-option2 15)
+  (when (= cm-option2 14)
     (set! cm-string "Rapid Fire")
   )
-  (when (= cm-option2 16)
+  (when (= cm-option2 15)
     (set! cm-string "Gol's Unbeknowngst")
+  )
+  (when (= cm-option2 16)
+    (set! cm-string "Explosive Shot")
   )
 
   (when (= cm-option 1)
