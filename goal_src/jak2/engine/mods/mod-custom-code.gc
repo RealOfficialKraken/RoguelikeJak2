@@ -8076,8 +8076,8 @@ Here are the shop IDs
 
 (when (and (= in-cheat #t)(= cm-select 1)(cpad-pressed? 0 right))
   (+! cm-option2 1)
-  (when (>= cm-option2 (+ (-> *game-info* total-trys) 1))
-    (set! cm-option2 (-> *game-info* total-trys))
+  (when (> cm-option2 (- (-> *game-info* total-trys) 1))
+    (set! cm-option2 (- (-> *game-info* total-trys) 1))
   )
   (set! cm-refresh #t)
 )
