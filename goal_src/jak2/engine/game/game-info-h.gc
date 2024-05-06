@@ -330,6 +330,7 @@
 (define cm-option-s "")
 (define cm-yn #f)
 (define cm-yn-select #f)
+(define pleasewait #f)
 (define randomizer #t)
 
 (define main-msg-1 #f)

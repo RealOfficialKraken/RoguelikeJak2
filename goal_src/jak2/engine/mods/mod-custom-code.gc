@@ -311,6 +311,7 @@ IF ADDING A NEW ITEM:
   (set! tomb-boss-mission? #f)
   (set! krew-boss-mission? #f)
   (set! under-sig-mission? #f)
+  (set! pleasewait #f)
   (color-gem)
   (set! (-> *game-info* buzzer-total) 0.0)
   (set! (-> *mood-control* overide-weather-flag) #f)
@@ -8022,6 +8023,7 @@ Here are the shop IDs
 
 
 
+
 (when                         ;stat menu cheat option
 (and 
 (= run-in-progress #t)
@@ -8037,6 +8039,13 @@ Here are the shop IDs
   (set! cm-option2 1)
   (set! cm-string "Scattergun")
   (set! cm-option-s "Act 1 Stage 1")
+)
+
+(when (and (= pleasewait #f)(= randomizer #t) (= in-game? #f))
+  (set! pleasewait #t)
+)
+(when (and (= pleasewait #t)(= randomizer #t) (= in-game? #t))
+  (set! pleasewait #f)
 )
 
 (when (and (= in-cheat #t)(= cm-select 0)(cpad-pressed? 0 left))
@@ -8071,6 +8080,38 @@ Here are the shop IDs
   (set! cm-refresh #t)
 )
 
+(when (and (= in-cheat #t)(= cm-select 3)(cpad-pressed? 0 left))
+(when (!= (/ (mod (-> *game-info* continue-deaths) 100000000) 10000000) 1);luck decrease 1
+      (-! (-> *game-info* continue-deaths) 10000000)
+    )
+)
+
+(when (and (= in-cheat #t)(= cm-select 3)(cpad-pressed? 0 right))
+(when (!= (/ (mod (-> *game-info* continue-deaths) 100000000) 10000000) 9);luck increase 1
+      (+! (-> *game-info* continue-deaths) 10000000)
+    )
+)
+
+(when (and (= in-cheat #t)(= cm-select 4)(cpad-pressed? 0 left))
+(when (!= (/ (mod (-> *game-info* continue-deaths) 1000000000) 100000000) 0);curse decrease 1
+      (-! (-> *game-info* continue-deaths) 100000000)
+    )
+)
+
+(when (and (= in-cheat #t)(= cm-select 4)(cpad-pressed? 0 right))
+(when (!= (/ (mod (-> *game-info* continue-deaths) 1000000000) 100000000) 9);curse increase 1
+      (+! (-> *game-info* continue-deaths) 100000000)
+    )
+)
+
+(when (and (= in-cheat #t)(= cm-select 5)(cpad-pressed? 0 x))
+ (set! (-> *target* fact health) 8.0)
+)
+
+(when (and (= in-cheat #t)(= cm-select 6)(cpad-pressed? 0 x))
+ (+! (-> *game-info* skill) 10.0)
+)
+
 (when (and (= in-cheat #t)(cpad-pressed? 0 up))
 (-! cm-select 1)
 (when (< cm-select 0)
@@ -8080,8 +8121,8 @@ Here are the shop IDs
 
 (when (and (= in-cheat #t)(cpad-pressed? 0 down))
   (+! cm-select 1)
-  (when (>= cm-select 3)
-    (set! cm-select 2)
+  (when (>= cm-select 7)
+    (set! cm-select 6)
   )
 )
 
@@ -8198,13 +8239,14 @@ Here are the shop IDs
 (set! cm-refresh #f)
 )
 
-(when (and (= in-cheat #t)(cpad-pressed? 0 x))
+(when (and (= in-cheat #t)(= pleasewait #f)(cpad-pressed? 0 x))
   (set! wait-kill #f)
   (when (and (= cm-select 0)(= cm-yn #f))
   (set! camera-unlocked #t)
   (set! pause-menu-blocked? #f)
   (set! in-cheat #f)
   (set! randomizer #t)
+  (set! pleasewait #t)
     (when (= cm-option 1)
       (set! in-game? #t)
       (set! (-> *game-info* buzzer-total) 0.0)
@@ -8421,7 +8463,7 @@ Here are the shop IDs
 (when (and (= in-cheat #t)(= cm-select 0))
   (clear matt-str)
     (clear *pc-encoded-matt-str*)
-    (format matt-str "<COLOR_RED>(Turns on Mission Randomizer)~%<COLOR_GREEN>Select Stage (X):~%<COLOR_ORANGE>~S~%~%<COLOR_WHITE>Weapon Select (X):~%<COLOR_YELLOW>~S~%~%~%~%~%~%~%~%~%~%<COLOR_GREEN>Triangle<COLOR_WHITE>: Exit"
+    (format matt-str "<COLOR_RED>(Turns on Mission Randomizer)~%<COLOR_GREEN>Select Stage~%(<COLOR_BLUE>X<COLOR_GREEN>):~%<COLOR_ORANGE>~S~%~%<COLOR_WHITE>Weapon Select~%(<COLOR_BLUE>X<COLOR_WHITE>):~%<COLOR_YELLOW>~S~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%<COLOR_GREEN>Triangle<COLOR_WHITE>: Exit"
     cm-option-s
     cm-string
     )
@@ -8438,7 +8480,7 @@ Here are the shop IDs
 (when (and (= in-cheat #t)(= cm-select 1))
   (clear matt-str)
     (clear *pc-encoded-matt-str*)
-    (format matt-str "<COLOR_WHITE>(Turns on Mission Randomizer)~%<COLOR_WHITE>Select Stage (X):~%<COLOR_ORANGE>~S~%~%<COLOR_GREEN>Weapon Select (X):~%<COLOR_YELLOW>~S~%~%~%~%~%~%~%~%~%~%<COLOR_GREEN>Triangle<COLOR_WHITE>: Exit"
+    (format matt-str "<COLOR_WHITE>(Turns on Mission Randomizer)~%<COLOR_WHITE>Select Stage~%(<COLOR_BLUE>X<COLOR_WHITE>):~%<COLOR_ORANGE>~S~%~%<COLOR_GREEN>Weapon Select~%(<COLOR_BLUE>X<COLOR_GREEN>):~%<COLOR_YELLOW>~S~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%<COLOR_GREEN>Triangle<COLOR_WHITE>: Exit"
     cm-option-s
     cm-string
     )
@@ -8455,7 +8497,7 @@ Here are the shop IDs
 (when (and (= in-cheat #t)(and (!= cm-select 0)(!= cm-select 1)))
   (clear matt-str)
     (clear *pc-encoded-matt-str*)
-    (format matt-str "<COLOR_WHITE>(Turns on Mission Randomizer)~%<COLOR_WHITE>Select Stage (X):~%<COLOR_ORANGE>~S~%~%<COLOR_WHITE>Weapon Select (X):~%<COLOR_YELLOW>~S~%~%~%~%~%~%~%~%~%~%<COLOR_GREEN>Triangle<COLOR_WHITE>: Exit"
+    (format matt-str "<COLOR_WHITE>(Turns on Mission Randomizer)~%<COLOR_WHITE>Select Stage~%(<COLOR_BLUE>X<COLOR_WHITE>):~%<COLOR_ORANGE>~S~%~%<COLOR_WHITE>Weapon Select~%(<COLOR_BLUE>X<COLOR_WHITE>):~%<COLOR_YELLOW>~S~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%<COLOR_GREEN>Triangle<COLOR_WHITE>: Exit"
     cm-option-s
     cm-string
     )
@@ -8472,14 +8514,14 @@ Here are the shop IDs
 (when (and (= in-cheat #t)(!= cm-select 2)(= randomizer #f))
   (clear matt-str)
     (clear *pc-encoded-matt-str*)
-    (format matt-str "<COLOR_WHITE>Mission Randomizer (Left/Right):~%<COLOR_RED>False"
+    (format matt-str "<COLOR_WHITE>Mission Randomizer~%(Left/Right):~%<COLOR_RED>False"
     )
     (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
     (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
       ;; reset bucket settings prior to drawing - font won't do self for us, and
       ;; draw-raw-image can sometimes mess them up. (intro sequence)
       (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
-      (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 250 150 0.0 (font-color default) (font-flags middle shadow kerning large))))
+      (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 250 160 0.0 (font-color default) (font-flags middle shadow kerning large))))
         (set! (-> font-ctx scale) 0.325)
         (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
 )
@@ -8487,14 +8529,14 @@ Here are the shop IDs
 (when (and (= in-cheat #t)(!= cm-select 2)(= randomizer #t))
   (clear matt-str)
     (clear *pc-encoded-matt-str*)
-    (format matt-str "<COLOR_WHITE>Mission Randomizer (Left/Right):~%<COLOR_GREEN>True"
+    (format matt-str "<COLOR_WHITE>Mission Randomizer~%(Left/Right):~%<COLOR_GREEN>True"
     )
     (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
     (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
       ;; reset bucket settings prior to drawing - font won't do self for us, and
       ;; draw-raw-image can sometimes mess them up. (intro sequence)
       (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
-      (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 250 150 0.0 (font-color default) (font-flags middle shadow kerning large))))
+      (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 250 160 0.0 (font-color default) (font-flags middle shadow kerning large))))
         (set! (-> font-ctx scale) 0.325)
         (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
 )
@@ -8502,14 +8544,14 @@ Here are the shop IDs
 (when (and (= in-cheat #t)(= cm-select 2)(= randomizer #f))
   (clear matt-str)
     (clear *pc-encoded-matt-str*)
-    (format matt-str "<COLOR_GREEN>Mission Randomizer (Left/Right):~%<COLOR_RED>False"
+    (format matt-str "<COLOR_GREEN>Mission Randomizer~%(Left/Right):~%<COLOR_RED>False"
     )
     (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
     (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
       ;; reset bucket settings prior to drawing - font won't do self for us, and
       ;; draw-raw-image can sometimes mess them up. (intro sequence)
       (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
-      (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 250 150 0.0 (font-color default) (font-flags middle shadow kerning large))))
+      (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 250 160 0.0 (font-color default) (font-flags middle shadow kerning large))))
         (set! (-> font-ctx scale) 0.325)
         (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
 )
@@ -8517,18 +8559,159 @@ Here are the shop IDs
 (when (and (= in-cheat #t)(= cm-select 2)(= randomizer #t))
   (clear matt-str)
     (clear *pc-encoded-matt-str*)
-    (format matt-str "<COLOR_GREEN>Mission Randomizer (Left/Right):~%<COLOR_GREEN>True"
+    (format matt-str "<COLOR_GREEN>Mission Randomizer~%(Left/Right):~%<COLOR_GREEN>True"
     )
     (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
     (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
       ;; reset bucket settings prior to drawing - font won't do self for us, and
       ;; draw-raw-image can sometimes mess them up. (intro sequence)
       (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
-      (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 250 150 0.0 (font-color default) (font-flags middle shadow kerning large))))
+      (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 250 160 0.0 (font-color default) (font-flags middle shadow kerning large))))
         (set! (-> font-ctx scale) 0.325)
         (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
 )
 
+(when (and (= in-cheat #t)(= pleasewait #t))
+  (clear matt-str)
+    (clear *pc-encoded-matt-str*)
+    (format matt-str "<COLOR_WHITE>Please Wait..."
+    )
+    (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+    (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+      ;; reset bucket settings prior to drawing - font won't do self for us, and
+      ;; draw-raw-image can sometimes mess them up. (intro sequence)
+      (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+      (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 250 30 0.0 (font-color default) (font-flags middle shadow kerning large))))
+        (set! (-> font-ctx scale) 0.325)
+        (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+)
+
+(when (and (= in-cheat #t)(= cm-select 3))
+  (clear matt-str)
+    (clear *pc-encoded-matt-str*)
+    (format matt-str "<COLOR_GREEN>Edit <COLOR_GREEN>Luck <COLOR_GREEN>Value~%(Left/Right):~%<COLOR_ORANGE>~F"
+    luck
+    )
+    (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+    (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+      ;; reset bucket settings prior to drawing - font won't do self for us, and
+      ;; draw-raw-image can sometimes mess them up. (intro sequence)
+      (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+      (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 250 210 0.0 (font-color default) (font-flags middle shadow kerning large))))
+        (set! (-> font-ctx scale) 0.325)
+        (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+)
+
+(when (and (= in-cheat #t)(!= cm-select 3))
+  (clear matt-str)
+    (clear *pc-encoded-matt-str*)
+    (format matt-str "<COLOR_WHITE>Edit <COLOR_GREEN>Luck <COLOR_WHITE>Value~%(Left/Right):~%<COLOR_ORANGE>~F"
+    luck
+    )
+    (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+    (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+      ;; reset bucket settings prior to drawing - font won't do self for us, and
+      ;; draw-raw-image can sometimes mess them up. (intro sequence)
+      (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+      (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 250 210 0.0 (font-color default) (font-flags middle shadow kerning large))))
+        (set! (-> font-ctx scale) 0.325)
+        (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+)
+
+(when (and (= in-cheat #t)(= cm-select 4))
+  (clear matt-str)
+    (clear *pc-encoded-matt-str*)
+    (format matt-str "<COLOR_GREEN>Edit <COLOR_PINK>Instability <COLOR_GREEN>Value~%(Left/Right):~%<COLOR_PINK>~D"
+    curse-level
+    )
+    (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+    (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+      ;; reset bucket settings prior to drawing - font won't do self for us, and
+      ;; draw-raw-image can sometimes mess them up. (intro sequence)
+      (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+      (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 250 240 0.0 (font-color default) (font-flags middle shadow kerning large))))
+        (set! (-> font-ctx scale) 0.325)
+        (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+)
+
+(when (and (= in-cheat #t)(!= cm-select 4))
+  (clear matt-str)
+    (clear *pc-encoded-matt-str*)
+    (format matt-str "<COLOR_WHITE>Edit <COLOR_PINK>Instability <COLOR_WHITE>Value~%(Left/Right):~%<COLOR_PINK>~D"
+    curse-level
+    )
+    (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+    (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+      ;; reset bucket settings prior to drawing - font won't do self for us, and
+      ;; draw-raw-image can sometimes mess them up. (intro sequence)
+      (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+      (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 250 240 0.0 (font-color default) (font-flags middle shadow kerning large))))
+        (set! (-> font-ctx scale) 0.325)
+        (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+)
+
+(when (and (= in-cheat #t)(= cm-select 5))
+  (clear matt-str)
+    (clear *pc-encoded-matt-str*)
+    (format matt-str "<COLOR_GREEN>Heal to Full HP~%(<COLOR_BLUE>X<COLOR_GREEN>)"
+    curse-level
+    )
+    (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+    (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+      ;; reset bucket settings prior to drawing - font won't do self for us, and
+      ;; draw-raw-image can sometimes mess them up. (intro sequence)
+      (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+      (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 250 270 0.0 (font-color default) (font-flags middle shadow kerning large))))
+        (set! (-> font-ctx scale) 0.325)
+        (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+)
+
+(when (and (= in-cheat #t)(!= cm-select 5))
+  (clear matt-str)
+    (clear *pc-encoded-matt-str*)
+    (format matt-str "<COLOR_WHITE>Heal to Full HP~%(<COLOR_BLUE>X<COLOR_WHITE>)"
+    curse-level
+    )
+    (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+    (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+      ;; reset bucket settings prior to drawing - font won't do self for us, and
+      ;; draw-raw-image can sometimes mess them up. (intro sequence)
+      (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+      (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 250 270 0.0 (font-color default) (font-flags middle shadow kerning large))))
+        (set! (-> font-ctx scale) 0.325)
+        (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+)
+(when (and (= in-cheat #t)(= cm-select 6))
+  (clear matt-str)
+    (clear *pc-encoded-matt-str*)
+    (format matt-str "<COLOR_GREEN>Give 10 orbs~%(<COLOR_BLUE>X<COLOR_GREEN>)"
+    curse-level
+    )
+    (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+    (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+      ;; reset bucket settings prior to drawing - font won't do self for us, and
+      ;; draw-raw-image can sometimes mess them up. (intro sequence)
+      (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+      (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 250 290 0.0 (font-color default) (font-flags middle shadow kerning large))))
+        (set! (-> font-ctx scale) 0.325)
+        (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+)
+
+(when (and (= in-cheat #t)(!= cm-select 6))
+  (clear matt-str)
+    (clear *pc-encoded-matt-str*)
+    (format matt-str "<COLOR_WHITE>Give 10 orbs~%(<COLOR_BLUE>X<COLOR_WHITE>)"
+    curse-level
+    )
+    (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+    (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+      ;; reset bucket settings prior to drawing - font won't do self for us, and
+      ;; draw-raw-image can sometimes mess them up. (intro sequence)
+      (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+      (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 250 290 0.0 (font-color default) (font-flags middle shadow kerning large))))
+        (set! (-> font-ctx scale) 0.325)
+        (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+)
 
 
 
