@@ -5291,15 +5291,13 @@ Here are the shop IDs
 ~%<COLOR_WHITE>Current Tokens:
 ~%<COLOR_PINK>~d
 ~%
-~%<COLOR_ORANGE>BIG GG!! CHEATS unlocked while pressing R2 while <COLOR_GREEN>in your run!
+~%<COLOR_ORANGE>BIG GG!! <COLOR_PINK>CHEATS <COLOR_ORANGE>unlocked while pressing R2 while <COLOR_GREEN>in your run!
 ~%<COLOR_WHITE>Light Eco<COLOR_ORANGE> is still present across the multiverse!
-~%<COLOR_GREEN>The Time Loop is now fixed in all dimensions!
-~%<COLOR_ORANGE>Maybe there's more secrets to unfold...
-~%
+~%<COLOR_GREEN>The Time Loop is now fixed in all dimensions! <COLOR_RED>But one still remains,
+~%The reality that's sealed from the others, with the time loop complete.
+~%A derelict reality.
 ~%<COLOR_GREEN>Press <COLOR_BLUE>X<COLOR_GREEN> to Continue"
     (the int temp-skullgemamount)
-    act-act
-    print-stage
     (the int (-> *game-info* fuel))
     )
     (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
@@ -6996,10 +6994,35 @@ Here are the shop IDs
 (= in-menu #f) 
 (= start-stage #f) 
 (= in-hub? #t)
+(!= (-> *game-info* karma) 6.0)
 )
   (clear matt-str)
     (clear *pc-encoded-matt-str*)
     (format matt-str "<COLOR_GREEN>Triangle<COLOR_WHITE>:<COLOR_WHITE> Talk with Vin"
+    )
+    (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+    (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+      ;; reset bucket settings prior to drawing - font won't do self for us, and
+      ;; draw-raw-image can sometimes mess them up. (intro sequence)
+      (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+      (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 0 245 0.0 (font-color default) (font-flags shadow kerning large))))
+        (set! (-> font-ctx scale) 0.325)
+        (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+)
+
+(when 
+(and 
+(= vin-shop #f) 
+(= (paused?) #f)
+(= (pause-allowed?) #t)
+(= in-menu #f) 
+(= start-stage #f) 
+(= in-hub? #t)
+(= (-> *game-info* karma) 6.0)
+)
+  (clear matt-str)
+    (clear *pc-encoded-matt-str*)
+    (format matt-str "<COLOR_GREEN>Triangle<COLOR_WHITE>:<COLOR_WHITE> Talk with <COLOR_RED>???"
     )
     (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
     (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
@@ -7757,23 +7780,59 @@ Here are the shop IDs
   )
   (when (= log-sec 8)
     (set! di-s "But I digress, this world must be left to die.")
-    (set! di-s2 "and you must remain here, to die with it.")
+    (set! di-s2 "and you must.. unfortunately... remain here.")
     (set! di-s3 "")
     (set! di-s4 "")
   )
   (when (= log-sec 9)
-    (set! di-s "I'm... sorry it has to be this way.")
-    (set! di-s2 "")
-    (set! di-s3 "")
+    (set! di-s "This way, the time loop is complete, all of")
+    (set! di-s2 "the realities will be stable again, and I will")
+    (set! di-s3 "have to return back to my original timeline.")
     (set! di-s4 "")
   )
   (when (= log-sec 10)
-    (set! di-s "...goodbye")
+    (set! di-s "...")
     (set! di-s2 "")
     (set! di-s3 "")
     (set! di-s4 "")
   )
   (when (= log-sec 11)
+    (set! di-s "You saved the world, and more.")
+    (set! di-s2 "")
+    (set! di-s3 "")
+    (set! di-s4 "")
+  )
+  (when (= log-sec 12)
+    (set! di-s "Surely you know you weren't the first Jak")
+    (set! di-s2 "that I've pulled out.")
+    (set! di-s3 "")
+    (set! di-s4 "")
+  )
+  (when (= log-sec 13)
+    (set! di-s "There were... so, so many iterations..")
+    (set! di-s2 "So many realities where it, uhh..")
+    (set! di-s3 "didn't work out with you.")
+    (set! di-s4 "")
+  )
+  (when (= log-sec 14)
+    (set! di-s "You are, without a doubt, the strongest")
+    (set! di-s2 "version of Jak I've come across.")
+    (set! di-s3 "Not a single reality compares.")
+    (set! di-s4 "")
+  )
+  (when (= log-sec 15)
+    (set! di-s "But uhh.. you also have to remain here with.. It.")
+    (set! di-s2 "It can do what it likes here, it's not like it")
+    (set! di-s3 "can get out...")
+    (set! di-s4 "")
+  )
+  (when (= log-sec 16)
+    (set! di-s "Goodbye, Jak.")
+    (set! di-s2 "")
+    (set! di-s3 "")
+    (set! di-s4 "")
+  )
+  (when (= log-sec 17)
     (set! log-sec 0)
     (set! in-dialogue? #f)
     (set! camera-unlocked #t)
