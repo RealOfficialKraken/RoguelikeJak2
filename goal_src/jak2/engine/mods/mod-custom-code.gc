@@ -8111,7 +8111,7 @@ Here are the shop IDs
 
 (when (and (= in-cheat #t)(= cm-select 0)(cpad-pressed? 0 left))
 (-! cm-option 1)
-(when (< cm-option 0)
+(when (<= cm-option 0)
   (set! cm-option 20)
 )
 (set! cm-refresh #t)
