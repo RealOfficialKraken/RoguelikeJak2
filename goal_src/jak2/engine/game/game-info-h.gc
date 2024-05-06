@@ -332,6 +332,7 @@
 (define cm-yn-select #f)
 (define pleasewait #f)
 (define randomizer #t)
+(define inv? #f)
 
 (define main-msg-1 #f)
 (define main-msg-2 #f)

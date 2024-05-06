@@ -312,6 +312,9 @@ IF ADDING A NEW ITEM:
   (set! krew-boss-mission? #f)
   (set! under-sig-mission? #f)
   (set! pleasewait #f)
+  (set! temp-skullgemamount 0.0)
+  (set! temp-health 8.0)
+  (set! temp-orbs 0.0)
   (color-gem)
   (set! (-> *game-info* buzzer-total) 0.0)
   (set! (-> *mood-control* overide-weather-flag) #f)
@@ -775,6 +778,9 @@ IF ADDING A NEW ITEM:
             
           )
           (set! wait-extra-for-ingame #t)
+          (set! (-> *game-info* gem) temp-skullgemamount)
+          (set! (-> *target* fact health) temp-health)
+          (set! (-> *game-info* skill) temp-orbs)
           (set! act-act 1)
         )
     )
@@ -8102,6 +8108,14 @@ Here are the shop IDs
   (set! cm-option-s "Act 1 Stage 1")
 )
 
+(when (and (not (logtest? (-> *game-info* secrets) (game-secrets invulnerable))) (= inv? #t))
+ (logior! (-> *game-info* secrets) (game-secrets invulnerable))
+)
+
+(when (and (logtest? (-> *game-info* secrets) (game-secrets invulnerable)) (= inv? #f))
+ (logclear! (-> *game-info* secrets) (game-secrets invulnerable))
+)
+
 (when (and (= pleasewait #f)(= randomizer #t) (= in-game? #f))
   (set! pleasewait #t)
 )
@@ -8178,11 +8192,11 @@ Here are the shop IDs
 )
 
 (when (and (= in-cheat #t)(not (logtest? (-> *game-info* secrets) (game-secrets invulnerable)))(= cm-select 8)(cpad-pressed? 0 right))
-  (logior! (-> *game-info* secrets) (game-secrets invulnerable))
+  (set! inv? #t)
 )
 
 (when (and (= in-cheat #t)(logtest? (-> *game-info* secrets) (game-secrets invulnerable))(= cm-select 8)(cpad-pressed? 0 left))
-  (logclear! (-> *game-info* secrets) (game-secrets invulnerable))
+  (set! inv? #f)
 )
 
 (when (and (= in-cheat #t)(cpad-pressed? 0 up))
