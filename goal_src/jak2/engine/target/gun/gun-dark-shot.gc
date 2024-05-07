@@ -135,6 +135,10 @@
         (when (= p-double-shot #t)
         (set! dshotwait-d #t)
       )
+      (when (= powered? #t)
+          (set! power-shot-d #t)
+          (set! power-shoti-d 0)
+        )
         )
       v0-1
       )
