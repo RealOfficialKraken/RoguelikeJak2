@@ -1,4 +1,4 @@
-# Rogue-Like Jak II (demo)
+# Rogue-Like Jak II 
 This mod aims to randomize the missions in Jak II depending on which "Act" you're currently in, in the story. Each mission, or "stage", the enemies become stronger... and so Jak must have to as well. Beat 5 stages per act, and beat the final boss!
 
 - Face a permanent death feature, where you'd have to restart your run if you die!
