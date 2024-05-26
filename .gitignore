@@ -90,3 +90,5 @@ unifont-15.0.03.ttf
 out/jak2/fr3.rar
 
 *.diff
+goal_src/jak2/pc/snd/endofworld.mp3.sfk
+goal_src/jak2/pc/snd/ohshit.mp3.sfk
