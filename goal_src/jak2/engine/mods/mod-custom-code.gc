@@ -7929,12 +7929,19 @@ Here are the shop IDs
   (set! final-waiti 0)
 )
 
-(when (= final-waitb #t)
+(when 
+(and 
+(= final-waitb #t)
+(not *scene-player*)
+(= (paused?) #f)
+(= (pause-allowed?) #t)
+(= in-hub? #f)
+)
   (+! final-waiti 1)
   (when (= final-waiti 180)
     (set! log-id 3)
     (set! di-s "Alright, Jak. This is it.")
-    (set! di-s2 "Now that we've collected all three, we need to progress onward.")
+    (set! di-s2 "Now that we've collected all three Eco Shards, we need to progress onward.")
     (set! di-s3 "Onto Act 4.")
     (set! di-s4 "But I have something INCREDIBLY IMPORTANT to tell you.")
     (set! log-sec 0)
