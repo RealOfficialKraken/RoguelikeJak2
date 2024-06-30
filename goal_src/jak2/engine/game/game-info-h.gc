@@ -336,6 +336,7 @@
 (define item-ts28 "")
 (define item-ts29 "")
 (define item-ts30 "")
+(define item-tss1 "")
 
 
 (define in-hub? #f)
