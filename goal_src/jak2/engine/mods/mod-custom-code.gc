@@ -92,6 +92,7 @@ IF ADDING A NEW ITEM:
 
 
 
+
   (deftype vin-npc (process-taskable)
   ()
   )
@@ -321,6 +322,7 @@ IF ADDING A NEW ITEM:
   (set! (-> *time-of-day-context* overide-enable) #f)
   (set! (-> *game-info* task-deaths) 1000000000)
   (set! (-> *game-info* continue-deaths) 1000000000)
+  (set! (-> *game-info* auto-save-count) 1000000000)
   (set! autosave-delayed #t)
   (set! enemy-drop-weapon-once #f)
   (when (= (-> *game-info* total-trys) 4)
@@ -4137,9 +4139,30 @@ Here are the shop IDs
   (set! popup-shop #t)
 )
 
-(when (or (= avoidc-waitb #t)(!= (-> (level-get-target-inside *level*) name) 'hiphog))
+(when (or 
+(and 
+(= avoidc-waitb #t)
+(= in-game? #f)
+(= popup-shop #t)
+)
+(!= (-> (level-get-target-inside *level*) name) 'hiphog)
+)
   (set! popup-shop #f)
 )
+
+(when 
+  (and
+   (not *scene-player*)
+   (= (paused?) #f)
+   (= (pause-allowed?) #t)
+   *target*
+   (= task-completed-success? #t)
+  )
+    (set! avoidc-wait 0)
+    (set! avoidc-waitb #t)
+    (set! in-game? #f)
+    (set! task-completed-success? #f)
+  )
 
 (when (= in-menu2wait #t)
   (+! in-menu2waiti 1)
@@ -4897,6 +4920,8 @@ Here are the shop IDs
       (-! (-> *game-info* skill) 100.0)
       (set! shopitem1 "(Out of Stock)")
       (set! (-> *game-info* total-deaths) 4)
+      (set! (-> *game-info* karma) 4.0)
+      (set! unlock-msg-explode #t)
       (set! item-tss1 "Red Eco Shard")
       (set! item-update #t)
       (set! (-> *game-info* continue-deaths) (+ (-> *game-info* continue-deaths) 400000000))
@@ -4908,6 +4933,8 @@ Here are the shop IDs
       (-! (-> *game-info* skill) 100.0)
       (set! shopitem3 "(Out of Stock)")
       (set! (-> *game-info* total-deaths) 4)
+      (set! (-> *game-info* karma) 4.0)
+      (set! unlock-msg-explode #t)
       (set! item-tss1 "Red Eco Shard")
       (set! item-update #t)
       (set! (-> *game-info* continue-deaths) (+ (-> *game-info* continue-deaths) 400000000))
@@ -4919,6 +4946,8 @@ Here are the shop IDs
       (-! (-> *game-info* skill) 100.0)
       (set! shopitem2 "(Out of Stock)")
       (set! (-> *game-info* total-deaths) 4)
+      (set! (-> *game-info* karma) 4.0)
+      (set! unlock-msg-explode #t)
       (set! item-tss1 "Red Eco Shard")
       (set! item-update #t)
       (set! (-> *game-info* continue-deaths) (+ (-> *game-info* continue-deaths) 400000000))
@@ -4988,6 +5017,33 @@ Here are the shop IDs
   (when (= item-tracker 18)
     (set! item-ts18 item-tss1)
   )
+  (when (= item-tracker 19)
+    (set! item-ts19 item-tss1)
+  )
+  (when (= item-tracker 20)
+    (set! item-ts20 item-tss1)
+  )
+  (when (= item-tracker 21)
+    (set! item-ts21 item-tss1)
+  )
+  (when (= item-tracker 22)
+    (set! item-ts22 item-tss1)
+  )
+  (when (= item-tracker 23)
+    (set! item-ts23 item-tss1)
+  )
+  (when (= item-tracker 24)
+    (set! item-ts24 item-tss1)
+  )
+  (when (= item-tracker 25)
+    (set! item-ts25 item-tss1)
+  )
+  (when (= item-tracker 26)
+    (set! item-ts26 item-tss1)
+  )
+  (when (= item-tracker 27)
+    (set! item-ts27 item-tss1)
+  )
   (set! item-update #f)
 )
 
@@ -5010,6 +5066,15 @@ Here are the shop IDs
   (set! item-ts16 "")
   (set! item-ts17 "")
   (set! item-ts18 "")
+  (set! item-ts19 "")
+  (set! item-ts20 "")
+  (set! item-ts21 "")
+  (set! item-ts22 "")
+  (set! item-ts23 "")
+  (set! item-ts24 "")
+  (set! item-ts25 "")
+  (set! item-ts26 "")
+  (set! item-ts27 "")
   (set! item-tss1 "")
   (set! item-tracker 0)
   (set! p-dark-gun #f)
@@ -5458,6 +5523,15 @@ Here are the shop IDs
   (set! item-ts16 "")
   (set! item-ts17 "")
   (set! item-ts18 "")
+  (set! item-ts19 "")
+  (set! item-ts20 "")
+  (set! item-ts21 "")
+  (set! item-ts22 "")
+  (set! item-ts23 "")
+  (set! item-ts24 "")
+  (set! item-ts25 "")
+  (set! item-ts26 "")
+  (set! item-ts27 "")
   (set! item-tracker 0)
   (when (= (-> *game-info* karma) 1.0)
     (set! (-> *game-info* karma) 2.0)
@@ -5937,6 +6011,29 @@ Here are the shop IDs
       (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 250 245 0.0 (font-color default) (font-flags middle shadow kerning large))))
         (set! (-> font-ctx scale) 0.325)
         (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+)
+
+(when 
+(and
+(= unlock-msg-explode #t)
+)
+(+! unlock-msg-i 1)
+(clear matt-str)
+    (clear *pc-encoded-matt-str*)
+    (format matt-str "<COLOR_ORANGE>Explosive Shot Unlocked in shops across the multiverse!"
+    )
+    (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+    (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+      ;; reset bucket settings prior to drawing - font won't do self for us, and
+      ;; draw-raw-image can sometimes mess them up. (intro sequence)
+      (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+      (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 0 225 0.0 (font-color default) (font-flags shadow kerning large))))
+        (set! (-> font-ctx scale) 0.325)
+        (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+(when (= unlock-msg-i 600)
+  (set! unlock-msg-explode #f)
+  (set! unlock-msg-i 0)
+)
 )
 
 
@@ -7151,35 +7248,6 @@ Here are the shop IDs
         (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
 )
 
-(when 
-(and 
-(= vin-shop #f) 
-(= (paused?) #f)
-(= (pause-allowed?) #t)
-(not *scene-player*)
-(= in-menu #t) 
-(= post-item-display? #t)
-(= in-hub? #t)
-)
-  (clear matt-str)
-    (clear *pc-encoded-matt-str*)
-    (format matt-str "<COLOR_ORANGE>ITEMS COLLECTED IN RUN:<COLOR_YELLOW>~%~S~%~S~%~S~%~S~%~S~%~S"
-    item-ts1
-    item-ts2
-    item-ts3
-    item-ts4
-    item-ts5
-    item-ts6
-    )
-    (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
-    (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
-      ;; reset bucket settings prior to drawing - font won't do self for us, and
-      ;; draw-raw-image can sometimes mess them up. (intro sequence)
-      (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
-      (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 510 165 0.0 (font-color default) (font-flags right shadow kerning large))))
-        (set! (-> font-ctx scale) 0.325)
-        (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
-)
 
 (when 
 (and 
@@ -7205,10 +7273,40 @@ Here are the shop IDs
       ;; reset bucket settings prior to drawing - font won't do self for us, and
       ;; draw-raw-image can sometimes mess them up. (intro sequence)
       (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
-      (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 510 165 0.0 (font-color default) (font-flags right shadow kerning large))))
+      (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 510 125 0.0 (font-color default) (font-flags right shadow kerning large))))
         (set! (-> font-ctx scale) 0.325)
         (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
 )
+(when 
+(and 
+(= vin-shop #f) 
+(= (paused?) #f)
+(= (pause-allowed?) #t)
+(not *scene-player*)
+(= in-menu #t) 
+(= post-item-display? #t)
+(= in-hub? #t)
+)
+  (clear matt-str)
+    (clear *pc-encoded-matt-str*)
+    (format matt-str "<COLOR_ORANGE>ITEMS COLLECTED IN RUN:<COLOR_YELLOW>~%~S~%~S~%~S~%~S~%~S~%~S"
+    item-ts1
+    item-ts2
+    item-ts3
+    item-ts4
+    item-ts5
+    item-ts6
+    )
+    (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+    (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+      ;; reset bucket settings prior to drawing - font won't do self for us, and
+      ;; draw-raw-image can sometimes mess them up. (intro sequence)
+      (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+      (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 510 125 0.0 (font-color default) (font-flags right shadow kerning large))))
+        (set! (-> font-ctx scale) 0.325)
+        (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+)
+
 (when 
 (and 
 (= (paused?) #f)
@@ -7233,7 +7331,7 @@ Here are the shop IDs
       ;; reset bucket settings prior to drawing - font won't do self for us, and
       ;; draw-raw-image can sometimes mess them up. (intro sequence)
       (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
-      (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 510 225 0.0 (font-color default) (font-flags right shadow kerning large))))
+      (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 510 185 0.0 (font-color default) (font-flags right shadow kerning large))))
         (set! (-> font-ctx scale) 0.325)
         (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
 )
@@ -7262,7 +7360,7 @@ Here are the shop IDs
       ;; reset bucket settings prior to drawing - font won't do self for us, and
       ;; draw-raw-image can sometimes mess them up. (intro sequence)
       (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
-      (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 510 285 0.0 (font-color default) (font-flags right shadow kerning large))))
+      (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 510 185 0.0 (font-color default) (font-flags right shadow kerning large))))
         (set! (-> font-ctx scale) 0.325)
         (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
 )
@@ -7291,7 +7389,7 @@ Here are the shop IDs
       ;; reset bucket settings prior to drawing - font won't do self for us, and
       ;; draw-raw-image can sometimes mess them up. (intro sequence)
       (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
-      (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 510 285 0.0 (font-color default) (font-flags right shadow kerning large))))
+      (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 510 245 0.0 (font-color default) (font-flags right shadow kerning large))))
         (set! (-> font-ctx scale) 0.325)
         (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
 )
@@ -7320,7 +7418,121 @@ Here are the shop IDs
       ;; reset bucket settings prior to drawing - font won't do self for us, and
       ;; draw-raw-image can sometimes mess them up. (intro sequence)
       (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
-      (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 510 225 0.0 (font-color default) (font-flags right shadow kerning large))))
+      (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 510 245 0.0 (font-color default) (font-flags right shadow kerning large))))
+        (set! (-> font-ctx scale) 0.325)
+        (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+)
+
+(when 
+(and 
+(= (paused?) #f)
+(= (pause-allowed?) #t)
+(not *scene-player*)
+(= in-menu #f) 
+(= item-display? #t)
+(= in-hub? #f)
+)
+  (clear matt-str)
+    (clear *pc-encoded-matt-str*)
+    (format matt-str "<COLOR_GREEN>~%~S~%~S~%~S~%~S~%~S~%~S"
+    item-ts19
+    item-ts20
+    item-ts21
+    item-ts22
+    item-ts23
+    item-ts24
+    )
+    (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+    (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+      ;; reset bucket settings prior to drawing - font won't do self for us, and
+      ;; draw-raw-image can sometimes mess them up. (intro sequence)
+      (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+      (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 510 305 0.0 (font-color default) (font-flags right shadow kerning large))))
+        (set! (-> font-ctx scale) 0.325)
+        (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+)
+
+(when 
+(and 
+(= (paused?) #f)
+(= (pause-allowed?) #t)
+(not *scene-player*)
+(= in-menu #f) 
+(= post-item-display? #t)
+(= in-hub? #f)
+)
+  (clear matt-str)
+    (clear *pc-encoded-matt-str*)
+    (format matt-str "<COLOR_GREEN>~%~S~%~S~%~S~%~S~%~S~%~S"
+    item-ts19
+    item-ts20
+    item-ts21
+    item-ts22
+    item-ts23
+    item-ts24
+    )
+    (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+    (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+      ;; reset bucket settings prior to drawing - font won't do self for us, and
+      ;; draw-raw-image can sometimes mess them up. (intro sequence)
+      (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+      (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 510 305 0.0 (font-color default) (font-flags right shadow kerning large))))
+        (set! (-> font-ctx scale) 0.325)
+        (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+)
+(when 
+(and 
+(= (paused?) #f)
+(= (pause-allowed?) #t)
+(not *scene-player*)
+(= in-menu #f) 
+(= item-display? #t)
+(= in-hub? #f)
+)
+  (clear matt-str)
+    (clear *pc-encoded-matt-str*)
+    (format matt-str "<COLOR_GREEN>~%~S~%~S~%~S~%~S~%~S~%~S"
+    item-ts25
+    item-ts26
+    item-ts27
+    item-ts28
+    item-ts29
+    item-ts30
+    )
+    (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+    (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+      ;; reset bucket settings prior to drawing - font won't do self for us, and
+      ;; draw-raw-image can sometimes mess them up. (intro sequence)
+      (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+      (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 510 365 0.0 (font-color default) (font-flags right shadow kerning large))))
+        (set! (-> font-ctx scale) 0.325)
+        (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+)
+(when 
+(and 
+(= (paused?) #f)
+(= (pause-allowed?) #t)
+(not *scene-player*)
+(= in-menu #f) 
+(= post-item-display? #t)
+(= in-hub? #f)
+)
+  (clear matt-str)
+    (clear *pc-encoded-matt-str*)
+    (format matt-str "<COLOR_GREEN>~%~S~%~S~%~S~%~S~%~S~%~S"
+    item-ts25
+    item-ts26
+    item-ts27
+    item-ts28
+    item-ts29
+    item-ts30
+    )
+    (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+    (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+      ;; reset bucket settings prior to drawing - font won't do self for us, and
+      ;; draw-raw-image can sometimes mess them up. (intro sequence)
+      (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+      (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 510 365 0.0 (font-color default) (font-flags right shadow kerning large))))
         (set! (-> font-ctx scale) 0.325)
         (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
 )
@@ -7576,7 +7788,7 @@ Here are the shop IDs
         ;; reset bucket settings prior to drawing - font won't do self for us, and
         ;; draw-raw-image can sometimes mess them up. (intro sequence)
         (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
-        (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 510 100 0.0 (font-color default) (font-flags right shadow kerning large))))
+        (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 510 110 0.0 (font-color default) (font-flags right shadow kerning large))))
           (set! (-> font-ctx scale) 0.325)
           (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
   )
@@ -7623,7 +7835,37 @@ Here are the shop IDs
         ;; reset bucket settings prior to drawing - font won't do self for us, and
         ;; draw-raw-image can sometimes mess them up. (intro sequence)
         (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
-        (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 510 80 0.0 (font-color default) (font-flags right shadow kerning large))))
+        (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 510 90 0.0 (font-color default) (font-flags right shadow kerning large))))
+          (set! (-> font-ctx scale) 0.325)
+          (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+  )
+  (when (and (= in-hub? #t) (= wait-tutorial #f)(= ohshit #f))
+    (clear matt-str)
+      (clear *pc-encoded-matt-str*)
+      (format matt-str "<COLOR_GREEN>auto-save-count (game-save3) = <COLOR_YELLOW>~d"
+      (-> *game-info* auto-save-count)
+      )
+      (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+      (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+        ;; reset bucket settings prior to drawing - font won't do self for us, and
+        ;; draw-raw-image can sometimes mess them up. (intro sequence)
+        (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+        (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 510 90 0.0 (font-color default) (font-flags right shadow kerning large))))
+          (set! (-> font-ctx scale) 0.325)
+          (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+  )
+  (when (and (= in-hub? #f) (= wait-tutorial #f)(= ohshit #f))
+    (clear matt-str)
+      (clear *pc-encoded-matt-str*)
+      (format matt-str "<COLOR_GREEN>auto-save-count (game-save3) = <COLOR_YELLOW>~d"
+      (-> *game-info* auto-save-count)
+      )
+      (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+      (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+        ;; reset bucket settings prior to drawing - font won't do self for us, and
+        ;; draw-raw-image can sometimes mess them up. (intro sequence)
+        (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+        (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 510 70 0.0 (font-color default) (font-flags right shadow kerning large))))
           (set! (-> font-ctx scale) 0.325)
           (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
   )
@@ -7681,15 +7923,25 @@ Here are the shop IDs
   )
   |#
 
-(when (and (= nest-mission #f)(= (-> *game-info* karma) 4.0)(task-node-closed? (game-task-node nest-get-to-gun-resolution))(not (task-node-closed? (game-task-node nest-enter-resolution))) *target* (= in-game? #t)(= (pause-allowed?) #t))  (set! log-id 3)
-  (set! di-s "Alright, Jak. This is it.")
-  (set! di-s2 "Now it turns out that MetalKor is hard coded to not take any damage.")
-  (set! di-s3 "This could pose a real issue..")
-  (set! di-s4 "")
-  (set! log-sec 0)
-  (set! in-dialogue? #t)
-  (set! nest-mission #t)
-  (set! camera-locked #t)
+(when 
+(and (= final-waitb #f)(and (= (-> *game-info* total-deaths) 4) (= (-> *game-info* karma) 4.0)) (!= (-> (level-get-target-inside *level*) name) 'hiphog) *target* (= in-game? #t)(= (pause-allowed?) #t))
+  (set! final-waitb #t)
+  (set! final-waiti 0)
+)
+
+(when (= final-waitb #t)
+  (+! final-waiti 1)
+  (when (= final-waiti 180)
+    (set! log-id 3)
+    (set! di-s "Alright, Jak. This is it.")
+    (set! di-s2 "Now that we've collected all three, we need to progress onward.")
+    (set! di-s3 "Onto Act 4.")
+    (set! di-s4 "But I have something INCREDIBLY IMPORTANT to tell you.")
+    (set! log-sec 0)
+    (set! in-dialogue? #t)
+    (set! nest-mission #t)
+    (set! camera-locked #t)
+  )
 )
 
 (when
@@ -7700,34 +7952,36 @@ Here are the shop IDs
 )
   (+! log-sec 1)
   (when (= log-sec 1)
-    (set! di-s "It's not over yet, though. We have a secret weapon that")
-    (set! di-s2 "this guy knows nothing about.")
-    (set! di-s3 "")
+    (set! di-s "It seems like the Entity has hard-coded")
+    (set! di-s2 "MetalKor to not take ANY damage from normal weapons.")
+    (set! di-s3 "This could, uhh.. pose a tremendous threat.")
     (set! di-s4 "")
   )
   (when (= log-sec 2)
-    (set! di-s "...using the ecos you got, I was able to")
-    (set! di-s2 "find the early source code for Light Eco.")
-    (set! di-s3 "")
+    (set! di-s "Those eco's you got? They may be our only shot.")
+    (set! di-s2 "All of this raw data has lead me to find the fabled")
+    (set! di-s3 "Jak 2 Light Eco.")
     (set! di-s4 "")
   )
   (when (= log-sec 3)
-    (set! di-s "...i-I can't believe that worked. This is such scrambled data.")
-    (set! di-s2 "I just dropped tons of Light Eco across the game")
-    (set! di-s3 "they're all in crates.")
+    (set! di-s "I can put them anywhere you like, so I'll put them everywhere!")
+    (set! di-s2 "From this moment on, Light Eco can be gathered from crates, and enemies.")
+    (set! di-s3 "")
     (set! di-s4 "")
   )
   (when (= log-sec 4)
-    (set! di-s "Whew, okay... so, if you die here, don't worry!")
-    (set! di-s2 "As soon as you enter an area, boop!")
-    (set! di-s3 "The Light Eco will get generated everywhere.")
-    (set! di-s4 "Easy peasy!")
+    (set! di-s "Everything is about to get MUCH easier.")
+    (set! di-s2 "Now let's get to Act 4!")
+    (set! di-s3 "Good luck, boys!")
+    (set! di-s4 "")
   )
   (when (= log-sec 5)
     (set! in-dialogue? #f)
     (set! camera-unlocked #t)
     (set! log-sec 0)
     (set! log-id 5)
+    (set! final-waiti 0)
+    (set! final-waitb #f)
     (when (= (-> *game-info* karma) 4.0)
       (set! (-> *game-info* karma) 5.0)
     )
