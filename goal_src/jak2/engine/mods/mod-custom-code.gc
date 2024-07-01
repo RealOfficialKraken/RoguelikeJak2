@@ -93,6 +93,7 @@ IF ADDING A NEW ITEM:
 (and
 (not (string= arg0 "red"))
 (not (string= arg0 "blue"))
+(not (string= arg0 "dark"))
 (not (string= arg0 "redrof"))
 (not (string= arg0 "damage"))
 (not (string= arg0 "ammo"))
@@ -342,6 +343,7 @@ IF ADDING A NEW ITEM:
 (= (/ (mod (-> *game-info* continue-deaths) 100000) 10000) 0)
 )
  (+! (-> *game-info* continue-deaths) 10000)
+ (activate-weight-start)
 )
 (when 
 (and 
@@ -350,6 +352,7 @@ IF ADDING A NEW ITEM:
 (= (/ (mod (-> *game-info* continue-deaths) 100000) 10000) 1)
 )
  (-! (-> *game-info* continue-deaths) 10000)
+ (weight-reset)
 )
 
 (when 

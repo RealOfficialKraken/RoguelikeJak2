@@ -502,4 +502,5 @@
   "dig-bomb-crate-ag.go"
   "dig-bomb-crate-cylinder-ag.go"
   "dig1-vis.go"
+  "hip-whack-a-metal-ag.go"
  ))
