@@ -442,14 +442,6 @@
       )
     )
 
-    (defun weight-reset ()
-    (set! (-> *run-attack-mods* align-speed) 1.0)
-    (set! (-> *attack-mods* align-speed) 1.0)
-    (set! (-> *uppercut-jump-mods* align-speed) 1.0)
-    (set! (-> *uppercut-jump-mods* slope-up-factor) 1.0)
-    (none)
-    )
-
     (defun vehicle-particle-roll ()
       (let 
       (
